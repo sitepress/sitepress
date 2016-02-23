@@ -98,6 +98,11 @@ module Beams
       @page = page
       @content_type = content_type
     end
+
+    def self.open(path)
+      request_path = File.join("/", path).sub(/\..*/, '')
+      new(request_path: request_path, page: Page.open(path))
+    end
   end
 
   # Collection of pages
@@ -116,8 +121,7 @@ module Beams
     def self.glob(path)
       new.tap do |sitemap|
         Dir[path].each do |path|
-          request_path = File.join("/", path).sub(/\..*/, '')
-          sitemap.resources << Resource.new(request_path: request_path, page: Page.open(path))
+          sitemap.resources << Resource.open(path)
         end
       end
     end
