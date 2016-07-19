@@ -32,8 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "guard-rspec"
   spec.add_development_dependency "rack-test"
   spec.add_development_dependency "rack"
+  spec.add_development_dependency "actionpack", "~> 4.2"
 
   spec.add_dependency "tilt"
-  spec.add_dependency "nokogiri"
-  spec.add_dependency "html-pipeline"
 end

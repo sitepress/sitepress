@@ -6,54 +6,69 @@ describe Beams do
   end
 
   context Beams::Frontmatter do
-    subject { Beams::Frontmatter.new File.read "spec/pages/test.html.haml" }
-    it "parses data" do
-      expect(subject.data).to eql({
-        "title" => "Name",
-        "meta" => {
-          "keywords" => "One" }})
+    context "con frontmatter" do
+      subject { Beams::Frontmatter.new File.read "spec/pages/test.html.haml" }
+      it "parses data" do
+        expect(subject.data).to eql({
+          "title" => "Name",
+          "meta" => {
+            "keywords" => "One" }})
+      end
+      it "parses body" do
+        expect(subject.body).to_not be_nil
+      end
     end
-    it "parses body" do
-      expect(subject.body).to_not be_nil
+    context "sin frontmatter" do # That's Spanish for pages that don't have Frontmatter.
+      subject { Beams::Frontmatter.new File.read "spec/pages/sin_frontmatter.html.haml" }
+      it "parses data" do
+        expect(subject.data).to eql({})
+      end
+      it "parses body" do
+        expect(subject.body).to_not be_nil
+      end
     end
   end
 
-  context Beams::Page do
-    subject { Beams::Page.open("spec/pages/test.html.haml") }
-    it "parses data" do
-      expect(subject.dom.at_css("title").content).to eql("Name")
+  context Beams::Resource do
+    subject { Beams::Resource.new(file_path: "spec/pages/test.html.haml", request_path: "/test") }
+    describe "#locals" do
+      it "has :current_page key" do
+        expect(subject.locals).to have_key(:current_page)
+      end
+      it "has Binding as :current_page type" do
+        expect(subject.locals[:current_page]).to be_instance_of Beams::Resource::Binding
+      end
     end
-    context "data pipeline" do
-      before do
-        subject.data_pipeline.add do |page|
-          { "toc" => page.dom.css("h1,h2,h3,h4,h5,h6").map(&:content) }
-        end
+    describe "#content_type" do
+      it "is text/html" do
+        expect(subject.content_type).to eql("text/html")
       end
-      it "merges toc" do
-        expect(subject.data["toc"]).to eql(["Hi", "There"])
-      end
-      it "preserves title" do
-        expect(subject.data["title"]).to eql("Name")
-      end
+    end
+    it "has data" do
+      expect(subject.data["title"]).to eql("Name")
+    end
+    it "parses body" do
+      expect(subject.body).to include("This is just some content")
     end
   end
 
   context Beams::Sitemap do
-    subject { Beams::Sitemap.glob("spec/pages/*") }
-    it "has 1 resource" do
-      expect(subject.resources.first.request_path).to eql("/spec/pages/test")
+    subject { Beams::Sitemap.new(root: "spec/pages") }
+    it "has 2 resources" do
+      expect(subject.resources.first.request_path).to eql("/sin_frontmatter")
     end
   end
 
   require 'rack/test'
   context Beams::Server do
     include Rack::Test::Methods
+    let(:sitemap) { Beams::Sitemap.new(root: "spec/pages") }
 
     def app
-      Beams::Server.glob("spec/pages/*")
+      Beams::Server.new(sitemap)
     end
 
-    let(:request_path) { "/spec/pages/test" }
+    let(:request_path) { "/test" }
 
     it "gets page" do
       get request_path

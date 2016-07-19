@@ -6,12 +6,12 @@ module Beams
   # Parses metadata from the header of the page.
   class Frontmatter
     DELIMITER = "---".freeze
-    PATTERN = /\A#{DELIMITER}\n(.+)\n#{DELIMITER}\n?(.+)\Z/m
+    PATTERN = /\A(#{DELIMITER}\n(.+)\n#{DELIMITER}\n)?(.+)\Z/m
 
     attr_reader :body
 
     def initialize(content)
-      @data, @body = content.match(PATTERN).captures
+      _, @data, @body = content.match(PATTERN).captures
     end
 
     def data
@@ -24,126 +24,118 @@ module Beams
     end
   end
 
-  require "nokogiri"
-  require "tilt"
-
-  # Composites metadata from arbitrary sources, such as a page's
-  # DOM elements. Great for TOCs, etc.
-  class DataPipeline
-    extend Forwardable
-    def_delegator :@processors, :<<
-
-    def initialize(page)
-      @page = page
-      @processors = []
-    end
-
-    def add(&block)
-      @processors << block
-    end
-
-    def process
-      @processors.reduce Hash.new do |memo, p|
-        memo.merge(p.arity.zero? ? p.call : p.call(@page))
-      end
-    end
-  end
-
-  # Represents an HTML page. Doesn't care yet
-  # about paths, locations, etc.
-  class Page
-    Binding = Struct.new(:data)
-
-    def initialize(template: , data: {})
-      @template, @data = template, data
-    end
-
-    # Query the data on the page. If HTML, use CSS. If
-    # JSON, use ...
-    def dom
-      @dom ||= Nokogiri::HTML(render)
-    end
-
-    def data_pipeline
-      @data_pipeline ||= DataPipeline.new(self).tap do |pipeline|
-        pipeline << lambda { @data }
-      end
-    end
-
-    def data
-      data_pipeline.process
-    end
-
-    def render
-      @template.render(Object.new, current_page: Binding.new(@data))
-    end
-
-    def self.open(path)
-      engine = Tilt[path]
-      frontmatter = Frontmatter.new File.read(path)
-      template = engine.new { |t| frontmatter.body }
-      data = frontmatter.data
-      new template: template, data: data
-    end
-  end
-
   # Represents a page in a web server context.
   class Resource
+    # TODO: I don't like the Binding, locals, and frontmatter
+    # being in the Resource. That should be moved to a page
+    # object and be delegated to that. Or perhaps the page body?
+    # I'm moving forward with this now though to keep the objects simpler.
+    # We'll see how it evolves.
+    Binding = Struct.new(:data)
+
     CONTENT_TYPE = "text/html".freeze
 
-    attr_reader :request_path, :page, :content_type
+    attr_reader :request_path, :file_path, :content_type
 
-    def initialize(request_path: , page: , content_type: CONTENT_TYPE)
+    extend Forwardable
+    def_delegators :@frontmatter, :data, :body
+
+    def initialize(request_path: , file_path: , content_type: CONTENT_TYPE)
       @request_path = request_path
-      @page = page
       @content_type = content_type
+      @file_path = Pathname.new file_path
+      @frontmatter = Frontmatter.new File.read @file_path
     end
 
-    def self.open(path)
-      request_path = File.join("/", path).sub(/\..*/, '')
-      new(request_path: request_path, page: Page.open(path))
+    # Locals that should be merged into or given to the rendering context.
+    def locals
+      { current_page: Binding.new(data) }
     end
   end
 
-  # Collection of pages
+  # A collection of pages from a directory.
   class Sitemap
-    attr_reader :resources
+    # Default file pattern to pick up in sitemap
+    DEFAULT_GLOB = "**/*.*".freeze
+    # Default root path for sitemap.
+    DEFAULT_ROOT_DIR = Pathname.new(".").freeze
+    # Default root request path
+    DEFAULT_ROOT_REQUEST_PATH = Pathname.new("/").freeze
 
-    def initialize
-      @resources = []
+    def initialize(root: DEFAULT_ROOT_DIR, glob: DEFAULT_GLOB)
+      @root = Pathname.new(root)
+      @glob = glob
+    end
+
+    # Lazy stream of resources.
+    def resources
+      dir.lazy.map do |path|
+        Resource.new request_path: request_path(path), file_path: path
+      end
     end
 
     # Find the page with a path.
-    def resolve(request_path)
+    def find_by_request_path(request_path)
       resources.find { |r| r.request_path == request_path }
     end
 
-    def self.glob(path)
-      new.tap do |sitemap|
-        Dir[path].each do |path|
-          sitemap.resources << Resource.open(path)
-        end
-      end
+    private
+    def dir
+      Dir[@root.join(@glob)]
+    end
+
+    # Given a @root of `/hi`, this method changes `/hi/there/friend.html.erb`
+    # to an absolute `/there/friend` format by removing the file extensions
+    def request_path(path)
+      # Relative path of resource to the root of this project.
+      relative_path = Pathname.new(path).relative_path_from(@root)
+      # Removes the .fooz.baz
+      DEFAULT_ROOT_REQUEST_PATH.join(relative_path).to_s.sub(/\..*/, '')
     end
   end
 
-  # Mount inside of a config.ru file to run this as a server.
-  class Server
-    def initialize(sitemap)
-      @sitemap = sitemap
+  require "tilt"
+
+  class TiltRenderer
+    def initialize(resource)
+      @resource = resource
     end
 
-    def self.glob(path = ".")
-      new Beams::Sitemap.glob(path)
+    def render
+      template = engine.new { |t| @resource.body }
+      template.render(Object.new, @resource.locals)
+    end
+
+    private
+    def engine
+      Tilt[@resource.file_path]
+    end
+  end
+
+
+  # Mount inside of a config.ru file to run this as a server.
+  class Server
+    ROOT_PATH = Pathname.new("/")
+
+    def initialize(sitemap, relative_to: "/")
+      @relative_to = Pathname.new(relative_to)
+      @sitemap = sitemap
     end
 
     def call(env)
       req = Rack::Request.new(env)
-      if resource = @sitemap.resolve(req.path)
-        [ 200, {"Content-Type" => resource.content_type}, [resource.page.render] ]
+      if resource = @sitemap.find_by_request_path(normalize_path(req.path))
+        [ 200, {"Content-Type" => resource.content_type}, [TiltRenderer.new(resource).render] ]
       else
         [ 404, {"Content-Type" => "text/plain"}, ["Not Found"]]
       end
+    end
+
+    private
+    # If we mount this middleware in a path other than root, we need to configure it
+    # so that it correctly maps the request path to the content path.
+    def normalize_path(request_path)
+      ROOT_PATH.join(Pathname.new(request_path).relative_path_from(@relative_to)).to_s
     end
   end
 end
