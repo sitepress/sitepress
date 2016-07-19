@@ -62,13 +62,14 @@ module Beams
     # Default root request path
     DEFAULT_ROOT_REQUEST_PATH = Pathname.new("/").freeze
 
-    def initialize(root: DEFAULT_ROOT_DIR)
-      @root = Pathname.new(root)
+    def initialize(file_path: DEFAULT_ROOT_DIR, request_path: DEFAULT_ROOT_REQUEST_PATH)
+      @file_path = Pathname.new(file_path)
+      @request_path = Pathname.new(request_path)
     end
 
     # Lazy stream of resources.
     def resources(glob = DEFAULT_GLOB)
-      Dir[@root.join(glob)].lazy.map do |path|
+      Dir[@file_path.join(glob)].lazy.map do |path|
         Resource.new request_path: request_path(path), file_path: path
       end
     end
@@ -79,13 +80,13 @@ module Beams
     end
 
     private
-    # Given a @root of `/hi`, this method changes `/hi/there/friend.html.erb`
+    # Given a @file_path of `/hi`, this method changes `/hi/there/friend.html.erb`
     # to an absolute `/there/friend` format by removing the file extensions
     def request_path(path)
-      # Relative path of resource to the root of this project.
-      relative_path = Pathname.new(path).relative_path_from(@root)
+      # Relative path of resource to the file_path of this project.
+      relative_path = Pathname.new(path).relative_path_from(@file_path)
       # Removes the .fooz.baz
-      DEFAULT_ROOT_REQUEST_PATH.join(relative_path).to_s.sub(/\..*/, '')
+      @request_path.join(relative_path).to_s.sub(/\..*/, '')
     end
   end
 

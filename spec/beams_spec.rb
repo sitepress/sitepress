@@ -53,7 +53,7 @@ describe Beams do
   end
 
   context Beams::Sitemap do
-    subject { Beams::Sitemap.new(root: "spec/pages") }
+    subject { Beams::Sitemap.new(file_path: "spec/pages") }
     it "has 2 resources" do
       expect(subject.resources.first.request_path).to eql("/sin_frontmatter")
     end
@@ -65,13 +65,13 @@ describe Beams do
   require 'rack/test'
   context Beams::Server do
     include Rack::Test::Methods
-    let(:sitemap) { Beams::Sitemap.new(root: "spec/pages") }
+    let(:sitemap) { Beams::Sitemap.new(file_path: "spec/pages", request_path: "/fizzy") }
 
     def app
       Beams::Server.new(sitemap)
     end
 
-    let(:request_path) { "/test" }
+    let(:request_path) { "/fizzy/test" }
 
     it "gets page" do
       get request_path
