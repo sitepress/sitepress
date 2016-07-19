@@ -57,6 +57,9 @@ describe Beams do
     it "has 2 resources" do
       expect(subject.resources.first.request_path).to eql("/sin_frontmatter")
     end
+    it "globs resources" do
+      expect(subject.resources("*sin_frontmatter*").size).to eql(1)
+    end
   end
 
   require 'rack/test'

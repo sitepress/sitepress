@@ -62,14 +62,13 @@ module Beams
     # Default root request path
     DEFAULT_ROOT_REQUEST_PATH = Pathname.new("/").freeze
 
-    def initialize(root: DEFAULT_ROOT_DIR, glob: DEFAULT_GLOB)
+    def initialize(root: DEFAULT_ROOT_DIR)
       @root = Pathname.new(root)
-      @glob = glob
     end
 
     # Lazy stream of resources.
-    def resources
-      dir.lazy.map do |path|
+    def resources(glob = DEFAULT_GLOB)
+      Dir[@root.join(glob)].lazy.map do |path|
         Resource.new request_path: request_path(path), file_path: path
       end
     end
@@ -80,10 +79,6 @@ module Beams
     end
 
     private
-    def dir
-      Dir[@root.join(@glob)]
-    end
-
     # Given a @root of `/hi`, this method changes `/hi/there/friend.html.erb`
     # to an absolute `/there/friend` format by removing the file extensions
     def request_path(path)
@@ -111,7 +106,6 @@ module Beams
       Tilt[@resource.file_path]
     end
   end
-
 
   # Mount inside of a config.ru file to run this as a server.
   class Server
