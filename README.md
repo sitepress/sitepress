@@ -41,33 +41,98 @@ meta:
     %h2 There
 ```
 
-Mascot is capable of building data pipelines like this:
+Mascot can parse out the frontmatter and body to render inside your framework of choice, like Rails:
 
 ```ruby
-page = Mascot::Page.open("spec/pages/test.html.haml")
-page.data_pipeline.add do |page|
-  { "toc" => page.css("h1,h2,h3,h4,h5,h6").map(&:content) }
+class MascotController < ApplicationController
+  # TODO: Isolate this integration into a rails engine. Copy
+  # the way HighVoltage provides routes and scopes everything.
+  def show
+    sitemap = Rails.application.config.sitemap
+
+    resource = sitemap.find_by_request_path(request.path)
+    if resource
+      # TODO: Implement a whitelisted, chained handler for
+      # the template type with ActionView::Template::Handlers.extensions
+      template_type = resource.file_path.extname.delete(".")
+      @_locals = resource.locals.merge(sitemap: sitemap)
+      layout = resource.data.fetch("layout", "high_voltage")
+      render inline: resource.body, type: template_type, layout: layout, locals: @_locals
+    else
+      render status: :not_found, text: "#{request.path} Not Found"
+    end
+  end
 end
 ```
 
-so when you call `page.data` you get something like this:
+so when you call `current_page.data` from your templates, you get something like this:
 
 ```irb
-> page.data
+> current_page.data
 => {"title"=>"Name", "meta"=>{"keywords"=>"One"}, "toc"=>["Hi", "There"]}
+> current_page.data.dig("meta", "keywords")
+=> "One"
 ```
 
-## Goals & Big Dreams
+Mascot is designed to be embedded in rails and other Ruby web frameworks.
 
-### Sitemap
+# Features
 
-Traditional static site generators assume a tight mapping between a directory structure and URL. Mascot aims to be more decoupled from the file system and more data driven.
+Mascot implements a subset of the best features from the [Middleman](http://www.middlemanapp.com/) static site generator including the Sitemap and Frontmatter.
 
-For example, a page can be manually added to the resources:
+## Frontmatter
 
-```ruby
-sitemap = Mascot::Sitemap
-sitemap.resources << Mascot::Resource.new(request_path: "/my/page", page: Mascot::Page.new("./photos.html.erb"))
+Frontmatter is a way to attach metadata to content pages. Its a powerful way to enable a team of writers and engineers work together on content. The engineers focus on reading values from frontmatter while the writers can change values.
+
+```haml
+---
+title: This is a swell doc
+meta:
+  keywords: this, is, a, test
+background_color: #0f0
+---
+
+%html
+  %head
+    %meta(name="keywords" value="#{current_page.data.dig("meta", "keywords")}")
+  %body(style="background: #{current_page.data["background_color"]};")
+    %h1=current_page.data["title"]
+    %p And here's the rest of the content!
+```
+
+## Sitemap
+
+The Sitemap accepts a directory path
+
+```irb
+> sitemap = Mascot::Sitemap.new(file_path: "spec/pages")
+=> #<Mascot::Sitemap:0x007fcd24103710 @file_path=#<Pathname:spec/pages>, @request_path=#<Pathname:/>>
+```
+
+Then you can request a resource by request path:
+
+```irb
+> resource = sitemap.find_by_request_path("/test")
+=> #<Mascot::Resource:0x007fcd2488a128 @request_path="/test", @content_type="text/html", @file_path=#<Pathname:spec/pages/test.html.haml>, @frontmatter=#<Mascot::Frontmatter:0x007fcd24889e80 @data="title: Name\nmeta:\n  keywords: One", @body="\n!!!\n%html\n  %head\n    %title=current_page.data[\"title\"]\n  %body\n    %h1 Hi\n    %p This is just some content\n    %h2 There\n">>
+```
+
+And access the frontmatter data (if available) and body of the template.
+
+```irb
+> resource.data
+=> {"title"=>"Name", "meta"=>{"keywords"=>"One"}}
+> resource.body
+=> "\n!!!\n%html\n  %head\n    %title=current_page.data[\"title\"]\n  %body\n    %h1 Hi\n    %p This is just some content\n    %h2 There\n"
+```
+
+### Resource globbing
+
+The Sitemap API is a powerful way to query content via resource globbing. For example, if you have a folder full of files but you only want all `.html` files within the `docs` directory, you'd do something like:
+
+```haml
+%ol
+  -sitemap.resources("docs/*.html*").each do |page|
+    %li=link_to page.data["title"], page.request_path
 ```
 
 ## Development
@@ -79,4 +144,3 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/bradgessler/mascot.
-
