@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Brad Gessler"]
   spec.email         = ["bradgessler@gmail.com"]
 
-  spec.summary       = %q{An experiment in data driven static website generation.}
+  spec.summary       = %q{An embeddable file-backed content management system.}
   spec.homepage      = "https://github.com/bradgessler/mascot"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
