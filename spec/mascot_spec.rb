@@ -78,4 +78,20 @@ describe Mascot do
       expect(last_response.status).to eql(200)
     end
   end
+
+  context Mascot::RouteConstraint do
+    let(:sitemap) { Mascot::Sitemap.new(file_path: "spec/pages") }
+    let(:route_constraint) { Mascot::RouteConstraint.new(sitemap) }
+
+    context "#matches?" do
+      it "returns true if match" do
+        request = double("request", path: "/test")
+        expect(route_constraint.matches?(request)).to be(true)
+      end
+      it "returns false if not match" do
+        request = double("request", path: "/does-not-exist")
+        expect(route_constraint.matches?(request)).to be(false)
+      end
+    end
+  end
 end

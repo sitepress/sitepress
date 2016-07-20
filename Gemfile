@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in mascot.gemspec
-gemspec
+gemspec path: "mascot"
+gemspec path: "mascot-rails"
+gemspec path: "mascot-server"
