@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'beams/version'
+require 'mascot/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "beams"
-  spec.version       = Beams::VERSION
+  spec.name          = "mascot"
+  spec.version       = Mascot::VERSION
   spec.authors       = ["Brad Gessler"]
   spec.email         = ["bradgessler@gmail.com"]
 
   spec.summary       = %q{An experiment in data driven static website generation.}
-  spec.homepage      = "https://github.com/bradgessler/beams"
+  spec.homepage      = "https://github.com/bradgessler/mascot"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.

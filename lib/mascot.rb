@@ -1,6 +1,6 @@
-require "beams/version"
+require "mascot/version"
 
-module Beams
+module Mascot
   require "yaml"
 
   # Parses metadata from the header of the page.

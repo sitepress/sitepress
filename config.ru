@@ -1,3 +1,3 @@
-require "beams"
+require "mascot"
 
-run Beams::Server.glob("spec/pages/*")
+run Mascot::Server.glob("spec/pages/*")

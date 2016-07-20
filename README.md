@@ -1,17 +1,15 @@
-# Beams
+# Mascot
 
-Beams is an experimental data-driven static site generator.
+Mascot is a file-backed website content manager that can be embedded in popular web frameworks like Rails, run stand-alone, or be compiled into static sites.
 
-![](https://upload.wikimedia.org/wikipedia/commons/6/6a/Building_a_Skyscraper._Placing_steel_beams,_Metropolitan_Tower,_New_York_City,_from_Robert_N._Dennis_collection_of_stereoscopic_views.jpg)
-
-[![Build Status](https://travis-ci.org/bradgessler/beams.svg?branch=master)](https://travis-ci.org/bradgessler/beams)
+[![Build Status](https://travis-ci.org/bradgessler/mascot.svg?branch=master)](https://travis-ci.org/bradgessler/mascot)
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'beams'
+gem 'mascot'
 ```
 
 And then execute:
@@ -20,7 +18,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install beams
+    $ gem install mascot
 
 ## Usage
 
@@ -43,10 +41,10 @@ meta:
     %h2 There
 ```
 
-Beams is capable of building data pipelines like this:
+Mascot is capable of building data pipelines like this:
 
 ```ruby
-page = Beams::Page.open("spec/pages/test.html.haml")
+page = Mascot::Page.open("spec/pages/test.html.haml")
 page.data_pipeline.add do |page|
   { "toc" => page.css("h1,h2,h3,h4,h5,h6").map(&:content) }
 end
@@ -63,13 +61,13 @@ so when you call `page.data` you get something like this:
 
 ### Sitemap
 
-Traditional static site generators assume a tight mapping between a directory structure and URL. Beams aims to be more decoupled from the file system and more data driven.
+Traditional static site generators assume a tight mapping between a directory structure and URL. Mascot aims to be more decoupled from the file system and more data driven.
 
 For example, a page can be manually added to the resources:
 
 ```ruby
-sitemap = Beams::Sitemap
-sitemap.resources << Beams::Resource.new(request_path: "/my/page", page: Beams::Page.new("./photos.html.erb"))
+sitemap = Mascot::Sitemap
+sitemap.resources << Mascot::Resource.new(request_path: "/my/page", page: Mascot::Page.new("./photos.html.erb"))
 ```
 
 ## Development
@@ -80,5 +78,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/bradgessler/beams.
+Bug reports and pull requests are welcome on GitHub at https://github.com/bradgessler/mascot.
 

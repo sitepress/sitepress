@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Beams do
+describe Mascot do
   it 'has a version number' do
-    expect(Beams::VERSION).not_to be nil
+    expect(Mascot::VERSION).not_to be nil
   end
 
-  context Beams::Frontmatter do
+  context Mascot::Frontmatter do
     context "con frontmatter" do
-      subject { Beams::Frontmatter.new File.read "spec/pages/test.html.haml" }
+      subject { Mascot::Frontmatter.new File.read "spec/pages/test.html.haml" }
       it "parses data" do
         expect(subject.data).to eql({
           "title" => "Name",
@@ -19,7 +19,7 @@ describe Beams do
       end
     end
     context "sin frontmatter" do # That's Spanish for pages that don't have Frontmatter.
-      subject { Beams::Frontmatter.new File.read "spec/pages/sin_frontmatter.html.haml" }
+      subject { Mascot::Frontmatter.new File.read "spec/pages/sin_frontmatter.html.haml" }
       it "parses data" do
         expect(subject.data).to eql({})
       end
@@ -29,14 +29,14 @@ describe Beams do
     end
   end
 
-  context Beams::Resource do
-    subject { Beams::Resource.new(file_path: "spec/pages/test.html.haml", request_path: "/test") }
+  context Mascot::Resource do
+    subject { Mascot::Resource.new(file_path: "spec/pages/test.html.haml", request_path: "/test") }
     describe "#locals" do
       it "has :current_page key" do
         expect(subject.locals).to have_key(:current_page)
       end
       it "has Binding as :current_page type" do
-        expect(subject.locals[:current_page]).to be_instance_of Beams::Resource::Binding
+        expect(subject.locals[:current_page]).to be_instance_of Mascot::Resource::Binding
       end
     end
     describe "#content_type" do
@@ -52,8 +52,8 @@ describe Beams do
     end
   end
 
-  context Beams::Sitemap do
-    subject { Beams::Sitemap.new(file_path: "spec/pages") }
+  context Mascot::Sitemap do
+    subject { Mascot::Sitemap.new(file_path: "spec/pages") }
     it "has 2 resources" do
       expect(subject.resources.first.request_path).to eql("/sin_frontmatter")
     end
@@ -63,12 +63,12 @@ describe Beams do
   end
 
   require 'rack/test'
-  context Beams::Server do
+  context Mascot::Server do
     include Rack::Test::Methods
-    let(:sitemap) { Beams::Sitemap.new(file_path: "spec/pages", request_path: "/fizzy") }
+    let(:sitemap) { Mascot::Sitemap.new(file_path: "spec/pages", request_path: "/fizzy") }
 
     def app
-      Beams::Server.new(sitemap)
+      Mascot::Server.new(sitemap)
     end
 
     let(:request_path) { "/fizzy/test" }

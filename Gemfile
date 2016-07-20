@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in beams.gemspec
+# Specify your gem's dependencies in mascot.gemspec
 gemspec
