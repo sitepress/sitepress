@@ -3,6 +3,7 @@ require "mascot/version"
 require "forwardable"
 require "pathname"
 require "yaml"
+require "mime/types"
 
 module Mascot
   # Parses metadata from the header of the page.
@@ -28,6 +29,11 @@ module Mascot
 
   # Represents a page in a web server context.
   class Resource
+    # If we can't resolve a mime type for the resource, we'll fall
+    # back to this binary octet-stream type so the client can download
+    # the resource and figure out what to do with it.
+    DEFAULT_MIME_TYPE = MIME::Types["application/octet-stream"].first
+
     # TODO: I don't like the Binding, locals, and frontmatter
     # being in the Resource. That should be moved to a page
     # object and be delegated to that. Or perhaps the page body?
@@ -35,30 +41,54 @@ module Mascot
     # We'll see how it evolves.
     Binding = Struct.new(:data)
 
-    CONTENT_TYPE = "text/html".freeze
-
-    attr_reader :request_path, :file_path, :content_type
+    attr_reader :request_path, :file_path
 
     extend Forwardable
     def_delegators :@frontmatter, :data, :body
 
-    def initialize(request_path: , file_path: , content_type: CONTENT_TYPE)
+    def initialize(request_path: , file_path: , mime_type: nil)
       @request_path = request_path
-      @content_type = content_type
       @file_path = Pathname.new file_path
       @frontmatter = Frontmatter.new File.read @file_path
+      @mime_types = Array(mime_type) if mime_type
     end
 
     # Locals that should be merged into or given to the rendering context.
     def locals
       { current_page: Binding.new(data) }
     end
+
+    # List of all file extensions.
+    def extensions
+      @file_path.basename.to_s.split(".").drop(1)
+    end
+
+    # Returns the format extension.
+    def format_extension
+      extensions.first
+    end
+
+    # Returns a list of the rendering extensions.
+    def template_extensions
+      extensions.drop(1)
+    end
+
+    def mime_type
+      (@mime_types ||= Array(resolve_mime_type)).push(DEFAULT_MIME_TYPE).first
+    end
+
+    private
+    # Returns the mime type of the file extension. If a type can't
+    # be resolved then we'll just grab the first type.
+    def resolve_mime_type
+      MIME::Types.type_for(format_extension) if format_extension
+    end
   end
 
   # A collection of pages from a directory.
   class Sitemap
     # Default file pattern to pick up in sitemap
-    DEFAULT_GLOB = "**/*.*".freeze
+    DEFAULT_GLOB = "**/**".freeze
     # Default root path for sitemap.
     DEFAULT_ROOT_DIR = Pathname.new(".").freeze
     # Default root request path

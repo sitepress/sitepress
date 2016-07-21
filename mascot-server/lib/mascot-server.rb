@@ -31,7 +31,7 @@ module Mascot
     def call(env)
       req = Rack::Request.new(env)
       if resource = @sitemap.find_by_request_path(normalize_path(req.path))
-        [ 200, {"Content-Type" => resource.content_type}, [TiltRenderer.new(resource).render] ]
+        [ 200, {"Content-Type" => resource.mime_type.to_s}, [TiltRenderer.new(resource).render] ]
       else
         [ 404, {"Content-Type" => "text/plain"}, ["Not Found"]]
       end
