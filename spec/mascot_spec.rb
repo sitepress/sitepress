@@ -79,9 +79,9 @@ describe Mascot do
     end
   end
 
-  context Mascot::RouteConstraint do
+  context Mascot::Rails::RouteConstraint do
     let(:sitemap) { Mascot::Sitemap.new(file_path: "spec/pages") }
-    let(:route_constraint) { Mascot::RouteConstraint.new(sitemap) }
+    let(:route_constraint) { Mascot::Rails::RouteConstraint.new(sitemap) }
 
     context "#matches?" do
       it "returns true if match" do

@@ -1,2 +1,1 @@
-require "mascot"
-require "mascot/route_constraint"
+require "mascot/rails"
