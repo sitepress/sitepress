@@ -68,7 +68,7 @@ describe Mascot do
     let(:sitemap) { Mascot::Sitemap.new(file_path: "spec/pages", request_path: "/fizzy") }
 
     def app
-      Mascot::Server.new(sitemap)
+      Mascot::Server.new(sitemap: sitemap)
     end
 
     let(:request_path) { "/fizzy/test" }

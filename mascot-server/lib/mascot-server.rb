@@ -23,7 +23,7 @@ module Mascot
   class Server
     ROOT_PATH = Pathname.new("/")
 
-    def initialize(sitemap, relative_to: "/")
+    def initialize(sitemap: , relative_to: "/")
       @relative_to = Pathname.new(relative_to)
       @sitemap = sitemap
     end

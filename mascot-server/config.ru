@@ -1,3 +1,4 @@
-require "mascot"
+require "mascot-server"
 
-run Mascot::Server.glob("spec/pages/*")
+sitemap = Mascot::Sitemap.new(file_path: "spec/pages")
+run Mascot::Server.new(sitemap: sitemap)
