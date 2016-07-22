@@ -1,8 +1,7 @@
 require "mascot"
+require "tilt"
 
 module Mascot
-  require "tilt"
-
   class TiltRenderer
     def initialize(resource)
       @resource = resource
@@ -10,7 +9,7 @@ module Mascot
 
     def render
       template = engine.new { |t| @resource.body }
-      template.render(Object.new, @resource.locals)
+      template.render(Object.new, {current_page: @resource})
     end
 
     private

@@ -34,13 +34,6 @@ module Mascot
     # the resource and figure out what to do with it.
     DEFAULT_MIME_TYPE = MIME::Types["application/octet-stream"].first
 
-    # TODO: I don't like the Binding, locals, and frontmatter
-    # being in the Resource. That should be moved to a page
-    # object and be delegated to that. Or perhaps the page body?
-    # I'm moving forward with this now though to keep the objects simpler.
-    # We'll see how it evolves.
-    Binding = Struct.new(:data)
-
     attr_reader :request_path, :file_path
 
     extend Forwardable
@@ -51,11 +44,6 @@ module Mascot
       @file_path = Pathname.new file_path
       @frontmatter = Frontmatter.new File.read @file_path
       @mime_types = Array(mime_type) if mime_type
-    end
-
-    # Locals that should be merged into or given to the rendering context.
-    def locals
-      { current_page: Binding.new(data) }
     end
 
     # List of all file extensions.
@@ -94,21 +82,31 @@ module Mascot
     # Default root request path
     DEFAULT_ROOT_REQUEST_PATH = Pathname.new("/").freeze
 
+    attr_reader :file_path, :request_path
+
     def initialize(file_path: DEFAULT_ROOT_DIR, request_path: DEFAULT_ROOT_REQUEST_PATH)
-      @file_path = Pathname.new(file_path)
-      @request_path = Pathname.new(request_path)
+      self.file_path = file_path
+      self.request_path = request_path
     end
 
     # Lazy stream of resources.
     def resources(glob = DEFAULT_GLOB)
-      Dir[@file_path.join(glob)].lazy.map do |path|
+      Dir[@file_path.join(glob)].select(&File.method(:file?)).lazy.map do |path|
         Resource.new request_path: request_path(path), file_path: path
       end
     end
 
     # Find the page with a path.
     def find_by_request_path(request_path)
-      resources.find { |r| r.request_path == request_path }
+      resources.find { |r| r.request_path == File.join("/", request_path) }
+    end
+
+    def file_path=(path)
+      @file_path = Pathname.new(path)
+    end
+
+    def request_path=(path)
+      @request_path = Pathname.new(path)
     end
 
     private

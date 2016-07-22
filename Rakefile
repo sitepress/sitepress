@@ -30,11 +30,19 @@ end
 
 Project.all.each do |project|
   namespace project.task_namespace do
+    # Install gem tasks.
     Bundler::GemHelper.install_tasks(dir: project.gem_dir, name: project.gem_name)
+
+    desc "Run specs for #{project.gem_name}"
+    task :spec do
+      puts "Verifying #{project.gem_name}"
+      ENV["BUNDLE_GEMFILE"] = File.join(Dir.pwd, "Gemfile")
+      Dir.chdir(project.gem_dir) { sh "bundle exec rspec" }
+    end
   end
 end
 
-%w[build install install:local release].each do |task|
+%w[build install install:local release spec].each do |task|
   desc "#{task.capitalize} all gems"
   task task do
     Project.all.each do |project|
@@ -44,6 +52,4 @@ end
 end
 
 # Rspec tasks.
-require "rspec/core/rake_task"
-RSpec::Core::RakeTask.new(:spec)
 task :default => :spec

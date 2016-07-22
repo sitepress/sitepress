@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'mascot'
 
 describe Mascot do
   it 'has a version number' do
@@ -31,14 +32,6 @@ describe Mascot do
 
   context Mascot::Resource do
     subject { Mascot::Resource.new(file_path: "spec/pages/test.html.haml", request_path: "/test") }
-    describe "#locals" do
-      it "has :current_page key" do
-        expect(subject.locals).to have_key(:current_page)
-      end
-      it "has Binding as :current_page type" do
-        expect(subject.locals[:current_page]).to be_instance_of Mascot::Resource::Binding
-      end
-    end
     it "has data" do
       expect(subject.data["title"]).to eql("Name")
     end
@@ -133,37 +126,13 @@ describe Mascot do
     it "globs resources" do
       expect(subject.resources("*sin_frontmatter*").size).to eql(1)
     end
-  end
-
-  require 'rack/test'
-  context Mascot::Server do
-    include Rack::Test::Methods
-    let(:sitemap) { Mascot::Sitemap.new(file_path: "spec/pages", request_path: "/fizzy") }
-
-    def app
-      Mascot::Server.new(sitemap: sitemap)
-    end
-
-    let(:request_path) { "/fizzy/test" }
-
-    it "gets page" do
-      get request_path
-      expect(last_response.status).to eql(200)
-    end
-  end
-
-  context Mascot::Rails::RouteConstraint do
-    let(:sitemap) { Mascot::Sitemap.new(file_path: "spec/pages") }
-    let(:route_constraint) { Mascot::Rails::RouteConstraint.new(sitemap) }
-
-    context "#matches?" do
-      it "returns true if match" do
-        request = double("request", path: "/test")
-        expect(route_constraint.matches?(request)).to be(true)
+    context "#glob"
+    describe "#find_by_request_path" do
+      it "finds with leading /" do
+        expect(subject.find_by_request_path("/test")).to_not be_nil
       end
-      it "returns false if not match" do
-        request = double("request", path: "/does-not-exist")
-        expect(route_constraint.matches?(request)).to be(false)
+      it "finds without leading /" do
+        expect(subject.find_by_request_path("test")).to_not be_nil
       end
     end
   end
