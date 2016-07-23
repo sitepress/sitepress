@@ -22,4 +22,5 @@ ratings:
   - "**.py"
   - "**.rb"
 exclude_paths:
-- spec/
+- "spec/"
+- "**/spec/**"
