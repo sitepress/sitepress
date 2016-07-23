@@ -6,6 +6,12 @@ Mascot is a file-backed website content manager that can be embedded in popular 
 
 ## Installation
 
+### Rails Installation
+
+Follow the instructions in the [Mascot Rails](./mascot-rails) gem.
+
+### Standalone Installation
+
 Add this line to your application's Gemfile:
 
 ```ruby
