@@ -6,7 +6,7 @@ module Mascot
   class ActionControllerContext
     attr_reader :controller, :sitemap
 
-    def initialize(controller, sitemap: Mascot.sitemap)
+    def initialize(controller: , sitemap: Mascot.sitemap)
       @controller = controller
       @sitemap = sitemap
     end
@@ -14,7 +14,7 @@ module Mascot
     # Renders a mascot page, given a path, and accepts parameters like layout
     # and locals if the user wants to provide additional context to the rendering
     # call.
-    def render(path = controller_params_path, layout: nil, locals: {})
+    def render(path, layout: nil, locals: {})
       resource = sitemap.find_by_request_path(path)
       raise Mascot::PageNotFoundError if resource.nil?
 
@@ -36,10 +36,6 @@ module Mascot
     end
 
     private
-    def controller_params_path
-      controller.params[:path]
-    end
-
     # Returns the current layout for the inline Mascot renderer.
     def controller_layout
       layout = controller.send(:_layout)
