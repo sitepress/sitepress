@@ -51,15 +51,11 @@ Mascot can parse out the frontmatter and body to render inside your framework of
 
 ```ruby
 class MascotController < ApplicationController
-  # TODO: Isolate this integration into a rails engine. Copy
-  # the way HighVoltage provides routes and scopes everything.
   def show
     sitemap = Rails.application.config.sitemap
 
     resource = sitemap.find_by_request_path(request.path)
     if resource
-      # TODO: Implement a whitelisted, chained handler for
-      # the template type with ActionView::Template::Handlers.extensions
       template_type = resource.file_path.extname.delete(".")
       @_locals = resource.locals.merge(sitemap: sitemap)
       layout = resource.data.fetch("layout", "high_voltage")

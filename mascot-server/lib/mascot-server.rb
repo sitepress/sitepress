@@ -8,7 +8,7 @@ module Mascot
     end
 
     def render
-      template = engine.new { |t| @resource.body }
+      template = engine.new { @resource.body }
       template.render(Object.new, {current_page: @resource})
     end
 
@@ -29,7 +29,9 @@ module Mascot
 
     def call(env)
       req = Rack::Request.new(env)
-      if resource = @sitemap.find_by_request_path(normalize_path(req.path))
+      resource = @sitemap.find_by_request_path normalize_path(req.path)
+
+      if  resource
         [ 200, {"Content-Type" => resource.mime_type.to_s}, [TiltRenderer.new(resource).render] ]
       else
         [ 404, {"Content-Type" => "text/plain"}, ["Not Found"]]

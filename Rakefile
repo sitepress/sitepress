@@ -20,7 +20,7 @@ class Project
   end
 
   def task_namespace(*namespaces)
-    namespaces.unshift(gem_name.gsub("-", "_")).join(":")
+    namespaces.unshift(gem_name.tr("-", "_")).join(":")
   end
 
   def self.all(glob = "**/*.gemspec")
