@@ -28,7 +28,7 @@ Or install it yourself as:
 
 ## Usage
 
-Given a haml file like:
+Given a the file `hi.html.haml`:
 
 ```haml
 ---
@@ -52,17 +52,7 @@ Mascot can parse out the frontmatter and body to render inside your framework of
 ```ruby
 class MascotController < ApplicationController
   def show
-    sitemap = Rails.application.config.sitemap
-
-    resource = sitemap.find_by_request_path(request.path)
-    if resource
-      template_type = resource.file_path.extname.delete(".")
-      @_locals = resource.locals.merge(sitemap: sitemap)
-      layout = resource.data.fetch("layout", "high_voltage")
-      render inline: resource.body, type: template_type, layout: layout, locals: @_locals
-    else
-      render status: :not_found, text: "#{request.path} Not Found"
-    end
+    mascot.render "/hi"
   end
 end
 ```
