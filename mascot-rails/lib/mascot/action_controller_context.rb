@@ -14,7 +14,7 @@ module Mascot
     # Renders a mascot page, given a path, and accepts parameters like layout
     # and locals if the user wants to provide additional context to the rendering
     # call.
-    def render(path = controller_params_path, layout: controller_layout, locals: {})
+    def render(path = controller_params_path, layout: nil, locals: {})
       resource = sitemap.find_by_request_path(path)
       raise Mascot::PageNotFoundError if resource.nil?
 
