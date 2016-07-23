@@ -134,6 +134,9 @@ describe Mascot do
       it "finds without leading /" do
         expect(subject.find_by_request_path("test")).to_not be_nil
       end
+      it "finds nil" do
+        expect(subject.find_by_request_path(nil)).to be_nil
+      end
     end
   end
 end

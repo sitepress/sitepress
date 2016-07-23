@@ -98,6 +98,7 @@ module Mascot
 
     # Find the page with a path.
     def find_by_request_path(request_path)
+      return if request_path.nil?
       resources.find { |r| r.request_path == File.join("/", request_path) }
     end
 
