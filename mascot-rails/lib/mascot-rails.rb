@@ -1,5 +1,6 @@
 require "mascot"
 require "mascot/route_constraint"
+require "mascot/action_controller_context"
 require "mascot/engine"
 
 module Mascot
