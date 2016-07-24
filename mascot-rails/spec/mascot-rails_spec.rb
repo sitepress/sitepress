@@ -33,10 +33,32 @@ describe Mascot::RouteConstraint do
   end
 end
 
+describe Mascot::ActionControllerContext do
+  subject { Mascot::ActionControllerContext.new(controller: controller, sitemap: sitemap) }
+  let(:sitemap) { Mascot.configuration.sitemap }
+  let(:resource) { sitemap.resources("**.erb*").first }
+  context "#render" do
+    let(:controller) { instance_double("Controller", render: true, _layout: "application") }
+    it "calls render" do
+      expect(controller).to receive(:render).with(inline: resource.body,
+        type: "erb",
+        layout: "flipper",
+        locals: {
+          sitemap: sitemap,
+          current_page: resource,
+          cat: "in-a-hat"
+        },
+        content_type: resource.mime_type.to_s)
+      subject.render(resource.request_path, locals: {cat: "in-a-hat"}, layout: "flipper")
+    end
+  end
+end
+
 describe Mascot::SitemapController, type: :controller do
   context "existing templated page" do
     render_views
     before { get :show, path: "/time" }
+    let(:resource) { Mascot.configuration.sitemap.find_by_request_path("/time") }
     it "is status 200" do
       expect(response.status).to eql(200)
     end
@@ -48,6 +70,15 @@ describe Mascot::SitemapController, type: :controller do
     end
     it "responds with content type" do
       expect(response.content_type).to eql("text/html")
+    end
+    context "@_mascot_locals assignment" do
+      subject { assigns(:_mascot_locals) }
+      it ":current_page" do
+        expect(subject[:current_page].file_path).to eql(resource.file_path)
+      end
+      it ":sitemap" do
+        expect(subject[:sitemap]).to eql(Mascot.configuration.sitemap)
+      end
     end
   end
 

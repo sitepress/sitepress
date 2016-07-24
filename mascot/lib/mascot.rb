@@ -68,6 +68,11 @@ module Mascot
       (@mime_types ||= Array(resolve_mime_type)).push(DEFAULT_MIME_TYPE).first
     end
 
+    # Treat resources with the same request path as equal.
+    def ==(resource)
+      request_path == resource.request_path
+    end
+
     private
     # Returns the mime type of the file extension. If a type can't
     # be resolved then we'll just grab the first type.

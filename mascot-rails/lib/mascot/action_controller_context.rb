@@ -18,21 +18,18 @@ module Mascot
       resource = sitemap.find_by_request_path(path)
       raise Mascot::PageNotFoundError, "No such page: #{path} in #{sitemap.file_path.expand_path}" if resource.nil?
 
-      type = resource.template_extensions.last
       # Users may set the layout from frontmatter.
       layout ||= resource.data.fetch("layout", controller_layout)
-      # Bring sitemap method into scope for instance_eval below.
-      sitemap = sitemap
+      type = resource.template_extensions.last
+      locals = locals.merge(sitemap: sitemap, current_page: resource)
 
-      controller.instance_eval do
-        # For the `wrap_layout` helper.
-        @_mascot_locals = locals.merge(sitemap: sitemap, current_page: resource)
-        render inline: resource.body,
-          type: type,
-          layout: layout,
-          locals: @_mascot_locals,
-          content_type: resource.mime_type.to_s
-      end
+      # @_mascot_locals variable is used by the wrap_template helper.
+      controller.instance_variable_set(:@_mascot_locals, locals)
+      controller.render inline: resource.body,
+        type: type,
+        layout: layout,
+        locals: locals,
+        content_type: resource.mime_type.to_s
     end
 
     private
