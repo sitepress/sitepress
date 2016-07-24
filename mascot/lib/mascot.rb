@@ -6,6 +6,9 @@ require "yaml"
 require "mime/types"
 
 module Mascot
+  # Raised if a user attempts to access a resource outside of the sitemap path.
+  InsecurePathAccessError = Class.new(SecurityError)
+
   # Parses metadata from the header of the page.
   class Frontmatter
     DELIMITER = "---".freeze
@@ -91,7 +94,7 @@ module Mascot
 
     # Lazy stream of resources.
     def resources(glob = DEFAULT_GLOB)
-      Dir[@file_path.join(glob)].select(&File.method(:file?)).lazy.map do |path|
+      Dir[validate_path(@file_path.join(glob))].select(&File.method(:file?)).lazy.map do |path|
         Resource.new request_path: request_path(path), file_path: path
       end
     end
@@ -111,6 +114,20 @@ module Mascot
     end
 
     private
+
+    # Make sure the user is accessing a file within the root path of the
+    # sitemap.
+    def validate_path(path)
+      root_path = @file_path.expand_path.to_s
+      resource_path = path.expand_path.to_s
+
+      if resource_path.start_with? root_path
+        path
+      else
+        raise Mascot::InsecurePathAccessError, "#{resource_path} outside sitemap #{root_path} directory"
+      end
+    end
+
     # Given a @file_path of `/hi`, this method changes `/hi/there/friend.html.erb`
     # to an absolute `/there/friend` format by removing the file extensions
     def request_path(path)
