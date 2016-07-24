@@ -6,7 +6,7 @@ module Mascot
   class ActionControllerContext
     attr_reader :controller, :sitemap
 
-    def initialize(controller: , sitemap: Mascot.sitemap)
+    def initialize(controller: , sitemap: )
       @controller = controller
       @sitemap = sitemap
     end
@@ -16,7 +16,7 @@ module Mascot
     # call.
     def render(path, layout: nil, locals: {})
       resource = sitemap.find_by_request_path(path)
-      raise Mascot::PageNotFoundError if resource.nil?
+      raise Mascot::PageNotFoundError, "No such page: #{path} in #{sitemap.file_path.expand_path}" if resource.nil?
 
       type = resource.template_extensions.last
       # Users may set the layout from frontmatter.

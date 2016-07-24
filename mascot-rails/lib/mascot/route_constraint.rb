@@ -1,7 +1,7 @@
 module Mascot
   # Route constraint for rails routes.rb file.
   class RouteConstraint
-    def initialize(sitemap)
+    def initialize(sitemap = Mascot.configuration.sitemap)
       @sitemap = sitemap
     end
 

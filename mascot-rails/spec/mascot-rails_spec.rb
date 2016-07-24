@@ -2,6 +2,21 @@ require "spec_helper"
 require "rails"
 require "mascot-rails"
 
+describe Mascot do
+  context "default configuration" do
+    subject{ Mascot.configuration }
+    it "has sitemap" do
+      expect(subject.sitemap.file_path).to eql(Rails.root.join("app/pages"))
+    end
+    it "has Rails.application as parent engine" do
+      expect(subject.parent_engine).to eql(Rails.application)
+    end
+    it "has routes enabled by default" do
+      expect(subject.routes).to be true
+    end
+  end
+end
+
 describe Mascot::RouteConstraint do
   let(:sitemap) { Mascot::Sitemap.new(file_path: "spec/pages") }
   let(:route_constraint) { Mascot::RouteConstraint.new(sitemap) }
@@ -58,6 +73,33 @@ describe Mascot::SitemapController, type: :controller do
       expect {
         get :show, path: "/non-existent"
       }.to raise_exception(ActionController::RoutingError)
+    end
+  end
+end
+
+describe "Mascot routes", type: :routing do
+  context "routes enabled" do
+    before do
+      Mascot.configuration.routes = true
+      Rails.application.reload_routes!
+    end
+    it "generates link" do
+      expect(page_path("hi")).to eql("/hi")
+    end
+    it "is routable" do
+      expect(get("/hi")).to route_to(controller: "mascot/sitemap", action: "show", path: "hi")
+    end
+  end
+  context "routes disabled" do
+    before do
+      Mascot.configuration.routes = false
+      Rails.application.reload_routes!
+    end
+    it "is not routable" do
+      expect(get("/hi")).to_not be_routable
+    end
+    it "does not generate link" do
+      expect{page_path("hi")}.to raise_exception(NoMethodError)
     end
   end
 end

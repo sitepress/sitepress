@@ -3,7 +3,7 @@ module Mascot
     rescue_from Mascot::PageNotFoundError, with: :page_not_found
 
     def show
-      mascot.render(path)
+      mascot.render params[:path]
     end
 
     protected
@@ -12,15 +12,11 @@ module Mascot
     end
 
     def sitemap
-      Mascot.sitemap
+      Mascot.configuration.sitemap
     end
 
-    def path
-      params[:path]
-    end
-
-    def page_not_found
-      raise ActionController::RoutingError, "No such page: #{path}"
+    def page_not_found(e)
+      raise ActionController::RoutingError, e.message
     end
   end
 end
