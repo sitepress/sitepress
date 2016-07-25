@@ -3,16 +3,13 @@ module Mascot
     rescue_from Mascot::PageNotFoundError, with: :page_not_found
 
     def show
-      mascot.render params[:path]
+      mascot.render mascot.resource
     end
 
     protected
     def mascot
-      Mascot::ActionControllerContext.new(controller: self, sitemap: sitemap)
-    end
-
-    def sitemap
-      Mascot.configuration.sitemap
+      @_mascot_context ||= Mascot::ActionControllerContext.new(controller: self,
+        sitemap: Mascot.configuration.sitemap)
     end
 
     def page_not_found(e)

@@ -16,7 +16,7 @@ describe Mascot::ActionControllerContext do
           cat: "in-a-hat"
         },
         content_type: resource.mime_type.to_s)
-      subject.render(resource.request_path, locals: {cat: "in-a-hat"}, layout: "flipper")
+      subject.render(resource, locals: {cat: "in-a-hat"}, layout: "flipper")
     end
   end
 end
