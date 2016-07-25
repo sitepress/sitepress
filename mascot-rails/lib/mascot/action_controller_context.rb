@@ -17,7 +17,7 @@ module Mascot
     def render(resource = resource, layout: nil, locals: {})
       # Users may set the layout from frontmatter.
       layout ||= resource.data.fetch("layout", controller_layout)
-      type = resource.template_extensions.last
+      type = resource.asset.template_extensions.last
       locals = locals.merge(sitemap: sitemap, current_page: resource)
 
       # @_mascot_locals variable is used by the wrap_template helper.

@@ -1,3 +1,5 @@
+require "yaml"
+
 module Mascot
   # Parses metadata from the header of the page.
   class Frontmatter

@@ -20,7 +20,7 @@ describe Mascot::SitemapController, type: :controller do
     context "@_mascot_locals assignment" do
       subject { assigns(:_mascot_locals) }
       it ":current_page" do
-        expect(subject[:current_page].file_path).to eql(resource.file_path)
+        expect(subject[:current_page].asset.path).to eql(resource.asset.path)
       end
       it ":sitemap" do
         expect(subject[:sitemap]).to eql(Mascot.configuration.sitemap)

@@ -7,4 +7,5 @@ module Mascot
   autoload :Frontmatter,  "mascot/frontmatter"
   autoload :Resource,     "mascot/resource"
   autoload :Sitemap,      "mascot/sitemap"
+  autoload :Asset,        "mascot/asset"
 end

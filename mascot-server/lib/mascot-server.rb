@@ -14,7 +14,7 @@ module Mascot
 
     private
     def engine
-      Tilt[@resource.file_path]
+      Tilt[@resource.asset.path]
     end
   end
 

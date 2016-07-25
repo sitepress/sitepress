@@ -17,10 +17,16 @@ module Mascot
       self.request_path = request_path
     end
 
-    # Lazy stream of resources.
+    # Lazy stream of files that are to be rendered.
+    def assets(glob = DEFAULT_GLOB)
+      Dir[validate_path(file_path.join(glob))].select(&File.method(:file?)).lazy.map do |path|
+        Asset.new(path: path)
+      end
+    end
+
     def resources(glob = DEFAULT_GLOB)
-      Dir[validate_path(@file_path.join(glob))].select(&File.method(:file?)).lazy.map do |path|
-        Resource.new request_path: request_path(path), file_path: path
+      assets(glob).lazy.map do |asset|
+        Resource.new request_path: format_request_path(asset.path), asset: asset
       end
     end
 
@@ -55,7 +61,7 @@ module Mascot
 
     # Given a @file_path of `/hi`, this method changes `/hi/there/friend.html.erb`
     # to an absolute `/there/friend` format by removing the file extensions
-    def request_path(path)
+    def format_request_path(path)
       # Relative path of resource to the file_path of this project.
       relative_path = Pathname.new(path).relative_path_from(@file_path)
       # Removes the .fooz.baz
