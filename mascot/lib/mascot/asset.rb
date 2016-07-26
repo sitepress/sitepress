@@ -5,7 +5,8 @@ require "pathname"
 module Mascot
   # Represents a file on a web server that may be parsed to extract
   # frontmatter or be renderable via a template. Multiple resources
-  # may point to the same asset.
+  # may point to the same asset. Properties of an asset should be mutable.
+  # The Resource object is immutable and may be modified by the Resources proxy.
   class Asset
     # If we can't resolve a mime type for the resource, we'll fall
     # back to this binary octet-stream type so the client can download

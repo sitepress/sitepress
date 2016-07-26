@@ -1,6 +1,26 @@
 require "pathname"
 
 module Mascot
+  # Manipulate resources after they're requested.
+  class Proxy
+    def initialize
+      @rules = []
+    end
+
+    def single_resource(&rule)
+      all_resources { |resources| resources.each(&rule) }
+    end
+
+    def all_resources(&rule)
+      @rules.push rule
+    end
+
+    def process(resources)
+      @rules.each{ |rule| rule.call resources }
+      resources
+    end
+  end
+
   # A collection of pages from a directory.
   class Sitemap
     # Default file pattern to pick up in sitemap
@@ -24,12 +44,13 @@ module Mascot
       end
     end
 
-    # TODO: We need to do more stuff with the resources after we have them. e.g. add resources, remove resources,
-    # and rename resources. How can we hook into that? We need a hook, that's the trick rick. add/remove should be hooks.
+    # Returns a list of resources.
     def resources
-      Resources.new(root_file_path: file_path).tap do |resources|
-        assets.each { |a| resources.add_asset a }
-      end
+      proxy.process unprocessed_resources
+    end
+
+    def proxy
+      @proxy ||= Proxy.new
     end
 
     # Find the page with a path.
@@ -48,6 +69,12 @@ module Mascot
     private
     def path_validator
       @path_validator ||= PathValidator.new(safe_path: file_path)
+    end
+
+    def unprocessed_resources
+      Resources.new(root_file_path: file_path).tap do |resources|
+        assets.each { |a| resources.add_asset a }
+      end
     end
   end
 end
