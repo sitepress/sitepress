@@ -3,7 +3,7 @@ module Mascot
     rescue_from Mascot::PageNotFoundError, with: :page_not_found
 
     def show
-      mascot.render mascot.resource
+      mascot.render mascot.find_resource
     end
 
     protected

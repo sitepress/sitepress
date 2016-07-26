@@ -14,7 +14,7 @@ module Mascot
     # Renders a mascot page, given a path, and accepts parameters like layout
     # and locals if the user wants to provide additional context to the rendering
     # call.
-    def render(resource = resource, layout: nil, locals: {})
+    def render(resource = find_resource, layout: nil, locals: {})
       # Users may set the layout from frontmatter.
       layout ||= resource.data.fetch("layout", controller_layout)
       type = resource.asset.template_extensions.last
@@ -41,7 +41,7 @@ module Mascot
     end
 
     # Default finder of the resource for the current controller context.###
-    def resource
+    def find_resource
       find_by_request_path controller.params[:path]
     end
 
