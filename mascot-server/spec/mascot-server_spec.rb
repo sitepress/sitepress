@@ -4,13 +4,13 @@ require 'mascot-server'
 
 describe Mascot::Server do
   include Rack::Test::Methods
-  let(:sitemap) { Mascot::Sitemap.new(file_path: "spec/pages", request_path: "/fizzy") }
+  let(:sitemap) { Mascot::Sitemap.new(file_path: "spec/pages") }
 
   def app
     Mascot::Server.new(sitemap: sitemap)
   end
 
-  let(:request_path) { "/fizzy/test" }
+  let(:request_path) { "/test" }
 
   it "gets page" do
     get request_path

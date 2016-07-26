@@ -8,10 +8,10 @@ context Mascot::Sitemap do
   end
   context "#glob" do
     it "globs resources" do
-      expect(subject.resources("*sin_frontmatter*").size).to eql(1)
+      expect(subject.resources.glob("*sin_frontmatter*").size).to eql(1)
     end
     it "raises exception for glob outside of sitemap file_path" do
-      expect{subject.resources("./..")}.to raise_exception(Mascot::InsecurePathAccessError)
+      expect{subject.resources.glob("./..")}.to raise_exception(Mascot::UnsafePathAccessError)
     end
   end
   describe "#find_by_request_path" do

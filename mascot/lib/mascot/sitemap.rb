@@ -19,21 +19,22 @@ module Mascot
 
     # Lazy stream of files that are to be rendered.
     def assets(glob = DEFAULT_GLOB)
-      Dir[validate_path(file_path.join(glob))].select(&File.method(:file?)).lazy.map do |path|
+      path_validator.glob(file_path.join(glob)).select(&File.method(:file?)).lazy.map do |path|
         Asset.new(path: path)
       end
     end
 
-    def resources(glob = DEFAULT_GLOB)
-      assets(glob).lazy.map do |asset|
-        Resource.new request_path: format_request_path(asset.path), asset: asset
+    # TODO: We need to do more stuff with the resources after we have them. e.g. add resources, remove resources,
+    # and rename resources. How can we hook into that? We need a hook, that's the trick rick. add/remove should be hooks.
+    def resources
+      Resources.new(root_file_path: file_path).tap do |resources|
+        assets.each { |a| resources.add_asset a }
       end
     end
 
     # Find the page with a path.
     def find_by_request_path(request_path)
-      return if request_path.nil?
-      resources.find { |r| r.request_path == File.join("/", request_path) }
+      resources.get(request_path)
     end
 
     def file_path=(path)
@@ -45,27 +46,8 @@ module Mascot
     end
 
     private
-
-    # Make sure the user is accessing a file within the root path of the
-    # sitemap.
-    def validate_path(path)
-      root_path = @file_path.expand_path.to_s
-      resource_path = path.expand_path.to_s
-
-      if resource_path.start_with? root_path
-        path
-      else
-        raise Mascot::InsecurePathAccessError, "#{resource_path} outside sitemap #{root_path} directory"
-      end
-    end
-
-    # Given a @file_path of `/hi`, this method changes `/hi/there/friend.html.erb`
-    # to an absolute `/there/friend` format by removing the file extensions
-    def format_request_path(path)
-      # Relative path of resource to the file_path of this project.
-      relative_path = Pathname.new(path).relative_path_from(@file_path)
-      # Removes the .fooz.baz
-      @request_path.join(relative_path).to_s.sub(/\..*/, '')
+    def path_validator
+      @path_validator ||= PathValidator.new(safe_path: file_path)
     end
   end
 end
