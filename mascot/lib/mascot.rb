@@ -4,11 +4,13 @@ module Mascot
   # Raised if a user attempts to access a resource outside of the sitemap path.
   UnsafePathAccessError = Class.new(SecurityError)
 
+  autoload :Asset,        "mascot/asset"
+  autoload :DiskIndex,    "mascot/disk_index"
+  autoload :Frontmatter,  "mascot/frontmatter"
+  autoload :MemoryIndex,  "mascot/memory_index"
   autoload :PathValidator,"mascot/path_validator"
   autoload :Proxy,        "mascot/proxy"
   autoload :Resources,    "mascot/resources"
-  autoload :Frontmatter,  "mascot/frontmatter"
   autoload :Resource,     "mascot/resource"
   autoload :Sitemap,      "mascot/sitemap"
-  autoload :Asset,        "mascot/asset"
 end
