@@ -5,6 +5,7 @@ module Mascot
   UnsafePathAccessError = Class.new(SecurityError)
 
   autoload :PathValidator,"mascot/path_validator"
+  autoload :Proxy,        "mascot/proxy"
   autoload :Resources,    "mascot/resources"
   autoload :Frontmatter,  "mascot/frontmatter"
   autoload :Resource,     "mascot/resource"
