@@ -8,15 +8,13 @@ fake_site do |site|
   sitemap = site.sitemap
   resources = sitemap.resources
 
-  desc "Builds all resources from scratch"
-  Benchmark.bmbm do |x|
+  benchmark "Builds all resources from scratch" do |x|
     x.report "Sitemap#resources" do
       sitemap.resources
     end
   end
 
-  desc "Builds an index from an existing collection of resources"
-  Benchmark.bmbm do |x|
+  benchmark "Builds an index from an existing collection of resources" do |x|
     # Disk index takes longer to build, but uses less memory in
     # a server environment that can warm-up/build the index.
     x.report "DiskIndex#index" do
@@ -29,8 +27,7 @@ fake_site do |site|
     end
   end
 
-  desc "Requests the first and last resource from resource collection"
-  Benchmark.bmbm do |x|
+  benchmark "Requests the first and last resource from resource collection" do |x|
     # Create the indicies
     disk_index = Mascot::DiskIndex.new
     disk_index.index resources

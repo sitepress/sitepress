@@ -3,7 +3,7 @@ module Mascot
     include Enumerable
 
     extend Forwardable
-    def_delegators :@resources, :size, :empty?, :any?, :clear
+    def_delegators :@resources, :size, :empty?, :any?, :clear, :last
 
     def initialize(root_file_path: )
       @resources = Array.new
