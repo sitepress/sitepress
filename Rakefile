@@ -52,4 +52,9 @@ end
 end
 
 # Rspec tasks.
+desc "Run benchmarks"
+task :benchmark do
+  files = Dir["./benchmarks/**_benchmark.rb"]
+  sh "ruby #{files.join(" ")}"
+end
 task :default => :spec
