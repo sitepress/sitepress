@@ -123,7 +123,7 @@ The Sitemap API is a powerful way to query content via resource globbing. For ex
 
 ```haml
 %ol
-  -sitemap.resources("docs/*.html*").each do |page|
+  -sitemap.resources.glob("docs/*.html*").each do |page|
     %li=link_to page.data["title"], page.request_path
 ```
 
