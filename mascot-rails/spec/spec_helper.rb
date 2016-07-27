@@ -20,9 +20,3 @@ RSpec.configure do |config|
     Rails.application.reload_routes!
   end
 end
-
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.configure do |config|
-  config.git_dir = `git rev-parse --show-toplevel`.strip
-end
-CodeClimate::TestReporter.start
