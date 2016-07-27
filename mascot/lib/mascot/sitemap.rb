@@ -6,13 +6,13 @@ module Mascot
     # Default file pattern to pick up in sitemap
     DEFAULT_GLOB = "**/**".freeze
     # Default root path for sitemap.
-    DEFAULT_ROOT_DIR = Pathname.new(".").freeze
+    DEFAULT_ROOT_PATH = Pathname.new(".").freeze
     # Default root request path
     DEFAULT_ROOT_REQUEST_PATH = Pathname.new("/").freeze
 
     attr_reader :root, :request_path
 
-    def initialize(root: DEFAULT_ROOT_DIR, request_path: DEFAULT_ROOT_REQUEST_PATH)
+    def initialize(root: DEFAULT_ROOT_PATH, request_path: DEFAULT_ROOT_REQUEST_PATH)
       self.root = root
       self.request_path = request_path
     end
@@ -30,6 +30,8 @@ module Mascot
     end
 
     # Configure rules and manipulations that may happen to the proxy.
+    # TODO: This is lame as a proxy. Let's call it a pipeline instead
+    # and make it more configurable.
     def proxy
       @proxy ||= Proxy.new
     end
