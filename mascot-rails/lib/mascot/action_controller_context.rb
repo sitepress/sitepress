@@ -34,7 +34,7 @@ module Mascot
     def find_by_request_path(path)
       resource = sitemap.find_by_request_path(path)
       if resource.nil?
-        raise Mascot::PageNotFoundError, "No such page: #{path} in #{sitemap.root_dir.expand_path}"
+        raise Mascot::PageNotFoundError, "No such page: #{path} in #{sitemap.root.expand_path}"
       else
         resource
       end

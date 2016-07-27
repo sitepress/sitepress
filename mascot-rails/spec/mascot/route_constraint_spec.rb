@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Mascot::RouteConstraint do
-  let(:sitemap) { Mascot::Sitemap.new(root_dir: "spec/pages") }
+  let(:sitemap) { Mascot::Sitemap.new(root: "spec/pages") }
   let(:route_constraint) { Mascot::RouteConstraint.new(sitemap) }
 
   context "#matches?" do

@@ -4,7 +4,7 @@ require 'mascot-server'
 
 describe Mascot::Server do
   include Rack::Test::Methods
-  let(:sitemap) { Mascot::Sitemap.new(root_dir: "spec/pages") }
+  let(:sitemap) { Mascot::Sitemap.new(root: "spec/pages") }
 
   def app
     Mascot::Server.new(sitemap: sitemap)

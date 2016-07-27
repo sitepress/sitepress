@@ -97,8 +97,8 @@ background_color: #0f0
 The Sitemap accepts a directory path
 
 ```irb
-> sitemap = Mascot::Sitemap.new(root_dir: "spec/pages")
-=> #<Mascot::Sitemap:0x007fcd24103710 @root_dir=#<Pathname:spec/pages>, @request_path=#<Pathname:/>>
+> sitemap = Mascot::Sitemap.new(root: "spec/pages")
+=> #<Mascot::Sitemap:0x007fcd24103710 @root=#<Pathname:spec/pages>, @request_path=#<Pathname:/>>
 ```
 
 Then you can request a resource by request path:
