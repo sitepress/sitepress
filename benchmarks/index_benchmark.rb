@@ -12,7 +12,7 @@ puts "Benchmarks for #{page_count} page website\n\n"
 
 begin
   fake_site.generate_pages(count: page_count)
-  sitemap = Mascot::Sitemap.new(file_path: fake_site.dir)
+  sitemap = Mascot::Sitemap.new(root_dir: fake_site.dir)
   resources = sitemap.resources
   last_page = "/page-1"
   first_page = "/page-#{page_count}"

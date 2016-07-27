@@ -8,7 +8,7 @@ module Mascot
   # Default configuration object for Mascot Rails integration.
   def self.configuration
     @configuration ||= Configuration.new(
-      Sitemap.new(file_path: Rails.root.join("app/pages")),
+      Sitemap.new(root_dir: Rails.root.join("app/pages")),
       true,
       Rails.application)
   end

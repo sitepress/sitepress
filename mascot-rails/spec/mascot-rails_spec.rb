@@ -6,7 +6,7 @@ describe Mascot do
   context "default configuration" do
     subject{ Mascot.configuration }
     it "has sitemap" do
-      expect(subject.sitemap.file_path).to eql(Rails.root.join("app/pages"))
+      expect(subject.sitemap.root_dir).to eql(Rails.root.join("app/pages"))
     end
     it "has Rails.application as parent engine" do
       expect(subject.parent_engine).to eql(Rails.application)
