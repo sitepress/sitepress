@@ -23,6 +23,14 @@ class Project
     namespaces.unshift(gem_name.tr("-", "_")).join(":")
   end
 
+  def chdir
+    Dir.chdir gem_dir do
+      puts "Switching to #{Dir.pwd}"
+      yield if block_given?
+    end
+    puts "Back to #{Dir.pwd}"
+  end
+
   def self.all(glob = "**/*.gemspec")
     @all ||= Dir[glob].map{ |path| new path }
   end
@@ -37,7 +45,7 @@ Project.all.each do |project|
     task :spec do
       puts "Verifying #{project.gem_name}"
       ENV["BUNDLE_GEMFILE"] = File.join(Dir.pwd, "Gemfile")
-      Dir.chdir(project.gem_dir) { sh "bundle exec rspec" }
+      project.chdir { sh "bundle exec rspec" }
     end
   end
 end
@@ -51,10 +59,13 @@ end
   end
 end
 
-# Rspec tasks.
 desc "Run benchmarks"
 task :benchmark do
   files = Dir["./benchmarks/**_benchmark.rb"]
   sh "ruby #{files.join(" ")}"
 end
+
+desc "Run CI tasks"
+task ci: %w[spec benchmark]
+
 task :default => :spec
