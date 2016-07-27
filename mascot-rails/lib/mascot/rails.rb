@@ -1,9 +1,14 @@
 require "mascot"
 
 module Mascot
+  # Contains singletons for rails and some configuration data.
+  Configuration = Struct.new(:sitemap, :routes, :parent_engine)
+
+  # Rescued by ActionController to display page not found error.
+  PageNotFoundError = Class.new(StandardError)
+
   autoload :RouteConstraint,  "mascot/route_constraint"
   autoload :ActionControllerContext, "mascot/action_controller_context"
-  Configuration = Struct.new(:sitemap, :routes, :parent_engine)
 
   # Default configuration object for Mascot Rails integration.
   def self.configuration

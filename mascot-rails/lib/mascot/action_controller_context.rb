@@ -1,7 +1,4 @@
 module Mascot
-  # Rescued by ActionController to display page not found error.
-  PageNotFoundError = Class.new(StandardError)
-
   # Renders a mascot page via the params path via ActionController.
   class ActionControllerContext
     attr_reader :controller, :sitemap
