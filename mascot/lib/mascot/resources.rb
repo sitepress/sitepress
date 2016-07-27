@@ -15,7 +15,7 @@ module Mascot
     end
 
     def glob(pattern = "**/**")
-      paths = path_validator.glob @root_file_path.join(pattern)
+      paths = safe_root.glob @root_file_path.join(pattern)
       select { |r| paths.include? r.asset.path.to_s}
     end
 
@@ -46,8 +46,8 @@ module Mascot
       File.join("/", relative_path).to_s.sub(/\..*/, '')
     end
 
-    def path_validator
-      @path_validator ||= PathValidator.new(safe_path: @root_file_path)
+    def safe_root
+      @safe_root ||= SafeRoot.new(path: @root_file_path)
     end
   end
 end

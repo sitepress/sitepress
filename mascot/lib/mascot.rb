@@ -8,7 +8,7 @@ module Mascot
   autoload :DiskIndex,    "mascot/disk_index"
   autoload :Frontmatter,  "mascot/frontmatter"
   autoload :MemoryIndex,  "mascot/memory_index"
-  autoload :PathValidator,"mascot/path_validator"
+  autoload :SafeRoot,     "mascot/safe_root"
   autoload :Proxy,        "mascot/proxy"
   autoload :Resources,    "mascot/resources"
   autoload :Resource,     "mascot/resource"

@@ -19,7 +19,7 @@ module Mascot
 
     # Lazy stream of files that will be rendered by resources.
     def assets(glob = DEFAULT_GLOB)
-      path_validator.glob(root.join(glob)).select(&File.method(:file?)).lazy.map do |path|
+      safe_root.glob(root.join(glob)).select(&File.method(:file?)).lazy.map do |path|
         Asset.new(path: path)
       end
     end
@@ -50,8 +50,8 @@ module Mascot
     end
 
     private
-    def path_validator
-      @path_validator ||= PathValidator.new(safe_path: root)
+    def safe_root
+      @safe_root ||= SafeRoot.new(path: root)
     end
 
     def unprocessed_resources
