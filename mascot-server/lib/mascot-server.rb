@@ -29,7 +29,7 @@ module Mascot
 
     def call(env)
       req = Rack::Request.new(env)
-      resource = @sitemap.find_by_request_path req.path
+      resource = @sitemap.get req.path
 
       if  resource
         [ 200, {"Content-Type" => resource.mime_type.to_s}, [TiltRenderer.new(resource).render] ]

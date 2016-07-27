@@ -104,7 +104,7 @@ The Sitemap accepts a directory path
 Then you can request a resource by request path:
 
 ```irb
-> resource = sitemap.find_by_request_path("/test")
+> resource = sitemap.get("/test")
 => #<Mascot::Resource:0x007fcd2488a128 @request_path="/test", @content_type="text/html", @file_path=#<Pathname:spec/pages/test.html.haml>, @frontmatter=#<Mascot::Frontmatter:0x007fcd24889e80 @data="title: Name\nmeta:\n  keywords: One", @body="\n!!!\n%html\n  %head\n    %title=current_page.data[\"title\"]\n  %body\n    %h1 Hi\n    %p This is just some content\n    %h2 There\n">>
 ```
 

@@ -6,7 +6,7 @@ module Mascot
     end
 
     def matches?(request)
-      !!@sitemap.find_by_request_path(request.path)
+      !!@sitemap.get(request.path)
     end
   end
 end

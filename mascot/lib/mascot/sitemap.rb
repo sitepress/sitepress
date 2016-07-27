@@ -35,7 +35,7 @@ module Mascot
     end
 
     # Find the page with a path.
-    def find_by_request_path(request_path)
+    def get(request_path)
       resources.get(request_path)
     end
 

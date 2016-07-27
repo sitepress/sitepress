@@ -4,7 +4,7 @@ describe Mascot::SitemapController, type: :controller do
   context "existing templated page" do
     render_views
     before { get :show, path: "/time" }
-    let(:resource) { Mascot.configuration.sitemap.find_by_request_path("/time") }
+    let(:resource) { Mascot.configuration.sitemap.get("/time") }
     it "is status 200" do
       expect(response.status).to eql(200)
     end

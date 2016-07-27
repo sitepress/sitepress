@@ -28,8 +28,8 @@ module Mascot
 
     # Mascot::PageNotFoundError is handled in the default Mascot::SitemapController
     # with an execption that Rails can use to display a 404 error.
-    def find_by_request_path(path)
-      resource = sitemap.find_by_request_path(path)
+    def get(path)
+      resource = sitemap.get(path)
       if resource.nil?
         raise Mascot::PageNotFoundError, "No such page: #{path} in #{sitemap.root.expand_path}"
       else
@@ -39,7 +39,7 @@ module Mascot
 
     # Default finder of the resource for the current controller context.###
     def find_resource
-      find_by_request_path controller.params[:path]
+      get controller.params[:path]
     end
 
     private

@@ -48,8 +48,8 @@ begin
     memory_index.index resources
 
     [first_page, last_page].each do |path|
-      x.report "Sitemap#find_by_request_path(#{path.inspect})" do
-        sitemap.find_by_request_path(path)
+      x.report "Sitemap#get(#{path.inspect})" do
+        sitemap.get(path)
       end
 
       x.report "DiskIndex#get(#{path.inspect})" do
