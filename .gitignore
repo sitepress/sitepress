@@ -1,6 +1,7 @@
 Gemfile.lock
 **/pkg/
 
+mascot-rails/**/*.sqlite3
 mascot-rails/.bundle/
 mascot-rails/.yardoc
 mascot-rails/_yardoc/
