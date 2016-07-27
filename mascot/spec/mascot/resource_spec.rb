@@ -6,6 +6,9 @@ context Mascot::Resource do
   let(:request_path) { "/spec/pages/test" }
   subject { Mascot::Resource.new(request_path: request_path, asset: asset) }
 
+  it "is == with same request_path" do
+    expect(subject == Mascot::Resource.new(request_path: request_path, asset: asset)).to be true
+  end
   it "has #mime_type" do
     expect(subject.mime_type.to_s).to eql("text/html")
   end

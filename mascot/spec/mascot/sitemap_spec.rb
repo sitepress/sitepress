@@ -61,6 +61,16 @@ context Mascot::Sitemap do
           expect(subject.resources.glob("*test*").size).to eql(2)
         end
       end
+      context "remove all assets" do
+        before do
+          subject.proxy.all_resources do |resources|
+            resources.clear
+          end
+        end
+        it "finds /more/test" do
+          expect(subject.resources).to be_empty
+        end
+      end
     end
   end
 end

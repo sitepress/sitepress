@@ -7,6 +7,9 @@ context Mascot::Asset do
   it "has data" do
     expect(subject.data["title"]).to eql("Name")
   end
+  it "is == with same path" do
+    expect(subject == Mascot::Asset.new(path: path)).to be true
+  end
   it "parses body" do
     expect(subject.body).to include("This is just some content")
   end

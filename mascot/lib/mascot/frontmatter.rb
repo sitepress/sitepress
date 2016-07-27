@@ -15,10 +15,5 @@ module Mascot
     def data
       @data ? YAML.load(@data) : {}
     end
-
-    private
-    def parse
-      @content
-    end
   end
 end

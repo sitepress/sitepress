@@ -3,7 +3,7 @@ module Mascot
     include Enumerable
 
     extend Forwardable
-    def_delegators :@resources, :size
+    def_delegators :@resources, :size, :empty?, :any?, :clear
 
     def initialize(root_file_path: )
       @resources = Array.new
@@ -29,7 +29,7 @@ module Mascot
     end
 
     def remove(resource)
-      @resources.remove resource
+      @resources.delete resource
     end
 
     def add_asset(asset, request_path: nil)
