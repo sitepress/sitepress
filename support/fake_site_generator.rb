@@ -7,18 +7,28 @@ module Mascot
 
     def initialize(dir: Dir.mktmpdir)
       @dir = Pathname.new(dir)
-      @pages = pages
+      @pages = Array.new
     end
 
-    def generate_pages(count: )
+    # Generates pages in the site's root URL
+    def generate_pages(count: , &block)
       FileUtils.mkdir_p @dir
-      next_page_name.take(count).each do |page_name|
-        File.write(@dir.join(page_name), '<h1>Some glorius content!</h1>')
+      next_page_name.take(count).map do |page_name|
+        path = @dir.join(page_name)
+        content = '<h1>Some glorius content!</h1>'
+        block.call(path, content) if block_given?
+        File.write(path, content)
+        @pages.push path
       end
     end
 
     def delete
       FileUtils.mkdir_p @dir
+      @pages.clear
+    end
+
+    def sitemap
+      Mascot::Sitemap.new(root: @dir)
     end
 
     private

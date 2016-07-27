@@ -1,21 +1,12 @@
 require_relative "benchmark_helper"
 
 page_count = 10_000
-fake_site = Mascot::FakeSiteGenerator.new
-samples = 30
+title "Benchmarks for #{page_count} page website"
 
-def desc(text)
-  puts "\n\n== #{text}\n\n"
-end
-
-puts "Benchmarks for #{page_count} page website\n\n"
-
-begin
-  fake_site.generate_pages(count: page_count)
-  sitemap = Mascot::Sitemap.new(root: fake_site.dir)
+fake_site do |site|
+  site.generate_pages(count: page_count)
+  sitemap = site.sitemap
   resources = sitemap.resources
-  last_page = "/page-1"
-  first_page = "/page-#{page_count}"
 
   desc "Builds all resources from scratch"
   Benchmark.bmbm do |x|
@@ -38,7 +29,7 @@ begin
     end
   end
 
-  desc "Requests the first and last resource from the collection"
+  desc "Requests the first and last resource from resource collection"
   Benchmark.bmbm do |x|
     # Create the indicies
     disk_index = Mascot::DiskIndex.new
@@ -47,7 +38,7 @@ begin
     memory_index = Mascot::MemoryIndex.new
     memory_index.index resources
 
-    [first_page, last_page].each do |path|
+    [resources.first.request_path, resources.last.request_path].each do |path|
       x.report "Sitemap#get(#{path.inspect})" do
         sitemap.get(path)
       end
@@ -61,7 +52,4 @@ begin
       end
     end
   end
-
-ensure
-  fake_site.delete
 end
