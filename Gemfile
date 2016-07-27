@@ -4,4 +4,7 @@ gemspec path: "mascot"
 gemspec path: "mascot-rails"
 gemspec path: "mascot-server"
 
-gem "codeclimate-test-reporter", ">= 0.6.0", group: :test, require: nil
+group :test do
+  gem "codeclimate-test-reporter", ">= 0.6.0", require: nil
+  gem "pry", require: nil
+end
