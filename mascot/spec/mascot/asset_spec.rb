@@ -22,7 +22,7 @@ context Mascot::Asset do
 
   context "content types" do
     context "format" do
-      let(:path) { "spec/pages/text.txt" }
+      let(:path) { "spec/pages.ar-awesome is here/text.txt" }
       describe "#extensions" do
         it "returns [txt]" do
           expect(subject.extensions).to eql(%w[txt])
