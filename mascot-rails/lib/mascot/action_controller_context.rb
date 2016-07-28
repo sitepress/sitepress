@@ -3,7 +3,7 @@ module Mascot
   class ActionControllerContext
     attr_reader :controller, :sitemap
 
-    def initialize(controller: , sitemap: , path_param_key: :path)
+    def initialize(controller: , sitemap: )
       @controller = controller
       @sitemap = sitemap
     end

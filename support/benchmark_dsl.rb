@@ -37,7 +37,7 @@ module Mascot
       require "mascot/rails"
 
       # Likely a Mascot setup going on in here.
-      yield if block_given?
+      block.call Rails.application if block_given?
 
       # Initialize the Rails application.
       Rails.application.initialize!
