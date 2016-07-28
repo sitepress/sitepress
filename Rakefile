@@ -31,8 +31,9 @@ end
 
 desc "Run benchmarks"
 task :benchmark do
-  files = Dir["./benchmarks/**_benchmark.rb"]
-  sh "ruby #{files.join(" ")}"
+  Dir["./benchmarks/**_benchmark.rb"].each do |benchmark|
+    sh "ruby #{benchmark}"
+  end
 end
 
 desc "Run CI tasks"
