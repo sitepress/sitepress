@@ -42,6 +42,12 @@ context Mascot::Resources do
         it "#get old path" do
           expect(subject.get("/test")).to eql(resource)
         end
+        it "#last" do
+          expect(subject.last).to eql(copy)
+        end
+        it "#first" do
+          expect(subject.first).to eql(resource)
+        end
       end
     end
     context "#remove resource" do

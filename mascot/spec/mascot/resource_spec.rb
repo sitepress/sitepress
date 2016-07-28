@@ -21,4 +21,10 @@ context Mascot::Resource do
   it "has #request_path" do
     expect(subject.request_path).to eql("/spec/pages/test")
   end
+  it "has #inspect" do
+    expect(subject.inspect).to include(request_path)
+  end
+  it "has cheezburger" do
+    true
+  end
 end
