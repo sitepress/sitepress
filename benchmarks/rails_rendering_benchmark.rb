@@ -18,10 +18,10 @@ fake_site do |site|
     File.write path, """---
 title: The page #{path}
 ---
-<h1>There are <%= pluralize sitemap.resources.size, 'page' %> in the site<h1>
+<h1>There are <%= pluralize resources.size, 'page' %> in the site<h1>
 <p>And they are...<p>
 <ul>
-<% sitemap.resources.each do |r| %>
+<% resources.each do |r| %>
   <li><%= link_to r.data['title'], r.request_path %></li>
 <% end %>
 </ul>"""
@@ -33,8 +33,10 @@ title: The page #{path}
       config.sitemap = site.sitemap
     end
   end
+
   sitemap = Mascot.configuration.sitemap
-  resources = sitemap.resources
+  resources = Mascot.configuration.resources
+  path = resources.first.request_path
 
   include Rack::Test::Methods
 
@@ -44,19 +46,28 @@ title: The page #{path}
     Rails.application
   end
 
-  benchmark "Rails #{Rails.env} environment GET requests" do |x|
-    path = resources.first.request_path
-    # For comparision to getting the path.
-    x.report "Mascot.configuration.sitemap.get(#{path.inspect})" do
-      Mascot.configuration.sitemap.resources.get path
-    end
+  # Test caching configurations.
+  [true,false].each do |caching|
+    Mascot.configuration.cache_resources = caching
 
-    x.report "GET /baseline/render" do
-      get! "/baseline/render"
-    end
+    benchmark "Rails #{Rails.env} environment GET requests (Mascot.configuration.cache_resources = #{caching})" do |x|
+      x.report "Mascot.configuration.resources.get(#{path.inspect})" do
+        Mascot.configuration.resources.get path
+      end
 
-    x.report "GET #{path}" do
-      get! path
+      rails_request = Struct.new(:path).new(path)
+      route_constraint = Mascot::RouteConstraint.new(resources: Mascot.configuration.resources)
+      x.report "Mascot::RouteConstraint#match?" do
+        route_constraint.matches? rails_request
+      end
+
+      x.report "GET /baseline/render" do
+        get! "/baseline/render"
+      end
+
+      x.report "GET #{path}" do
+        get! path
+      end
     end
   end
 end
