@@ -1,11 +1,11 @@
 module Mascot
   # Renders a mascot page via the params path via ActionController.
   class ActionControllerContext
-    attr_reader :controller, :sitemap
+    attr_reader :controller, :resources
 
-    def initialize(controller: , sitemap: )
+    def initialize(controller: , resources: )
       @controller = controller
-      @sitemap = sitemap
+      @resources = resources
     end
 
     # Renders a mascot page, given a path, and accepts parameters like layout
@@ -15,7 +15,7 @@ module Mascot
       # Users may set the layout from frontmatter.
       layout ||= resource.data.fetch("layout", controller_layout)
       type = resource.asset.template_extensions.last
-      locals = locals.merge(sitemap: sitemap, current_page: resource)
+      locals = locals.merge(current_page: resource, resources: resources)
 
       # @_mascot_locals variable is used by the wrap_template helper.
       controller.instance_variable_set(:@_mascot_locals, locals)
@@ -29,9 +29,10 @@ module Mascot
     # Mascot::PageNotFoundError is handled in the default Mascot::SitemapController
     # with an execption that Rails can use to display a 404 error.
     def get(path)
-      resource = sitemap.get(path)
+      resource = resources.get(path)
       if resource.nil?
-        raise Mascot::PageNotFoundError, "No such page: #{path} in #{sitemap.root.expand_path}"
+        # TODO: Display error in context of Reources class root.
+        raise Mascot::PageNotFoundError, "No such page: #{path}"
       else
         resource
       end

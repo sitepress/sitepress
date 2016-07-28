@@ -1,9 +1,10 @@
 require "spec_helper"
 
 describe Mascot::ActionControllerContext do
-  subject { Mascot::ActionControllerContext.new(controller: controller, sitemap: sitemap) }
+  subject { Mascot::ActionControllerContext.new(controller: controller, resources: resources) }
+  let(:resources) { Mascot.configuration.resources }
   let(:sitemap) { Mascot.configuration.sitemap }
-  let(:resource) { sitemap.resources.glob("**.erb*").first }
+  let(:resource) { resources.glob("**.erb*").first }
   context "#render" do
     let(:controller) { instance_double("Controller", render: true, _layout: "application") }
     it "calls render" do
@@ -11,9 +12,9 @@ describe Mascot::ActionControllerContext do
         type: "erb",
         layout: "flipper",
         locals: {
-          sitemap: sitemap,
           current_page: resource,
-          cat: "in-a-hat"
+          cat: "in-a-hat",
+          resources: resources
         },
         content_type: resource.mime_type.to_s)
       subject.render(resource, locals: {cat: "in-a-hat"}, layout: "flipper")

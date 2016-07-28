@@ -23,7 +23,7 @@ describe Mascot::SitemapController, type: :controller do
         expect(subject[:current_page].asset.path).to eql(resource.asset.path)
       end
       it ":sitemap" do
-        expect(subject[:sitemap]).to eql(Mascot.configuration.sitemap)
+        expect(subject[:resources]).to eql(Mascot.configuration.resources)
       end
     end
   end
