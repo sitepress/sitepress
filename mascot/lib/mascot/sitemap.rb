@@ -26,14 +26,9 @@ module Mascot
 
     # Returns a list of resources.
     def resources
-      proxy.process unprocessed_resources
-    end
-
-    # Configure rules and manipulations that may happen to the proxy.
-    # TODO: This is lame as a proxy. Let's call it a pipeline instead
-    # and make it more configurable.
-    def proxy
-      @proxy ||= Proxy.new
+      Resources.new(root_file_path: root).tap do |resources|
+        assets.each { |a| resources.add_asset a }
+      end
     end
 
     # Find the page with a path.
@@ -52,12 +47,6 @@ module Mascot
     private
     def safe_root
       @safe_root ||= SafeRoot.new(path: root)
-    end
-
-    def unprocessed_resources
-      Resources.new(root_file_path: root).tap do |resources|
-        assets.each { |a| resources.add_asset a }
-      end
     end
   end
 end
