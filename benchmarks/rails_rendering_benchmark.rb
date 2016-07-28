@@ -37,6 +37,7 @@ title: The page #{path}
   sitemap = Mascot.configuration.sitemap
   resources = Mascot.configuration.resources
   path = resources.first.request_path
+  last_path = resources.last.request_path
 
   include Rack::Test::Methods
 
@@ -50,7 +51,7 @@ title: The page #{path}
   [true,false].each do |caching|
     Mascot.configuration.cache_resources = caching
 
-    benchmark "Rails #{Rails.env} environment GET requests (Mascot.configuration.cache_resources = #{caching})" do |x|
+    benchmark "Rails #{Rails.env} environment (Mascot.configuration.cache_resources = #{caching})" do |x|
       x.report "Mascot.configuration.resources.get(#{path.inspect})" do
         Mascot.configuration.resources.get path
       end
@@ -61,12 +62,14 @@ title: The page #{path}
         route_constraint.matches? rails_request
       end
 
-      x.report "GET /baseline/render" do
+      x.report "GET /baseline/render (simple text render)" do
         get! "/baseline/render"
       end
 
-      x.report "GET #{path}" do
-        get! path
+      [path, last_path].each do |path|
+        x.report "GET #{path} (complex erb render)" do
+          get! path
+        end
       end
     end
   end
