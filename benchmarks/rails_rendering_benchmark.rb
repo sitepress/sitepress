@@ -13,7 +13,20 @@ def get!(path)
 end
 
 fake_site do |site|
-  site.generate_pages(count: page_count)
+  site.generate_pages(count: page_count) do |path|
+    path = [path,".erb"].join
+    File.write path, """---
+title: The page #{path}
+---
+<h1>There are <%= pluralize sitemap.resources.size, 'page' %> in the site<h1>
+<p>And they are...<p>
+<ul>
+<% sitemap.resources.each do |r| %>
+  <li><%= link_to r.data['title'], r.request_path %></li>
+<% end %>
+</ul>"""
+  end
+
   initialize_rails do
     # Setup rails to use the fake site.
     Mascot.configure do |config|
