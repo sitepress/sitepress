@@ -49,6 +49,10 @@ module Mascot
       @mime_type ||= Array(inferred_mime_type).first || DEFAULT_MIME_TYPE
     end
 
+    def exists?
+      File.exists? path
+    end
+
     private
     def frontmatter
       Frontmatter.new File.read @path

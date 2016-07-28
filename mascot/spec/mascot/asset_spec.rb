@@ -20,6 +20,18 @@ context Mascot::Asset do
     expect(subject.format_extension).to eql("html")
   end
 
+  context "#exists?" do
+    it "is true" do
+      expect(subject.exists?).to be true
+    end
+    context "doesn't exist" do
+      let(:path) { "/hi/friend" }
+      it "is false" do
+        expect(subject.exists?).to be false
+      end
+    end
+  end
+
   context "content types" do
     context "format" do
       let(:path) { "spec/pages.ar-awesome is here/text.txt" }
