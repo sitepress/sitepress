@@ -15,9 +15,7 @@ module Mascot
       FileUtils.mkdir_p @dir
       next_page_name.take(count).map do |page_name|
         path = @dir.join(page_name)
-        content = '<h1>Some glorius content!</h1>'
-        block.call(path, content) if block_given?
-        File.write(path, content)
+        block ? block.call(path) : File.write(path, '<h1>Some glorius content!</h1>')
         @pages.push path
       end
     end
