@@ -52,10 +52,6 @@ module Mascot
       resource
     end
 
-    def exists?(resource)
-      get validate_request_path resource
-    end
-
     def add_asset(asset, request_path: nil)
       add Resource.new asset: asset, request_path: asset_path_to_request_path(request_path || asset.path)
     end
