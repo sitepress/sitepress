@@ -5,9 +5,7 @@ module Mascot
   UnsafePathAccessError = Class.new(SecurityError)
 
   autoload :Asset,        "mascot/asset"
-  autoload :DiskIndex,    "mascot/disk_index"
   autoload :Frontmatter,  "mascot/frontmatter"
-  autoload :MemoryIndex,  "mascot/memory_index"
   autoload :SafeRoot,     "mascot/safe_root"
   autoload :Proxy,        "mascot/proxy"
   autoload :Resources,    "mascot/resources"
