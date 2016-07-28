@@ -14,6 +14,12 @@ context Mascot::Resources do
     it "gets resource" do
       expect(subject.get("/test")).to eql(resource)
     end
+    it "raises Mascot::InvalidRequestPathError if nil" do
+      expect{subject.add(nil)}.to raise_exception(Mascot::InvalidRequestPathError)
+    end
+    it "raises Mascot::ExistingRequestPathError" do
+      expect{subject.add(resource.clone)}.to raise_exception(Mascot::ExistingRequestPathError)
+    end
     context "change Resource#request_path" do
       before { resource.request_path = "/diff" }
       it "#get new path" do
@@ -57,6 +63,9 @@ context Mascot::Resources do
       end
       it "doest not get resource" do
         expect(subject.get("/test")).to be_nil
+      end
+      it "raises InvalidRequestPathError if nil" do
+        expect{subject.remove(nil)}.to raise_exception(Mascot::InvalidRequestPathError)
       end
     end
   end

@@ -29,22 +29,31 @@ module Mascot
     end
 
     def add(resource)
-      return if resource.nil?
+      validate_request_path resource
+      validate_uniqueness resource
+
       resource.add_observer self
       @routes[key(resource)] = resource
     end
 
     def update(resource, old_request_path)
-      return if resource.nil?
+      validate_request_path old_request_path
+      validate_request_path resource
+      validate_uniqueness resource
+
       @routes.delete key(old_request_path)
       @routes[key(resource)] = resource
     end
 
     def remove(resource)
-      return if resource.nil?
+      validate_request_path resource
       resource.delete_observer self
       @routes.delete key(resource)
       resource
+    end
+
+    def exists?(resource)
+      get validate_request_path resource
     end
 
     def add_asset(asset, request_path: nil)
@@ -53,10 +62,29 @@ module Mascot
 
     private
     def key(path)
-      raise "invalid key" if path.nil?
-      path = path.request_path if path.respond_to? :request_path
-      File.join("/", path)
+      File.join "/", validate_request_path(coerce_request_path(path))
     end
+
+    def coerce_request_path(resource)
+      resource.respond_to?(:request_path) ? resource.request_path : resource
+    end
+
+    def validate_request_path(path)
+      path = coerce_request_path(path)
+      raise InvalidRequestPathError, "path can't be nil" if path.nil?
+      path
+    end
+
+    # Raise an exception if the user tries to add a Resource with an existing request path.
+    def validate_uniqueness(resource)
+      path = coerce_request_path(resource)
+      if existing_resource = get(path)
+        raise ExistingRequestPathError, "Resource #{existing_resource} already exists at #{path}"
+      else
+        resource
+      end
+    end
+
     # Given a @file_path of `/hi`, this method changes `/hi/there/friend.html.erb`
     # to an absolute `/there/friend` format by removing the file extensions
     def asset_path_to_request_path(path)
