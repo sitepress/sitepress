@@ -10,6 +10,10 @@ module Mascot
   autoload :ActionControllerContext,  "mascot/action_controller_context"
   autoload :RailsConfiguration,       "mascot/rails_configuration"
   autoload :RouteConstraint,          "mascot/route_constraint"
+  module Extensions
+    autoload :RailsRequestPaths,      "mascot/extensions/rails_request_paths"
+    autoload :PartialsRemover,        "mascot/extensions/partials_remover"
+  end
 
   # Default configuration object for Mascot Rails integration.
   def self.configuration
