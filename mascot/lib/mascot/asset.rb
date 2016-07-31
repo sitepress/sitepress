@@ -30,6 +30,10 @@ module Mascot
       path.basename.to_s.split(".").drop(1)
     end
 
+    def basename
+      path.basename.to_s.split(".").first
+    end
+
     # Returns the format extension.
     def format_extension
       extensions.first
@@ -51,6 +55,16 @@ module Mascot
 
     def exists?
       File.exists? path
+    end
+
+    # Spits out a reasonable default request path. This may be changed
+    # via Resource#request_path.
+    def to_request_path
+      if ext = format_extension
+        path.dirname.join(basename).sub_ext(".#{ext}")
+      else
+        path
+      end
     end
 
     private
