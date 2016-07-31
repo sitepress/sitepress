@@ -16,6 +16,10 @@ module Mascot
     @configuration ||= RailsConfiguration.new
   end
 
+  def self.reset_configuration
+    @configuration = nil
+  end
+
   def self.configure(&block)
     block.call configuration
   end

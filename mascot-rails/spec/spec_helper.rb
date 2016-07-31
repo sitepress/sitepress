@@ -16,7 +16,7 @@ RSpec.configure do |config|
   config.infer_base_class_for_anonymous_controllers = false
   config.order = "random"
   config.after(:each) do
-    Mascot.instance_variable_set(:@configuration, nil)
+    Mascot.reset_configuration
     Rails.application.reload_routes!
   end
 end
