@@ -46,7 +46,7 @@ module Mascot
 
     private
     def safe_root
-      @safe_root ||= SafeRoot.new(path: root)
+      SafeRoot.new(path: root)
     end
   end
 end
