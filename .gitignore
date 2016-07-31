@@ -1,5 +1,6 @@
 Gemfile.lock
 **/pkg/
+.sass-cache
 
 mascot-rails/**/*.sqlite3
 mascot-rails/.bundle/
