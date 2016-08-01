@@ -32,7 +32,7 @@ module Mascot
       # We freeze the value to ensure users can't modify
       # the request_path string in place (e.g. Resource#request_path.capitalize!)
       # and throw the resource out of sync with the Resources collection.
-      @request_path = request_path.dup.freeze
+      @request_path = request_path.to_s.freeze
       changed
       notify_observers self, old_request_path
     end
