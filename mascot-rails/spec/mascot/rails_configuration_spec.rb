@@ -1,11 +1,18 @@
 require "spec_helper"
 
 describe Mascot::RailsConfiguration do
-  subject { Mascot.configuration }
-  let(:sitemap) { Mascot.configuration.sitemap }
-  context "resouces" do
-    it "excludes partials" do
-      expect(subject.resources.size).to eql(sitemap.resources.size - 1)
+  subject { Mascot::RailsConfiguration.new }
+  context "#partials" do
+    it "excludes by default" do
+      expect(subject.partials).to be false
+    end
+    it "excludes partials if false" do
+      subject.partials = false
+      expect(subject.resources.size).to eql(2)
+    end
+    it "includes partials if true" do
+      subject.partials = true
+      expect(subject.resources.size).to eql(3)
     end
   end
 end
