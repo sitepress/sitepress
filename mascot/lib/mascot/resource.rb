@@ -14,8 +14,8 @@ module Mascot
     attr_accessor :request_path, :asset
     attr_writer :body, :data
 
-    def initialize(request_path: , asset: )
-      self.request_path = request_path
+    def initialize(asset: , request_path: nil)
+      self.request_path = request_path || asset.to_request_path
       @asset = asset
     end
 

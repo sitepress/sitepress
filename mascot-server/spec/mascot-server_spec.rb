@@ -10,7 +10,7 @@ describe Mascot::Server do
     Mascot::Server.new(sitemap: sitemap)
   end
 
-  let(:request_path) { "/test" }
+  let(:request_path) { "/test.html" }
 
   it "gets page" do
     get request_path

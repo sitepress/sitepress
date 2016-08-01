@@ -61,9 +61,9 @@ module Mascot
     # via Resource#request_path.
     def to_request_path
       if ext = format_extension
-        path.dirname.join(basename).sub_ext(".#{ext}")
+        path.dirname.join(basename).sub_ext(".#{ext}").to_s
       else
-        path
+        path.to_s
       end
     end
 

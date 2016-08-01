@@ -1,3 +1,6 @@
+require "forwardable"
+require "pathname"
+
 module Mascot
   class Resources
     include Enumerable
@@ -16,6 +19,10 @@ module Mascot
 
     def last
       @routes.values.last
+    end
+
+    def request_paths
+      @routes.keys
     end
 
     def glob(pattern = "**/**")
@@ -53,7 +60,7 @@ module Mascot
     end
 
     def add_asset(asset, request_path: nil)
-      add Resource.new asset: asset, request_path: asset_path_to_request_path(request_path || asset.path)
+      add Resource.new asset: asset, request_path: asset_path_to_request_path(request_path || asset.to_request_path)
     end
 
     private
@@ -86,8 +93,6 @@ module Mascot
     def asset_path_to_request_path(path)
       # Relative path of resource to the file_path of this project.
       relative_path = Pathname.new(path).relative_path_from(@root_file_path)
-      # Removes the .fooz.baz
-      File.join("/", relative_path).to_s.sub(/\..*/, '')
     end
 
     def safe_root
