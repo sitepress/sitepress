@@ -1,15 +1,16 @@
 require "mascot"
 require "tilt"
+require "pathname"
 
 module Mascot
-  class TiltRenderer
+  class TiltResourceRenderer
     def initialize(resource)
       @resource = resource
     end
 
-    def render
+    def render(locals: {}, layout: "layout")
       template = engine.new { @resource.body }
-      template.render(Object.new, {current_page: @resource})
+      template.render(Object.new, **locals.merge(resource: @resource))
     end
 
     private
@@ -30,9 +31,19 @@ module Mascot
     def call(env)
       req = Rack::Request.new(env)
       resource = @sitemap.get req.path
+      # TODO: Memoize this per request and between requests eventually.
+      resources = @sitemap.resources
 
-      if  resource
-        [ 200, {"Content-Type" => resource.mime_type.to_s}, [TiltRenderer.new(resource).render] ]
+      if resource
+        body = if resource.asset.template_extensions.empty?
+          # TODO: This is not efficient for huge files. Research how Rack::File
+          # serves this up (or just take that, maybe mount it as a cascading middleware.)
+          resource.body
+        else
+          TiltResourceRenderer.new(resource).render(locals: {resources: resources})
+        end
+
+        [ 200, {"Content-Type" => resource.mime_type.to_s}, Array(body) ]
       else
         [ 404, {"Content-Type" => "text/plain"}, ["Not Found"]]
       end
