@@ -11,7 +11,7 @@ module Mascot
 
       def process_resources(resources)
         resources.each do |r|
-          if File.basename(r.request_path).start_with? @file_name
+          if r.asset.path.basename.to_s.start_with? @file_name
             # TODO: Conslidate this into SafeRoot.
             r.request_path = Pathname.new("/").join(r.request_path).dirname.cleanpath.to_s
           end
