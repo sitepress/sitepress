@@ -14,7 +14,6 @@ Mascot::Project.all.each do |project|
     desc "Run specs for #{project.gem_name}"
     task :spec do
       puts "Verifying #{project.gem_name}"
-      ENV["BUNDLE_GEMFILE"] = File.join(Dir.pwd, "Gemfile")
       project.chdir { sh "bundle exec rspec" }
     end
   end

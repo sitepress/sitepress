@@ -17,10 +17,13 @@ module Mascot
     end
 
     def chdir
+      gemfile_location = ENV["BUNDLE_GEMFILE"]
+      ENV["BUNDLE_GEMFILE"] = File.join(Dir.pwd, "Gemfile")
       Dir.chdir gem_dir do
         puts "Switching to #{Dir.pwd}"
         yield if block_given?
       end
+      ENV["BUNDLE_GEMFILE"] = gemfile_location
       puts "Back to #{Dir.pwd}"
     end
 
