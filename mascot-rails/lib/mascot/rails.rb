@@ -13,6 +13,7 @@ module Mascot
   module Extensions
     autoload :RailsRequestPaths,      "mascot/extensions/rails_request_paths"
     autoload :PartialsRemover,        "mascot/extensions/partials_remover"
+    autoload :Layouts,                "mascot/extensions/layouts"
   end
 
   # Default configuration object for Mascot Rails integration.
