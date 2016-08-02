@@ -65,6 +65,7 @@ module Mascot
 
     private
     def key(path)
+      # TODO: Conslidate this into SafeRoot.
       File.join "/", validate_request_path(coerce_request_path(path))
     end
 

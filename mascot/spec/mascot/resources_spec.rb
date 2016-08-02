@@ -32,10 +32,10 @@ context Mascot::Resources do
     context "clone Resource" do
       let(:copy) { resource.clone }
       before do
-        copy.request_path = "/clone"
+        copy.request_path = "/"
       end
       it "does not #get new path" do
-        expect(subject.get("/clone")).to be_nil
+        expect(subject.get("/")).to be_nil
       end
       it "#get old path" do
         expect(subject.get("/test")).to eql(resource)
@@ -43,7 +43,7 @@ context Mascot::Resources do
       context "add to Resouces" do
         before { subject.add copy }
         it "#get new path" do
-          expect(subject.get("/clone")).to eql(copy)
+          expect(subject.get("/")).to eql(copy)
         end
         it "#get old path" do
           expect(subject.get("/test")).to eql(resource)
