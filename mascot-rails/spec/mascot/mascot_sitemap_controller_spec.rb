@@ -3,7 +3,7 @@ require "spec_helper"
 describe Mascot::SitemapController, type: :controller do
   context "existing templated page" do
     render_views
-    before { get :show, path: "/time" }
+    before { get :show, resource_path: "/time" }
     let(:resource) { Mascot.configuration.sitemap.get("/time") }
     it "is status 200" do
       expect(response.status).to eql(200)
@@ -30,7 +30,7 @@ describe Mascot::SitemapController, type: :controller do
 
   context "existing static page" do
     render_views
-    before { get :show, path: "/hi" }
+    before { get :show, resource_path: "/hi" }
     it "is status 200" do
       expect(response.status).to eql(200)
     end
@@ -48,7 +48,7 @@ describe Mascot::SitemapController, type: :controller do
   context "non-existent page" do
     it "is status 404" do
       expect {
-        get :show, path: "/non-existent"
+        get :show, resource_path: "/non-existent"
       }.to raise_exception(ActionController::RoutingError)
     end
   end

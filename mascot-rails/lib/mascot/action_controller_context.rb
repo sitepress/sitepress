@@ -40,7 +40,7 @@ module Mascot
 
     # Default finder of the resource for the current controller context.###
     def find_resource
-      get controller.params[:path]
+      get controller.params[:resource_path]
     end
 
     private

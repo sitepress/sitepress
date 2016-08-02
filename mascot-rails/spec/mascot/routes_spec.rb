@@ -10,7 +10,7 @@ describe "Mascot routes", type: :routing do
       expect(page_path("hi")).to eql("/hi")
     end
     it "is routable" do
-      expect(get("/hi")).to route_to(controller: "mascot/sitemap", action: "show", path: "hi")
+      expect(get("/hi")).to route_to(controller: "mascot/sitemap", action: "show", resource_path: "hi")
     end
   end
   context "routes disabled" do
