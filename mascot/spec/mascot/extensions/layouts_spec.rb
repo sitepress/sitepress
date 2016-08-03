@@ -1,4 +1,5 @@
 require "spec_helper"
+require "mascot/extensions/layouts"
 
 describe Mascot::Extensions::Layouts do
   subject { Mascot::Extensions::Layouts.new }
