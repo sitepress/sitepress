@@ -17,7 +17,7 @@ module Mascot
         resources.each do |resource|
           @rules.each do |rule|
             if rule.processor.call(resource)
-              resource.data["layout"] = rule.layout
+              resource.data["layout"] ||= rule.layout
             end
           end
         end
