@@ -1,4 +1,5 @@
 require "pathname"
+require "mascot/extensions/proc_manipulator"
 
 module Mascot
   # A collection of pages from a directory.
@@ -30,6 +31,12 @@ module Mascot
         assets.each { |a| resources.add_asset a }
         pipeline.process resources
       end
+    end
+
+    # Quick and dirty way to manipulate resources in the sitemap without
+    # creating classes that implement the #process_resources method
+    def manipulate(&block)
+      pipeline << Extensions::ProcManipulator.new(block)
     end
 
     # Find the page with a path.

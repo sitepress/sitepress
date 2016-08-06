@@ -14,6 +14,12 @@ context Mascot::Sitemap do
       expect{subject.resources.glob("./..")}.to raise_exception(Mascot::UnsafePathAccessError)
     end
   end
+  describe "#manipulate" do
+    it "adds ProcManipulator to pipeline" do
+      subject.manipulate { |resource, resources| }
+      expect(subject.pipeline.last).to be_instance_of(Mascot::Extensions::ProcManipulator)
+    end
+  end
   describe "#get" do
     it "finds with leading /" do
       expect(subject.get("/test.html")).to_not be_nil
