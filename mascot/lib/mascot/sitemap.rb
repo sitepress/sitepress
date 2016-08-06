@@ -8,14 +8,11 @@ module Mascot
     DEFAULT_GLOB = "**/**".freeze
     # Default root path for sitemap.
     DEFAULT_ROOT_PATH = Pathname.new(".").freeze
-    # Default root request path
-    DEFAULT_ROOT_REQUEST_PATH = Pathname.new("/").freeze
 
-    attr_reader :root, :request_path, :pipeline
+    attr_reader :root, :resources_pipeline
 
-    def initialize(root: DEFAULT_ROOT_PATH, request_path: DEFAULT_ROOT_REQUEST_PATH)
+    def initialize(root: DEFAULT_ROOT_PATH)
       self.root = root
-      self.request_path = request_path
     end
 
     # Lazy stream of files that will be rendered by resources.
@@ -29,14 +26,14 @@ module Mascot
     def resources
       Resources.new(root_file_path: root).tap do |resources|
         assets.each { |a| resources.add_asset a }
-        pipeline.process resources
+        resources_pipeline.process resources
       end
     end
 
     # Quick and dirty way to manipulate resources in the sitemap without
     # creating classes that implement the #process_resources method
     def manipulate(&block)
-      pipeline << Extensions::ProcManipulator.new(block)
+      resources_pipeline << Extensions::ProcManipulator.new(block)
     end
 
     # Find the page with a path.
@@ -48,12 +45,8 @@ module Mascot
       @root = Pathname.new(path)
     end
 
-    def request_path=(path)
-      @request_path = Pathname.new(path)
-    end
-
-    def pipeline
-      @pipeline ||= Pipeline.new
+    def resources_pipeline
+      @resources_pipeline ||= ResourcesPipeline.new
     end
 
     private

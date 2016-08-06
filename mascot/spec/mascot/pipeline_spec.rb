@@ -1,8 +1,8 @@
 require "spec_helper"
 
-describe Mascot::Pipeline do
+describe Mascot::ResourcesPipeline do
   let(:sitemap) { Mascot::Sitemap.new(root: "spec/pages") }
-  subject{ sitemap.pipeline }
+  subject{ sitemap.resources_pipeline }
 
   describe "#process" do
     it "calls #process on processor" do

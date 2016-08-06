@@ -16,8 +16,8 @@ module Mascot
 
     def sitemap
       @sitemap ||= Sitemap.new(root: default_root).tap do |sitemap|
-        sitemap.pipeline << Extensions::PartialsRemover.new unless partials
-        sitemap.pipeline << Extensions::RailsRequestPaths.new
+        sitemap.resources_pipeline << Extensions::PartialsRemover.new unless partials
+        sitemap.resources_pipeline << Extensions::RailsRequestPaths.new
       end
     end
 

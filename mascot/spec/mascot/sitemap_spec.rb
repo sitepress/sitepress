@@ -15,9 +15,9 @@ context Mascot::Sitemap do
     end
   end
   describe "#manipulate" do
-    it "adds ProcManipulator to pipeline" do
+    it "adds ProcManipulator to resources_pipeline" do
       subject.manipulate { |resource, resources| }
-      expect(subject.pipeline.last).to be_instance_of(Mascot::Extensions::ProcManipulator)
+      expect(subject.resources_pipeline.last).to be_instance_of(Mascot::Extensions::ProcManipulator)
     end
   end
   describe "#get" do
