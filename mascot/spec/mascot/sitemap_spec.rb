@@ -2,7 +2,7 @@ require "spec_helper"
 
 context Mascot::Sitemap do
   subject { Mascot::Sitemap.new(root: "spec/pages") }
-  let(:resource_count) { 4 }
+  let(:resource_count) { 5 }
   it "has 3 resources" do
     expect(subject.resources.size).to eql(resource_count)
   end
