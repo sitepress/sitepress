@@ -50,7 +50,7 @@ module Mascot
     end
 
     def mime_type
-      @mime_type ||= Array(inferred_mime_type).first || DEFAULT_MIME_TYPE
+      @mime_type ||= inferred_mime_type || DEFAULT_MIME_TYPE
     end
 
     def exists?
@@ -75,7 +75,7 @@ module Mascot
     # Returns the mime type of the file extension. If a type can't
     # be resolved then we'll just grab the first type.
     def inferred_mime_type
-      MIME::Types.type_for(format_extension) if format_extension
+      MIME::Types.type_for(format_extension).first if format_extension
     end
   end
 end
