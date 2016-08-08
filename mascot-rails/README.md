@@ -1,6 +1,6 @@
 # Mascot
 
-Mascot is a file-backed website content manager that can be embedded in popular web frameworks like Rails. Inspired by [Middleman](https://middlemanapp.com), Mascot is stripped down with less dependencies to work better within Rails. That mean it ships with Frontmatter, the Sitemap API, and a few templating features. [Learn more about Mascot](https://github.com/bradgessler/mascot).
+Mascot is a file-backed website content manager that can be embedded in popular web frameworks like Rails. Inspired by [Middleman](https://middlemanapp.com), Mascot is stripped down with less dependencies to work better within Rails. That mean it ships with Frontmatter, the Site API, and a few templating features. [Learn more about Mascot](https://github.com/bradgessler/mascot).
 
 ## Installation
 

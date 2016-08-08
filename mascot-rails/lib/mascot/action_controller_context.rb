@@ -26,7 +26,7 @@ module Mascot
         content_type: resource.mime_type.to_s
     end
 
-    # Mascot::PageNotFoundError is handled in the default Mascot::SitemapController
+    # Mascot::PageNotFoundError is handled in the default Mascot::SiteController
     # with an execption that Rails can use to display a 404 error.
     def get(path)
       resource = resources.get(path)

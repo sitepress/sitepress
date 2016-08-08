@@ -25,8 +25,8 @@ module Mascot
       @pages.clear
     end
 
-    def sitemap
-      Mascot::Sitemap.new(root: @dir)
+    def site
+      Mascot::Site.new(root: @dir)
     end
 
     private

@@ -2,7 +2,7 @@ require "pathname"
 
 module Mascot
   # Validates if a path is within another path. This prevents
-  # users from accidentally selecting a file outside of their sitemap,
+  # users from accidentally selecting a file outside of their site,
   # which could be insured.
   class SafeRoot
     def initialize(path: )

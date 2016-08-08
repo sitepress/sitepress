@@ -1,5 +1,5 @@
 module Mascot
-  class SitemapController < ::ApplicationController
+  class SiteController < ::ApplicationController
     rescue_from Mascot::PageNotFoundError, with: :page_not_found
 
     def show

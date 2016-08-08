@@ -2,9 +2,9 @@ module Mascot
   # Configuration object for rails application.
   class RailsConfiguration
     # Store in ./app/pages by default.
-    DEFAULT_SITEMAP_ROOT = "app/pages".freeze
+    DEFAULT_SITE_ROOT = "app/pages".freeze
 
-    attr_accessor :sitemap, :resources, :parent_engine, :routes, :cache_resources, :partials
+    attr_accessor :site, :resources, :parent_engine, :routes, :cache_resources, :partials
 
     # Set defaults.
     def initialize
@@ -14,10 +14,10 @@ module Mascot
       @partials = false
     end
 
-    def sitemap
-      @sitemap ||= Sitemap.new(root: default_root).tap do |sitemap|
-        sitemap.resources_pipeline << Extensions::PartialsRemover.new unless partials
-        sitemap.resources_pipeline << Extensions::RailsRequestPaths.new
+    def site
+      @site ||= Site.new(root: default_root).tap do |site|
+        site.resources_pipeline << Extensions::PartialsRemover.new unless partials
+        site.resources_pipeline << Extensions::RailsRequestPaths.new
       end
     end
 
@@ -25,7 +25,7 @@ module Mascot
       # Production will cache resources globally. This drastically speeds up
       # the speed at which resources are served, but if they change it won't be updated.
       @resources = nil unless cache_resources?
-      @resources ||= sitemap.resources
+      @resources ||= site.resources
     end
 
     def cache_resources?
@@ -34,7 +34,7 @@ module Mascot
 
     private
     def default_root
-      Rails.root.join(DEFAULT_SITEMAP_ROOT)
+      Rails.root.join(DEFAULT_SITE_ROOT)
     end
   end
 end

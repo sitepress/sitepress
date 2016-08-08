@@ -23,16 +23,16 @@ module Mascot
   class Server
     ROOT_PATH = Pathname.new("/")
 
-    def initialize(sitemap: , relative_to: "/")
+    def initialize(site: , relative_to: "/")
       @relative_to = Pathname.new(relative_to)
-      @sitemap = sitemap
+      @site = site
     end
 
     def call(env)
       req = Rack::Request.new(env)
-      resource = @sitemap.get req.path
+      resource = @site.get req.path
       # TODO: Memoize this per request and between requests eventually.
-      resources = @sitemap.resources
+      resources = @site.resources
 
       if resource
         body = if resource.asset.template_extensions.empty?

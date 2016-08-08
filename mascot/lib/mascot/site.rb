@@ -3,10 +3,10 @@ require "mascot/extensions/proc_manipulator"
 
 module Mascot
   # A collection of pages from a directory.
-  class Sitemap
-    # Default file pattern to pick up in sitemap
+  class Site
+    # Default file pattern to pick up in site
     DEFAULT_GLOB = "**/**".freeze
-    # Default root path for sitemap.
+    # Default root path for site.
     DEFAULT_ROOT_PATH = Pathname.new(".").freeze
 
     attr_reader :root, :resources_pipeline
@@ -30,7 +30,7 @@ module Mascot
       end
     end
 
-    # Quick and dirty way to manipulate resources in the sitemap without
+    # Quick and dirty way to manipulate resources in the site without
     # creating classes that implement the #process_resources method
     def manipulate(&block)
       resources_pipeline << Extensions::ProcManipulator.new(block)

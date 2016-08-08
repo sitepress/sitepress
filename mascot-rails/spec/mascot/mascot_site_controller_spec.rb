@@ -1,10 +1,10 @@
 require "spec_helper"
 
-describe Mascot::SitemapController, type: :controller do
+describe Mascot::SiteController, type: :controller do
   context "existing templated page" do
     render_views
     before { get :show, resource_path: "/time" }
-    let(:resource) { Mascot.configuration.sitemap.get("/time") }
+    let(:resource) { Mascot.configuration.site.get("/time") }
     it "is status 200" do
       expect(response.status).to eql(200)
     end
@@ -22,7 +22,7 @@ describe Mascot::SitemapController, type: :controller do
       it ":current_page" do
         expect(subject[:current_page].asset.path).to eql(resource.asset.path)
       end
-      it ":sitemap" do
+      it ":site" do
         expect(subject[:resources]).to eql(Mascot.configuration.resources)
       end
     end

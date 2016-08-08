@@ -3,7 +3,7 @@ require "spec_helper"
 describe Mascot::ActionControllerContext do
   subject { Mascot::ActionControllerContext.new(controller: controller, resources: resources) }
   let(:resources) { Mascot.configuration.resources }
-  let(:sitemap) { Mascot.configuration.sitemap }
+  let(:site) { Mascot.configuration.site }
   let(:resource) { resources.glob("**.erb*").first }
   context "#render" do
     let(:controller) { instance_double("Controller", render: true, _layout: "application") }

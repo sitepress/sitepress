@@ -2,7 +2,7 @@ require "mascot"
 
 module Mascot
   # Contains singletons for rails and some configuration data.
-  Configuration = Struct.new(:sitemap, :routes, :parent_engine)
+  Configuration = Struct.new(:site, :routes, :parent_engine)
 
   # Rescued by ActionController to display page not found error.
   PageNotFoundError = Class.new(StandardError)

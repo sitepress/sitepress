@@ -3,7 +3,7 @@ require "mascot/extensions/layouts"
 
 describe Mascot::Extensions::Layouts do
   subject { Mascot::Extensions::Layouts.new }
-  let(:resources) { Mascot::Sitemap.new(root: "spec/pages").resources }
+  let(:resources) { Mascot::Site.new(root: "spec/pages").resources }
   let(:resource) { resources.first }
   before do
     subject.layout("blah-set-by-rspec"){ |r| r == resource }

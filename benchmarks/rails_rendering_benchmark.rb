@@ -30,11 +30,11 @@ title: The page #{path}
   initialize_rails do
     # Setup rails to use the fake site.
     Mascot.configure do |config|
-      config.sitemap = site.sitemap
+      config.site = site.site
     end
   end
 
-  sitemap = Mascot.configuration.sitemap
+  site = Mascot.configuration.site
   resources = Mascot.configuration.resources
   path = resources.first.request_path
   last_path = resources.last.request_path

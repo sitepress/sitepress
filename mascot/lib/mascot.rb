@@ -1,7 +1,7 @@
 require "mascot/version"
 
 module Mascot
-  # Raised if a user attempts to access a resource outside of the sitemap path.
+  # Raised if a user attempts to access a resource outside of the site path.
   UnsafePathAccessError = Class.new(SecurityError)
 
   # Raised by Resources if a path is added that's not a valid path.
@@ -16,5 +16,5 @@ module Mascot
   autoload :Resources,    "mascot/resources"
   autoload :Resource,     "mascot/resource"
   autoload :SafeRoot,     "mascot/safe_root"
-  autoload :Sitemap,      "mascot/sitemap"
+  autoload :Site,      "mascot/site"
 end

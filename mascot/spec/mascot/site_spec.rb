@@ -1,7 +1,7 @@
 require "spec_helper"
 
-context Mascot::Sitemap do
-  subject { Mascot::Sitemap.new(root: "spec/pages") }
+context Mascot::Site do
+  subject { Mascot::Site.new(root: "spec/pages") }
   let(:resource_count) { 5 }
   it "has 3 resources" do
     expect(subject.resources.size).to eql(resource_count)
@@ -10,7 +10,7 @@ context Mascot::Sitemap do
     it "globs resources" do
       expect(subject.resources.glob("*sin_frontmatter*").size).to eql(1)
     end
-    it "raises exception for glob outside of sitemap root" do
+    it "raises exception for glob outside of site root" do
       expect{subject.resources.glob("./..")}.to raise_exception(Mascot::UnsafePathAccessError)
     end
   end

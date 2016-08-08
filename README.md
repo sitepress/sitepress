@@ -70,7 +70,7 @@ Mascot is designed to be embedded in rails and other Ruby web frameworks.
 
 # Features
 
-Mascot implements a subset of the best features from the [Middleman](http://www.middlemanapp.com/) static site generator including the Sitemap and Frontmatter.
+Mascot implements a subset of the best features from the [Middleman](http://www.middlemanapp.com/) static site generator including the Site and Frontmatter.
 
 ## Frontmatter
 
@@ -92,19 +92,19 @@ background_color: #0f0
     %p And here's the rest of the content!
 ```
 
-## Sitemap
+## Site
 
-The Sitemap accepts a directory path
+The Site accepts a directory path
 
 ```irb
-> sitemap = Mascot::Sitemap.new(root: "spec/pages")
-=> #<Mascot::Sitemap:0x007fcd24103710 @root=#<Pathname:spec/pages>, @request_path=#<Pathname:/>>
+> site = Mascot::Site.new(root: "spec/pages")
+=> #<Mascot::Site:0x007fcd24103710 @root=#<Pathname:spec/pages>, @request_path=#<Pathname:/>>
 ```
 
 Then you can request a resource by request path:
 
 ```irb
-> resource = sitemap.get("/test")
+> resource = site.get("/test")
 => #<Mascot::Resource:0x007fcd2488a128 @request_path="/test", @content_type="text/html", @file_path=#<Pathname:spec/pages/test.html.haml>, @frontmatter=#<Mascot::Frontmatter:0x007fcd24889e80 @data="title: Name\nmeta:\n  keywords: One", @body="\n!!!\n%html\n  %head\n    %title=current_page.data[\"title\"]\n  %body\n    %h1 Hi\n    %p This is just some content\n    %h2 There\n">>
 ```
 
@@ -119,11 +119,11 @@ And access the frontmatter data (if available) and body of the template.
 
 ### Resource globbing
 
-The Sitemap API is a powerful way to query content via resource globbing. For example, if you have a folder full of files but you only want all `.html` files within the `docs` directory, you'd do something like:
+The Site API is a powerful way to query content via resource globbing. For example, if you have a folder full of files but you only want all `.html` files within the `docs` directory, you'd do something like:
 
 ```haml
 %ol
-  -sitemap.resources.glob("docs/*.html*").each do |page|
+  -site.resources.glob("docs/*.html*").each do |page|
     %li=link_to page.data["title"], page.request_path
 ```
 
