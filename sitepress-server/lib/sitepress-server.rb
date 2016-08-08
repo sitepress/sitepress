@@ -8,42 +8,54 @@ module Sitepress
       @resource = resource
     end
 
-    def render(locals: {}, layout: "layout")
-      template = engine.new { @resource.body }
-      template.render(Object.new, **locals.merge(resource: @resource))
+    def render(locals: {}, layout: nil, &block)
+      template = engine.new { @asset.body }
+      with_layout layout: layout, locals: locals do
+        template.render(Object.new, **locals, &block)
+      end
     end
 
     private
+    def with_layout(layout: , **args, &block)
+      if layout
+        layout_renderer = TiltRenderer.new(layout)
+        layout_renderer.render **args, &block
+      else
+        block.call
+      end
+    end
+
     def engine
-      Tilt[@resource.asset.path]
+      Tilt[@asset.path]
     end
   end
 
   # Mount inside of a config.ru file to run this as a server.
   class Server
-    ROOT_PATH = Pathname.new("/")
-
-    def initialize(site: , relative_to: "/")
-      @relative_to = Pathname.new(relative_to)
-      @site = site
+    def initialize(sitemap: )
+      @sitemap = sitemap
     end
 
     def call(env)
       req = Rack::Request.new(env)
-      resource = @site.get req.path
-      # TODO: Memoize this per request and between requests eventually.
-      resources = @site.root
-
+      resource = @sitemap.get req.path
       if resource
-        body = if resource.asset.template_extensions.empty?
-          # TODO: This is not efficient for huge files. Research how Rack::File
-          # serves this up (or just take that, maybe mount it as a cascading middleware.)
-          resource.body
+        # TODO: Memoize this between requests.
+        resources = @sitemap.resources
+        body = if resource.asset.template_extensions.any?
+          renderer = TiltRenderer.new(resource.asset)
+          layout = resource.data.has_key?("layout") ? Asset.new(path: resource.data["layout"]) : nil
+          renderer.render(layout: layout, locals: {
+            resources: resources,
+            resource: resource
+          })
         else
-          TiltResourceRenderer.new(resource).render(locals: {resources: resources})
+          resource.body
         end
 
-        [ 200, {"Content-Type" => resource.mime_type.to_s}, Array(body) ]
+        mime_type = resource.mime_type.to_s
+
+        [ 200, {"Content-Type" => mime_type}, Array(body) ]
       else
         [ 404, {"Content-Type" => "text/plain"}, ["Not Found"]]
       end
