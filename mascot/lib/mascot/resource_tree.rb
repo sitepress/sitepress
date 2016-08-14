@@ -1,6 +1,7 @@
 module Mascot
   class ResourceTree
     attr_reader :parent, :resource
+    include Enumerable
 
     DELIMITER = "/".freeze
 
@@ -12,6 +13,11 @@ module Mascot
 
     def children
       @children.values
+    end
+
+    def each(&block)
+      block.call(resource) if resource
+      children.each{ |c| c.each(&block) }
     end
 
     def root?

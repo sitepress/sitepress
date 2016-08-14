@@ -42,6 +42,11 @@ context Mascot::ResourceTree do
     it "has resource" do
       expect(subject.resource).to eql("/a/b.html")
     end
+    context "enumerable" do
+      it "iterates through resources" do
+        expect(root.to_a).to match_array(routes)
+      end
+    end
     it { should have_parents(["/a.html", nil]) }
     it { should have_siblings(%w[/a/1.html]) }
     it { should have_children(%w[/a/b/c.html]) }
