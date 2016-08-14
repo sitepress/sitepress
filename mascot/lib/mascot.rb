@@ -15,6 +15,7 @@ module Mascot
   autoload :ResourcesPipeline,     "mascot/resources_pipeline"
   autoload :Resources,    "mascot/resources"
   autoload :Resource,     "mascot/resource"
+  autoload :ResourceTree, "mascot/resource_tree"
   autoload :SafeRoot,     "mascot/safe_root"
-  autoload :Site,      "mascot/site"
+  autoload :Site,         "mascot/site"
 end
