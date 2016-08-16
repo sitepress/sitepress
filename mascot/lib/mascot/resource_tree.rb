@@ -1,13 +1,14 @@
 module Mascot
   class ResourceTree
-    attr_reader :parent, :resource
+    attr_reader :parent, :resource, :name
     include Enumerable
 
     DELIMITER = "/".freeze
 
-    def initialize(parent: nil, delimiter: ResourceTree::DELIMITER)
+    def initialize(parent: nil, delimiter: ResourceTree::DELIMITER, name: nil)
       @parent = parent
-      @children = Hash.new { |hash, key| hash[key] = ResourceTree.new(parent: self, delimiter: delimiter) }
+      @name = name.freeze
+      @children = Hash.new { |hash, key| hash[key] = ResourceTree.new(parent: self, delimiter: delimiter, name: key) }
       @delimiter = delimiter.freeze
     end
 
@@ -32,6 +33,11 @@ module Mascot
       @children.dig(*args)
     end
 
+    # TODO -- if there are children this should kill only the resource
+    def remove
+      parent.remove_child(name)
+    end
+
     def siblings
       parent ? parent.children.select(&:resource).reject{ |c| c == self } : []
     end
@@ -49,7 +55,7 @@ module Mascot
     # We want this to be immutable so blow up if its ever set.
     def resource=(resource)
       if @resource
-        raise "Resource already set"
+        raise Mascot::ExistingRequestPathError, "Resource at #{resource.request_path} already set"
       else
         @resource = resource
       end
@@ -80,9 +86,18 @@ module Mascot
       #   @children[segment]
       # end
     end
+    def remove_resource
+      @resource = nil
+    end
 
-    # TODO: Implement a #remove method that cleans up empty hashes, etc.
-    def remove(resource)
+    def remove_child(path)
+      *_, segment = tokenize(path)
+      child = @children[segment]
+      if child.leaf?
+        @children.delete(segment)
+      else
+        child.remove_resource
+      end
     end
 
     private

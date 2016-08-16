@@ -50,5 +50,21 @@ context Mascot::ResourceTree do
     it { should have_parents(["/a.html", nil]) }
     it { should have_siblings(%w[/a/1.html]) }
     it { should have_children(%w[/a/b/c.html]) }
+    context "remove c.html" do
+      before { subject.get("c.html").remove }
+      it { should have_children([]) }
+    end
+    context "remove /a/b.html" do
+      before { subject.remove }
+      it { should have_parents(["/a.html", nil]) }
+      it { should have_siblings(%w[/a/1.html]) }
+      it { should have_children(%w[/a/b/c.html]) }
+      it "does not have resource" do
+        subject.resource = nil
+      end
+      it "removes route" do
+        expect(root.to_a).to match_array(routes - ["/a/b.html"])
+      end
+    end
   end
 end
