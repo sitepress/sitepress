@@ -1,0 +1,7 @@
+%h1 Compacts
+
+Want to see some compacts? We've got these:
+
+%ul
+  -resource.children.each do |r|
+    %li=r.request_path

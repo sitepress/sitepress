@@ -1,5 +1,11 @@
 module Mascot
+  # Resource nodes give resources their parent/sibling/child relationships. The relationship are determined
+  # by the `request_path` given to an asset when its added to a node. Given the `request_path` `/foo/bar/biz/buz.html`,
+  # a tree of resource nodes would be built named `foo`, `bar`, `biz`, `buz`. `foo` would be the "root" node and `buz`
+  # a leaf node. The actual `buz.html` asset is then stored on the leaf node as a resource. This tree structure
+  # makes it possible to reason through path relationships from code to build out elements in a website like tree navigation.
   class ResourcesNode
+    # TODO: Should it be called "formats" or "extensions"? Probably the latter, but that could conflict with Resource Manipulators.
     attr_reader :parent, :name, :formats
     include Enumerable
 
@@ -13,10 +19,30 @@ module Mascot
       @resources = Hash.new
     end
 
+    # Returns the immediate children nodes.
     def children
       @children.values
     end
 
+    # Returns sibling nodes.
+    def siblings
+      parent ? parent.children.reject{ |c| c == self } : []
+    end
+
+    # Returns all parents up to the root node.
+    def parents
+      parents = []
+      node = parent
+      while node do
+        parents << node
+        node = node.parent
+      end
+      parents
+    end
+
+    # Iterates through resources in the current node and all child resources.
+    # TODO: Should this include all children? Perhaps I should move this method
+    # into an eumerator that more clearly states it returns an entire sub-tree.
     def each(&block)
       @resources.values.each { |resource| block.call(resource) }
       children.each{ |c| c.each(&block) }
@@ -48,20 +74,6 @@ module Mascot
       end
     end
 
-    def siblings
-      parent ? parent.children.reject{ |c| c == self } : []
-    end
-
-    def parents
-      parents = []
-      node = parent
-      while node do
-        parents << node
-        node = node.parent
-      end
-      parents
-    end
-
     def add(path: , asset: )
       head, *path = tokenize(path)
       if path.empty?
@@ -81,7 +93,7 @@ module Mascot
     end
 
     def inspect
-      "<Node:resources=#{resources.map(&:request_path)}>"
+      "<#{self.class}: resources=#{resources.map(&:request_path)} children=#{children.map(&:name).inspect}>"
     end
 
     def get(path)
@@ -109,8 +121,10 @@ module Mascot
       end
     end
 
+    # TODO: I don't really like how the path is broken up with the "ext" at the end.
+    # It feels inconsistent. Either make an object/struct that encaspulates this or
+    # just pass `index.html` through to the end.
     def dig(*args)
-      # TODO: Is this right? Head.nil? feels wrong....
       head, *tail = args
       if head.nil? and tail.empty?
         self

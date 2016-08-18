@@ -28,16 +28,18 @@ module Mascot
     end
 
     def inspect
-      "#<#{self.class}:0x#{(object_id << 1).to_s(16)} request_path=#{request_path.inspect} asset_path=#{@asset.path.to_s.inspect}>"
+      "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{@asset.path.to_s.inspect}>"
     end
 
     def data
       @data ||= asset.data
     end
 
+    # TODO: Should we return ALL resources or just those
+    # of the same ext?
     def parents
       return [] unless node
-      node.parents.map(&:resource)
+      node.parents.map(&:resources).flatten
     end
 
     def siblings
@@ -47,11 +49,15 @@ module Mascot
 
     def children
       return [] unless node
-      node.children.map(&:resource)
+      node.children.map(&:resources).flatten
     end
 
     def body
       @body ||= asset.body
+    end
+
+    def ==(resource)
+      resource.request_path == request_path
     end
   end
 end

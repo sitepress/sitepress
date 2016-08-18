@@ -24,4 +24,33 @@ context Mascot::Resource do
       expect(subject.request_path).to eql("/test.html")
     end
   end
+  describe "resource node relationships" do
+    let(:site) { Mascot::Site.new(root: "spec/tree") }
+    let(:resources) { site.resources }
+    subject{ resources.get_resource(path) }
+    context "/about.html" do
+      let(:path) { "/about.html" }
+      it "has no parents" do
+        expect(subject.parents).to be_empty
+      end
+      it "has siblings" do
+        expect(subject.siblings).to eql([resources.get_resource("/index.html")])
+      end
+      it "has no children" do
+        expect(subject.children).to be_empty
+      end
+    end
+    context "/vehicles/cars/compacts.html" do
+      let(:path) { "/vehicles/cars/compacts.html" }
+      it "has parents" do
+        expect(subject.parents.map(&:request_path)).to match_array(%w[/vehicles/cars.html])
+      end
+      it "has siblings" do
+        expect(subject.siblings.map(&:request_path)).to match_array(%w[/vehicles/cars/cierra.html /vehicles/cars/camry.html])
+      end
+      it "has children" do
+        expect(subject.children.map(&:request_path)).to match_array(%w[/vehicles/cars/compacts/smart.html])
+      end
+    end
+  end
 end
