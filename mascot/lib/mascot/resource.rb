@@ -27,12 +27,16 @@ module Mascot
       File.join("/", *lineage, file_name)
     end
 
-    def inspect
-      "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{@asset.path.to_s.inspect}>"
-    end
-
     def data
       @data ||= asset.data
+    end
+
+    def body
+      @body ||= asset.body
+    end
+
+    def inspect
+      "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{@asset.path.to_s.inspect}>"
     end
 
     # TODO: Should we return ALL resources or just those
@@ -50,10 +54,6 @@ module Mascot
     def children
       return [] unless node
       node.children.map(&:resources).flatten
-    end
-
-    def body
-      @body ||= asset.body
     end
 
     def ==(resource)
