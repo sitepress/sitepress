@@ -12,6 +12,9 @@ module Mascot
     attr_writer :body, :data
     attr_reader :node, :asset, :ext
 
+    # Default scope for querying parent/child/sibling resources.
+    DEFAULT_FILTER_SCOPE = :same
+
     def initialize(asset: , node: , ext: "")
       @asset = asset
       @node = node
@@ -21,7 +24,6 @@ module Mascot
     def request_path
       return unless node
       # TODO: This `compact` makes me nervous. How can we handle this better?
-
       lineage = node.parents.reverse.map(&:name).compact
       file_name = [node.name, @ext].join
       File.join("/", *lineage, file_name)
@@ -39,25 +41,49 @@ module Mascot
       "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{@asset.path.to_s.inspect}>"
     end
 
-    # TODO: Should we return ALL resources or just those
-    # of the same ext?
-    def parents
-      return [] unless node
-      node.parents.map(&:resources).flatten
+    def parents(**args)
+      filter_resources(**args){ node.parents }
     end
 
-    def siblings
-      return [] unless node
-      node.siblings.map(&:resources).flatten
+    def siblings(**args)
+      filter_resources(**args){ node.siblings }
     end
 
-    def children
-      return [] unless node
-      node.children.map(&:resources).flatten
+    def children(**args)
+      filter_resources(**args){ node.children }
     end
 
     def ==(resource)
       resource.request_path == request_path
+    end
+
+    private
+    # Filters parent/child/sibling resources by a type. The default behavior is to only return
+    # resources of the same type. For example given the pages `/a.html`, `/a.gif`, `/a/b.html`,
+    # if you query the parent from page `/a/b.html` you'd only get `/a.html` by default. If you
+    # query the parents via `parents(type: :all)` you'd get get [`/a.html`, `/a.gif`]
+    #
+    # TODO: When `type: :all` is scoped, some queries will mistakenly return single resources.
+    # :all should return an array of arrays to accurately represention levels.
+    #
+    # TODO: Put a better extension/mime_type handler into resource tree, then instead of faltening
+    # below and select, we could call a single map and pull out a resources
+    def filter_resources(type: DEFAULT_FILTER_SCOPE, &block)
+      return [] unless node
+      resources = block.call.map(&:resources)
+
+      case type
+      when :all
+        resources
+      when :same
+        resources.flatten.select { |r| r.ext == ext }
+      when String
+        resources.flatten.select { |r| r.ext == type }
+      when MIME::Type
+        resources.flatten.select { |r| r.mime_type == type }
+      else
+        raise ArgumentError, "Invalid type argument #{type}. Must be either :same, :all, an extension string, or a Mime::Type"
+      end
     end
   end
 end

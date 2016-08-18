@@ -42,8 +42,22 @@ context Mascot::Resource do
     end
     context "/vehicles/cars/compacts.html" do
       let(:path) { "/vehicles/cars/compacts.html" }
-      it "has parents" do
-        expect(subject.parents.map(&:request_path)).to match_array(%w[/vehicles/cars.html])
+      context "parents" do
+        it "has 3 parents", :pending do
+          # TODO: Parents should return an array all the way up to root. The user
+          # should have to flatten it. This at least gives them the power to count hose
+          # far away they are from root.
+          expect(subject.parents.map(&:request_path)).to match_array([nil, nil, "/vehicles/cars.html"])
+        end
+        it "has 1 parents with 2 resources" do
+          expect(subject.parents(type: :all).map{ |n| n.map(&:request_path) }).to match_array([[], [], %w[/vehicles/cars.html /vehicles/cars.xml]])
+        end
+        it "has 1 xml parent when filtered by ext string" do
+          expect(subject.parents(type: ".xml").map(&:request_path)).to match_array(%w[/vehicles/cars.xml])
+        end
+        it "has 1 xml parent when filtered by Mime::Type['xml']" do
+          expect(subject.parents(type: MIME::Types.type_for("xml").first).map(&:request_path)).to match_array(%w[/vehicles/cars.xml])
+        end
       end
       it "has siblings" do
         expect(subject.siblings.map(&:request_path)).to match_array(%w[/vehicles/cars/cierra.html /vehicles/cars/camry.html])
