@@ -13,9 +13,8 @@ module Mascot
   autoload :Asset,        "mascot/asset"
   autoload :Frontmatter,  "mascot/frontmatter"
   autoload :ResourcesPipeline,     "mascot/resources_pipeline"
-  autoload :Resources,    "mascot/resources"
   autoload :Resource,     "mascot/resource"
-  autoload :ResourceTree, "mascot/resource_tree"
+  autoload :ResourcesNode, "mascot/resources_node"
   autoload :SafeRoot,     "mascot/safe_root"
   autoload :Site,         "mascot/site"
 end

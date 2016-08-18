@@ -3,19 +3,19 @@ require "spec_helper"
 context Mascot::Site do
   subject { Mascot::Site.new(root: "spec/pages") }
   let(:resource_count) { 5 }
-  it "has 3 resources" do
-    expect(subject.resources.size).to eql(resource_count)
+  it "has 5 resources" do
+    expect(subject.resources.to_a.size).to eql(resource_count)
   end
   context "#glob" do
     it "globs resources" do
-      expect(subject.resources.glob("*sin_frontmatter*").size).to eql(1)
+      expect(subject.glob("*sin_frontmatter*").size).to eql(1)
     end
     it "raises exception for glob outside of site root" do
-      expect{subject.resources.glob("./..")}.to raise_exception(Mascot::UnsafePathAccessError)
+      expect{subject.glob("./..")}.to raise_exception(Mascot::UnsafePathAccessError)
     end
   end
   describe "#manipulate" do
-    it "adds ProcManipulator to resources_pipeline" do
+    it "adds ProcManipulator to_pipeline" do
       subject.manipulate { |resource, resources| }
       expect(subject.resources_pipeline.last).to be_instance_of(Mascot::Extensions::ProcManipulator)
     end

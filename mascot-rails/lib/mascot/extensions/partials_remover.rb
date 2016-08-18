@@ -7,7 +7,7 @@ module Mascot
 
       def process_resources(resources)
         resources.each do |r|
-          resources.remove r if self.class.partial? r.asset.path # Looks like a smiley face, doesn't it?
+          r.node.remove if self.class.partial? r.asset.path # Looks like a smiley face, doesn't it?
         end
       end
 

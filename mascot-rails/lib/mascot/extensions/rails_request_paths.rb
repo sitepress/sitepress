@@ -5,7 +5,10 @@ module Mascot
     class RailsRequestPaths
       def process_resources(resources)
         resources.each do |r|
-          r.request_path = self.class.format_path r.request_path
+          asset = r.asset
+          request_path = r.request_path
+          r.node.remove
+          resources.add path: self.class.format_path(request_path), asset: asset
         end
       end
 

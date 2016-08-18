@@ -8,11 +8,11 @@ describe Mascot::RailsConfiguration do
     end
     it "excludes partials if false" do
       subject.partials = false
-      expect(subject.resources.size).to eql(2)
+      expect(subject.resources.to_a.size).to eql(2)
     end
     it "includes partials if true" do
       subject.partials = true
-      expect(subject.resources.size).to eql(3)
+      expect(subject.resources.to_a.size).to eql(3)
     end
   end
 end

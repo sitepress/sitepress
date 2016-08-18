@@ -6,51 +6,52 @@ module Mascot
   # resources that point to the same asset. Resources are immutable
   # and may be altered by the resource proxy.
   class Resource
-    include Observable
-
     extend Forwardable
     def_delegators :asset, :mime_type
 
-    attr_accessor :request_path, :asset
     attr_writer :body, :data
+    attr_reader :node, :asset, :ext
 
-    def initialize(asset: , request_path: nil)
-      self.request_path = request_path || asset.to_request_path
+    def initialize(asset: , node: , ext: "")
       @asset = asset
+      @node = node
+      @ext = ext # TODO: Meh, feels dirty but I suppose the thingy has to drop it in.
     end
 
-    # When #dup or #clone is copied, the Resource
-    # collection observer must be removed so there's
-    # not duplicate resources.
-    def initialize_copy(instance)
-      instance.delete_observers
-      super instance
-    end
+    def request_path
+      return unless node
+      # TODO: This `compact` makes me nervous. How can we handle this better?
 
-    def request_path=(request_path)
-      old_request_path = @request_path
-      # We freeze the value to ensure users can't modify
-      # the request_path string in place (e.g. Resource#request_path.capitalize!)
-      # and throw the resource out of sync with the Resources collection.
-      @request_path = request_path.to_s.freeze
-      changed
-      notify_observers self, old_request_path
+      lineage = node.parents.reverse.map(&:name).compact
+      file_name = [node.name, @ext].join
+      File.join("/", *lineage, file_name)
     end
 
     def inspect
-      "#<#{self.class}:0x#{(object_id << 1).to_s(16)} @request_path=#{@request_path.inspect} @asset=#{@asset.inspect}>"
+      "#<#{self.class}:0x#{(object_id << 1).to_s(16)} request_path=#{request_path.inspect} asset_path=#{@asset.path.to_s.inspect}>"
     end
 
     def data
       @data ||= asset.data
     end
 
-    def body
-      @body ||= asset.body
+    def parents
+      return [] unless node
+      node.parents.map(&:resource)
     end
 
-    def ==(asset)
-      request_path == asset.request_path
+    def siblings
+      return [] unless node
+      node.siblings.map(&:resources).flatten
+    end
+
+    def children
+      return [] unless node
+      node.children.map(&:resource)
+    end
+
+    def body
+      @body ||= asset.body
     end
   end
 end

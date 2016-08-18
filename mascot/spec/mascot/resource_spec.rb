@@ -4,11 +4,9 @@ context Mascot::Resource do
   let(:asset_path) { "spec/pages/test.html.haml" }
   let(:asset) { Mascot::Asset.new(path: asset_path) }
   let(:request_path) { asset.to_request_path }
-  subject { Mascot::Resource.new(asset: asset) }
+  let(:node) { Mascot::ResourcesNode.new }
+  subject { node.add path: "/test.html", asset: asset }
 
-  it "is == with same request_path" do
-    expect(subject == Mascot::Resource.new(asset: asset)).to be true
-  end
   it "has #mime_type" do
     expect(subject.mime_type.to_s).to eql("text/html")
   end
@@ -21,15 +19,9 @@ context Mascot::Resource do
   it "has #inspect" do
     expect(subject.inspect).to include(request_path)
   end
-  context "#request_path" do
+  describe "#request_path" do
     it "infers request_path from Asset#to_request_path" do
-      expect(subject.request_path).to eql("spec/pages/test.html")
-    end
-    context "overridden asset path" do
-      subject { Mascot::Resource.new(asset: asset, request_path: "/fiz/biz") }
-      it "is overridden" do
-        expect(subject.request_path).to eql("/fiz/biz")
-      end
+      expect(subject.request_path).to eql("/test.html")
     end
   end
 end

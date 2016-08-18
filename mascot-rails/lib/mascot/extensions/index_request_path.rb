@@ -9,11 +9,13 @@ module Mascot
         @file_name = file_name
       end
 
-      def process_resources(resources)
-        resources.each do |r|
-          if r.asset.path.basename.to_s.start_with? @file_name
-            # TODO: Conslidate this into SafeRoot.
-            r.request_path = Pathname.new("/").join(r.request_path).dirname.cleanpath.to_s
+      def process_resources(node)
+        node.each do |r|
+          asset = r.asset
+          if asset.path.basename.to_s.start_with? @file_name
+            request_path = Pathname.new("/").join(r.request_path).dirname.cleanpath.to_s
+            node.remove_resource(r)
+            node.add(path: request_path, asset: asset)
           end
         end
       end

@@ -30,13 +30,23 @@ module Mascot
       path.basename.to_s.split(".").drop(1)
     end
 
+    # TODO: This is really a "key" or "leafname".
     def basename
       path.basename.to_s.split(".").first
+    end
+
+    def format_basename
+      [basename, format_extension].join(".")
     end
 
     # Returns the format extension.
     def format_extension
       extensions.first
+    end
+
+    # The base name with the format extension.
+    def format_name
+      [basename, format_extension].join(".")
     end
 
     # Returns a list of the rendering extensions.

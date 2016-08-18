@@ -18,7 +18,7 @@ fake_site do |site|
     File.write path, """---
 title: The page #{path}
 ---
-<h1>There are <%= pluralize resources.size, 'page' %> in the site<h1>
+<h1>There are <%= pluralize resources.to_a.size, 'page' %> in the site<h1>
 <p>And they are...<p>
 <ul>
 <% resources.each do |r| %>

@@ -4,7 +4,7 @@ describe Mascot::ActionControllerContext do
   subject { Mascot::ActionControllerContext.new(controller: controller, resources: resources) }
   let(:resources) { Mascot.configuration.resources }
   let(:site) { Mascot.configuration.site }
-  let(:resource) { resources.glob("**.erb*").first }
+  let(:resource) { site.glob("**.erb*").first }
   context "#render" do
     let(:controller) { instance_double("Controller", render: true, _layout: "application") }
     it "calls render" do

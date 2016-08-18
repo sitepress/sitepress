@@ -19,6 +19,9 @@ context Mascot::Asset do
   it "has html format_extension" do
     expect(subject.format_extension).to eql("html")
   end
+  it "has basename.html" do
+    expect(subject.format_basename).to eql("test.html")
+  end
   it "has request_path" do
     expect(subject.to_request_path.to_s).to eql("spec/pages/test.html")
   end
