@@ -29,7 +29,7 @@ end
 
 RSpec::Matchers.define :have_parents do |expected|
   match do |actual|
-    actual.parents.map(&:resources).flatten.map{ |r| r&.request_path} == expected
+    actual.parents.map(&:resources).flatten.map{ |r| r.request_path} == expected
   end
   failure_message do |actual|
     "expected parent #{actual.parents.map(&:resources).flatten.map(&:request_path)} to be #{expected}"
