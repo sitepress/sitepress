@@ -37,7 +37,7 @@ title: The page #{path}
   site = Mascot.configuration.site
   resources = Mascot.configuration.resources
   path = resources.first.request_path
-  last_path = resources.last.request_path
+  last_path = resources.to_a.last.request_path
 
   include Rack::Test::Methods
 
