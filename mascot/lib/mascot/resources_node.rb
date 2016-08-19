@@ -5,7 +5,7 @@ module Mascot
   # a leaf node. The actual `buz.html` asset is then stored on the leaf node as a resource. This tree structure
   # makes it possible to reason through path relationships from code to build out elements in a website like tree navigation.
   class ResourcesNode
-    attr_reader :parent, :name, :formats
+    attr_reader :parent, :name
 
     include Enumerable
 
@@ -15,13 +15,15 @@ module Mascot
       @parent = parent
       @name = name.freeze
       @delimiter = delimiter.freeze
-      @children = Hash.new { |hash, key| hash[key] = ResourcesNode.new(parent: self, delimiter: delimiter, name: key) }
-      @formats = Formats.new(node: self)
+    end
+
+    def formats
+      @formats ||= Formats.new(node: self)
     end
 
     # Returns the immediate children nodes.
     def children
-      @children.values
+      child_nodes.values
     end
 
     # Returns sibling nodes.
@@ -40,20 +42,20 @@ module Mascot
       parents
     end
 
+    def root?
+      parent.nil?
+    end
+
+    def leaf?
+      child_nodes.empty?
+    end
+
     # Iterates through resources in the current node and all child resources.
     # TODO: Should this include all children? Perhaps I should move this method
     # into an eumerator that more clearly states it returns an entire sub-tree.
     def each(&block)
       formats.each(&block)
       children.each{ |c| c.each(&block) }
-    end
-
-    def root?
-      parent.nil?
-    end
-
-    def leaf?
-      @children.empty?
     end
 
     def remove
@@ -72,7 +74,7 @@ module Mascot
         # When there's no more paths, we're left with the format (e.g. ".html")
         formats.add(asset: asset, ext: head)
       else
-        @children[head].add(path: path, asset: asset)
+        child_nodes[head].add(path: path, asset: asset)
       end
     end
     alias :[]= :add
@@ -84,21 +86,20 @@ module Mascot
       end
     end
 
-    def inspect
-      "<#{self.class}: resources=#{formats.map(&:request_path)} children=#{children.map(&:name).inspect}>"
-    end
-
     def get(path)
       *path, ext = tokenize(path)
       dig(*path)
     end
     alias :[] :get
 
-    protected
+    def inspect
+      "<#{self.class}: resources=#{formats.map(&:request_path)} children=#{children.map(&:name).inspect}>"
+    end
 
+    protected
     def remove_child(path)
       *_, segment, _ = tokenize(path)
-      @children.delete(segment)
+      child_nodes.delete(segment)
     end
 
     # TODO: I don't really like how the path is broken up with the "ext" at the end.
@@ -108,14 +109,22 @@ module Mascot
       head, *tail = args
       if head.nil? and tail.empty?
         self
-      elsif @children.has_key?(head)
-        @children[head].dig(*tail)
+      elsif child_nodes.has_key?(head)
+        child_nodes[head].dig(*tail)
       else
         nil
       end
     end
 
     private
+    def add_child_node(name)
+      ResourcesNode.new(parent: self, delimiter: @delimiter, name: name)
+    end
+
+    def child_nodes
+      @child_nodes ||= Hash.new { |hash, key| hash[key] = add_child_node(key) }
+    end
+
     # Returns all of the names for the path along with the format, if set.
     def tokenize(path)
       return path if path.respond_to? :to_a
