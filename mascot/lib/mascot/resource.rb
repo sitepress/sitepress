@@ -1,5 +1,4 @@
 require "forwardable"
-require "observer"
 
 module Mascot
   # Represents the request path of an asset. There may be multiple
