@@ -11,27 +11,27 @@ CodeClimate::TestReporter.start
 # TODO: Move into a support file.
 RSpec::Matchers.define :have_children do |expected|
   match do |actual|
-    actual.children.map(&:resources).flatten.map(&:request_path) == expected
+    actual.children.map(&:formats).map(&:to_a).flatten.map(&:request_path) == expected
   end
   failure_message do |actual|
-    "expected children #{actual.children.map(&:resources).flatten.map(&:request_path)} to be #{expected}"
+    "expected children #{actual.children.map(&:formats).map(&:to_a).flatten.map(&:request_path)} to be #{expected}"
   end
 end
 
 RSpec::Matchers.define :have_siblings do |expected|
   match do |actual|
-    actual.siblings.map(&:resources).flatten.map(&:request_path) == expected
+    actual.siblings.map(&:formats).map(&:to_a).flatten.map(&:request_path) == expected
   end
   failure_message do |actual|
-    "expected siblings #{actual.siblings.map(&:resources).flatten.map(&:request_path)} to be #{expected}"
+    "expected siblings #{actual.siblings.map(&:formats).map(&:to_a).flatten.map(&:request_path)} to be #{expected}"
   end
 end
 
 RSpec::Matchers.define :have_parents do |expected|
   match do |actual|
-    actual.parents.map(&:resources).flatten.map{ |r| r.request_path} == expected
+    actual.parents.map(&:formats).map(&:to_a).flatten.map{ |r| r.request_path} == expected
   end
   failure_message do |actual|
-    "expected parent #{actual.parents.map(&:resources).flatten.map(&:request_path)} to be #{expected}"
+    "expected parent #{actual.parents.map(&:formats).map(&:to_a).flatten.map(&:request_path)} to be #{expected}"
   end
 end

@@ -14,7 +14,7 @@ module Mascot
           asset = r.asset
           if asset.path.basename.to_s.start_with? @file_name
             request_path = Pathname.new("/").join(r.request_path).dirname.cleanpath.to_s
-            node.remove_resource(r)
+            node.formats.remove(r)
             node.add(path: request_path, asset: asset)
           end
         end

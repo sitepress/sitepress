@@ -5,8 +5,8 @@ module Mascot
   # a leaf node. The actual `buz.html` asset is then stored on the leaf node as a resource. This tree structure
   # makes it possible to reason through path relationships from code to build out elements in a website like tree navigation.
   class ResourcesNode
-    # TODO: Should it be called "formats" or "extensions"? Probably the latter, but that could conflict with Resource Manipulators.
     attr_reader :parent, :name, :formats
+
     include Enumerable
 
     DELIMITER = "/".freeze
@@ -16,7 +16,7 @@ module Mascot
       @name = name.freeze
       @delimiter = delimiter.freeze
       @children = Hash.new { |hash, key| hash[key] = ResourcesNode.new(parent: self, delimiter: delimiter, name: key) }
-      @resources = Hash.new
+      @formats = Formats.new(node: self)
     end
 
     # Returns the immediate children nodes.
@@ -44,7 +44,7 @@ module Mascot
     # TODO: Should this include all children? Perhaps I should move this method
     # into an eumerator that more clearly states it returns an entire sub-tree.
     def each(&block)
-      @resources.values.each { |resource| block.call(resource) }
+      formats.each(&block)
       children.each{ |c| c.each(&block) }
     end
 
@@ -56,21 +56,13 @@ module Mascot
       @children.empty?
     end
 
-    def resources
-      @resources.values
-    end
-
-    def remove_resource(resource)
-      @resources.delete resource.ext #if @resources[resource.ext] == resource
-    end
-
     def remove
       if leaf?
         # TODO: Check the parents to see if they also need to be removed if
         # this call orphans the tree up to a resource.
         parent.remove_child(name)
       else
-        @resources.clear
+        formats.clear
       end
     end
 
@@ -78,7 +70,7 @@ module Mascot
       head, *path = tokenize(path)
       if path.empty?
         # When there's no more paths, we're left with the format (e.g. ".html")
-        add_format(asset: asset, ext: head)
+        formats.add(asset: asset, ext: head)
       else
         @children[head].add(path: path, asset: asset)
       end
@@ -88,12 +80,12 @@ module Mascot
     def get_resource(path)
       *path, ext = tokenize(path)
       if node = dig(*path)
-        node.get_format(ext: ext)
+        node.formats.ext(ext)
       end
     end
 
     def inspect
-      "<#{self.class}: resources=#{resources.map(&:request_path)} children=#{children.map(&:name).inspect}>"
+      "<#{self.class}: resources=#{formats.map(&:request_path)} children=#{children.map(&:name).inspect}>"
     end
 
     def get(path)
@@ -103,22 +95,10 @@ module Mascot
     alias :[] :get
 
     protected
-    def get_format(ext: "")
-      @resources[ext]
-    end
 
     def remove_child(path)
       *_, segment, _ = tokenize(path)
       @children.delete(segment)
-    end
-
-    def add_format(asset: , ext: )
-      resource = Resource.new(asset: asset, node: self, ext: ext)
-      if @resources.has_key? ext
-        raise Mascot::ExistingRequestPathError, "Resource at #{resource.request_path} already set"
-      else
-        @resources[ext] = resource
-      end
     end
 
     # TODO: I don't really like how the path is broken up with the "ext" at the end.

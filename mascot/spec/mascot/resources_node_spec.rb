@@ -40,7 +40,7 @@ context Mascot::ResourcesNode do
         /a/b/c.html] }
     let(:path) { "/a/b.html" }
     it "has resource" do
-      expect(subject.resources.map(&:request_path)).to eql(["/a/b.html"])
+      expect(subject.formats.map(&:request_path)).to eql(["/a/b.html"])
     end
     context "enumerable" do
       it "iterates through resources" do
@@ -60,7 +60,7 @@ context Mascot::ResourcesNode do
       it { should have_siblings(%w[/a/1.html]) }
       it { should have_children(%w[/a/b/c.html]) }
       it "does not have resource" do
-        subject.resources.clear
+        subject.formats.clear
       end
       it "removes route" do
         expect(root.map(&:request_path)).to match_array(routes - ["/a/b.html"])
@@ -75,7 +75,7 @@ context Mascot::ResourcesNode do
         /a/b/c] }
     let(:path) { "/a/b" }
     it "has resource" do
-      expect(subject.resources.map(&:request_path)).to eql(["/a/b"])
+      expect(subject.formats.map(&:request_path)).to eql(["/a/b"])
     end
     context "enumerable" do
       it "iterates through resources" do
@@ -95,7 +95,7 @@ context Mascot::ResourcesNode do
       it { should have_siblings(%w[/a/1]) }
       it { should have_children(%w[/a/b/c]) }
       it "does not have resource" do
-        subject.resources.clear
+        subject.formats.clear
       end
       it "removes route" do
         expect(root.map(&:request_path)).to match_array(routes - ["/a/b"])

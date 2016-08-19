@@ -70,17 +70,17 @@ module Mascot
     # below and select, we could call a single map and pull out a resources
     def filter_resources(type: DEFAULT_FILTER_SCOPE, &block)
       return [] unless node
-      resources = block.call.map(&:resources)
+      nodes = block.call
 
       case type
       when :all
-        resources
+        nodes.map(&:formats)
       when :same
-        resources.flatten.select { |r| r.ext == ext }
+        nodes.map{ |n| n.formats.ext(ext) }.flatten.compact
       when String
-        resources.flatten.select { |r| r.ext == type }
+        nodes.map{ |n| n.formats.ext(type) }.flatten.compact
       when MIME::Type
-        resources.flatten.select { |r| r.mime_type == type }
+        nodes.map{ |n| n.formats.mime_type(type) }.flatten.compact
       else
         raise ArgumentError, "Invalid type argument #{type}. Must be either :same, :all, an extension string, or a Mime::Type"
       end
