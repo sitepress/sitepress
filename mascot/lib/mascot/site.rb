@@ -6,6 +6,7 @@ module Mascot
   class Site
     # Default file pattern to pick up in site
     DEFAULT_GLOB = "**/**".freeze
+
     # Default root path for site.
     DEFAULT_ROOT_PATH = Pathname.new(".").freeze
 
@@ -17,13 +18,13 @@ module Mascot
 
     # Lazy stream of files that will be rendered by resources.
     def assets(glob = DEFAULT_GLOB)
-      safe_root.glob(root.join(glob)).select(&File.method(:file?)).lazy.map do |path|
+      Dir.glob(root.join(glob)).select(&File.method(:file?)).lazy.map do |path|
         Asset.new(path: path)
       end
     end
 
     def glob(glob)
-      paths = safe_root.glob(root.join(glob))
+      paths = Dir.glob(root.join(glob))
       resources.select{ |r| paths.include? r.asset.path.to_s }
     end
 
@@ -60,10 +61,6 @@ module Mascot
     def asset_path_to_request_path(asset)
       # Relative path of resource to the file_path of this project.
       asset.path.dirname.join(asset.format_basename).relative_path_from(root).to_s
-    end
-
-    def safe_root
-      SafeRoot.new(path: root)
     end
   end
 end

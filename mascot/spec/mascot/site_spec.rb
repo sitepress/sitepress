@@ -10,9 +10,6 @@ context Mascot::Site do
     it "globs resources" do
       expect(subject.glob("*sin_frontmatter*").size).to eql(1)
     end
-    it "raises exception for glob outside of site root" do
-      expect{subject.glob("./..")}.to raise_exception(Mascot::UnsafePathAccessError)
-    end
   end
   describe "#manipulate" do
     it "adds ProcManipulator to_pipeline" do
