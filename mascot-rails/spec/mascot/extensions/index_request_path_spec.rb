@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Mascot::Extensions::IndexRequestPath do
   subject { Mascot::Extensions::IndexRequestPath.new }
-  let(:site) { Mascot::Site.new(root: "spec/pages") }
+  let(:site) { Mascot::Site.new(root_path: "spec/pages") }
   let(:resources) { site.resources }
 
   context "#process_resources" do

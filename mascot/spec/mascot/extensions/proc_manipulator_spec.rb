@@ -2,7 +2,7 @@ require "spec_helper"
 require "mascot/extensions/proc_manipulator"
 
 describe Mascot::Extensions::ProcManipulator do
-  let(:site) { Mascot::Site.new(root: "spec/pages") }
+  let(:site) { Mascot::Site.new(root_path: "spec/pages") }
   let(:resources) { site.resources }
   subject { Mascot::Extensions::ProcManipulator.new block }
   describe "#arity 1 procs" do

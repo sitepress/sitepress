@@ -7,24 +7,24 @@ module Mascot
     # Default file pattern to pick up in site
     DEFAULT_GLOB = "**/**".freeze
 
-    # Default root path for site.
+    # Default root_path for site.
     DEFAULT_ROOT_PATH = Pathname.new(".").freeze
 
-    attr_reader :root, :resources_pipeline
+    attr_reader :root_path, :resources_pipeline
 
-    def initialize(root: DEFAULT_ROOT_PATH)
-      self.root = root
+    def initialize(root_path: DEFAULT_ROOT_PATH)
+      self.root_path = root_path
     end
 
     # Lazy stream of files that will be rendered by resources.
     def assets(glob = DEFAULT_GLOB)
-      Dir.glob(root.join(glob)).select(&File.method(:file?)).lazy.map do |path|
+      Dir.glob(root_path.join(glob)).select(&File.method(:file?)).lazy.map do |path|
         Asset.new(path: path)
       end
     end
 
     def glob(glob)
-      paths = Dir.glob(root.join(glob))
+      paths = Dir.glob(root_path.join(glob))
       resources.select{ |r| paths.include? r.asset.path.to_s }
     end
 
@@ -47,8 +47,8 @@ module Mascot
       resources.get_resource(request_path)
     end
 
-    def root=(path)
-      @root = Pathname.new(path)
+    def root_path=(path)
+      @root_path = Pathname.new(path)
     end
 
     def resources_pipeline
@@ -60,7 +60,7 @@ module Mascot
     # to an absolute `/there/friend` format by removing the file extensions
     def asset_path_to_request_path(asset)
       # Relative path of resource to the file_path of this project.
-      asset.path.dirname.join(asset.format_basename).relative_path_from(root).to_s
+      asset.path.dirname.join(asset.format_basename).relative_path_from(root_path).to_s
     end
   end
 end

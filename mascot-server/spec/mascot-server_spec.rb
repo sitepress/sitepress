@@ -4,7 +4,7 @@ require 'mascot-server'
 
 describe Mascot::Server do
   include Rack::Test::Methods
-  let(:site) { Mascot::Site.new(root: "spec/pages") }
+  let(:site) { Mascot::Site.new(root_path: "spec/pages") }
 
   def app
     Mascot::Server.new(site: site)

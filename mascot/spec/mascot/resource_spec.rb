@@ -25,7 +25,7 @@ context Mascot::Resource do
     end
   end
   describe "resource node relationships" do
-    let(:site) { Mascot::Site.new(root: "spec/tree") }
+    let(:site) { Mascot::Site.new(root_path: "spec/tree") }
     let(:resources) { site.resources }
     subject{ resources.get_resource(path) }
     context "/about.html" do

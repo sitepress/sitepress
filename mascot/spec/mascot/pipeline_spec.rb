@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Mascot::ResourcesPipeline do
-  let(:site) { Mascot::Site.new(root: "spec/pages") }
+  let(:site) { Mascot::Site.new(root_path: "spec/pages") }
   subject{ site.resources_pipeline }
 
   describe "#process" do

@@ -15,7 +15,7 @@ module Mascot
     end
 
     def site
-      @site ||= Site.new(root: default_root).tap do |site|
+      @site ||= Site.new(root_path: default_root).tap do |site|
         site.resources_pipeline << Extensions::PartialsRemover.new unless partials
         site.resources_pipeline << Extensions::RailsRequestPaths.new
       end

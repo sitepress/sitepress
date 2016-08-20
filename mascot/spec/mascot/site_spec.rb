@@ -1,7 +1,7 @@
 require "spec_helper"
 
 context Mascot::Site do
-  subject { Mascot::Site.new(root: "spec/pages") }
+  subject { Mascot::Site.new(root_path: "spec/pages") }
   let(:resource_count) { 5 }
   it "has 5 resources" do
     expect(subject.resources.to_a.size).to eql(resource_count)

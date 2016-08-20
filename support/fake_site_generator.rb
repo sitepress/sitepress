@@ -26,7 +26,7 @@ module Mascot
     end
 
     def site
-      Mascot::Site.new(root: @dir)
+      Mascot::Site.new(root_path: @dir)
     end
 
     private

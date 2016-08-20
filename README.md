@@ -97,7 +97,7 @@ background_color: #0f0
 The Site accepts a directory path
 
 ```irb
-> site = Mascot::Site.new(root: "spec/pages")
+> site = Mascot::Site.new(root_path: "spec/pages")
 => #<Mascot::Site:0x007fcd24103710 @root=#<Pathname:spec/pages>, @request_path=#<Pathname:/>>
 ```
 
