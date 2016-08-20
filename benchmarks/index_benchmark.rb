@@ -6,12 +6,12 @@ title "Benchmarks for #{page_count} page website"
 fake_site do |site|
   site.generate_pages(count: page_count)
   site = site.site
-  resources = site.resources
+  resources = site.root
   path = resources.to_a.last.request_path
 
   benchmark "Builds all resources from scratch" do |x|
     x.report "Site#resources" do
-      site.resources
+      site.root
     end
     x.report "Site#get" do
       site.get path

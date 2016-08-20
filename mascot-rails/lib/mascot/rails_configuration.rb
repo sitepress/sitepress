@@ -21,11 +21,11 @@ module Mascot
       end
     end
 
-    def resources
-      # Production will cache resources globally. This drastically speeds up
-      # the speed at which resources are served, but if they change it won't be updated.
-      @resources = nil unless cache_resources?
-      @resources ||= site.resources
+    def root
+      # Production will cache root globally. This drastically speeds up
+      # the speed at which root are served, but if they change it won't be updated.
+      @root = nil unless cache_resources?
+      @root ||= site.root
     end
 
     def cache_resources?

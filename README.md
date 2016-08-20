@@ -123,7 +123,7 @@ The Site API is a powerful way to query content via resource globbing. For examp
 
 ```haml
 %ol
-  -site.resources.glob("docs/*.html*").each do |page|
+  -site.root.glob("docs/*.html*").each do |page|
     %li=link_to page.data["title"], page.request_path
 ```
 

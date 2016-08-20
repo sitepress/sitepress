@@ -32,7 +32,7 @@ module Mascot
       req = Rack::Request.new(env)
       resource = @site.get req.path
       # TODO: Memoize this per request and between requests eventually.
-      resources = @site.resources
+      resources = @site.root
 
       if resource
         body = if resource.asset.template_extensions.empty?

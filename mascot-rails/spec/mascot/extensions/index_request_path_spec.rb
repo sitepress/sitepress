@@ -3,13 +3,13 @@ require "spec_helper"
 describe Mascot::Extensions::IndexRequestPath do
   subject { Mascot::Extensions::IndexRequestPath.new }
   let(:site) { Mascot::Site.new(root_path: "spec/pages") }
-  let(:resources) { site.resources }
+  let(:root) { site.root }
 
   context "#process_resources" do
-    before { subject.process_resources(resources) }
+    before { subject.process_resources(root) }
     it "changes /index.html request_path to /" do
       # require "pry" ; binding.pry
-      expect(resources.get_resource("/").request_path).to eql("/")
+      expect(root.get_resource("/").request_path).to eql("/")
     end
   end
 end

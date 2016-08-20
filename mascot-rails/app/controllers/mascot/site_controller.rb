@@ -7,12 +7,12 @@ module Mascot
     end
 
     protected
-    def resources
-      @_mascot_resources ||= Mascot.configuration.resources
+    def root
+      @_mascot_root ||= Mascot.configuration.root
     end
 
     def mascot
-      @_mascot_context ||= Mascot::ActionControllerContext.new(controller: self, resources: resources)
+      @_mascot_context ||= Mascot::ActionControllerContext.new(controller: self, root: root)
     end
 
     def page_not_found(e)

@@ -25,11 +25,11 @@ module Mascot
 
     def glob(glob)
       paths = Dir.glob(root_path.join(glob))
-      resources.select{ |r| paths.include? r.asset.path.to_s }
+      root.select{ |r| paths.include? r.asset.path.to_s }
     end
 
     # Returns a list of resources.
-    def resources
+    def root
       ResourcesNode.new.tap do |root_node|
         assets.each { |a| root_node.add path: asset_path_to_request_path(a), asset: a }
         resources_pipeline.process root_node
@@ -44,7 +44,7 @@ module Mascot
 
     # Find the page with a path.
     def get(request_path)
-      resources.get_resource(request_path)
+      root.get_resource(request_path)
     end
 
     def root_path=(path)

@@ -9,7 +9,7 @@ describe Mascot::ResourcesPipeline do
       processor = double("Object", process_resources: [])
       expect(processor).to receive(:process_resources)
       subject << processor
-      site.resources
+      site.root
     end
   end
 end

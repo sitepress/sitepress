@@ -3,11 +3,11 @@ require "mascot/extensions/layouts"
 
 describe Mascot::Extensions::Layouts do
   subject { Mascot::Extensions::Layouts.new }
-  let(:resources) { Mascot::Site.new(root_path: "spec/pages").resources }
-  let(:resource) { resources.first }
+  let(:root) { Mascot::Site.new(root_path: "spec/pages").root }
+  let(:resource) { root.first }
   before do
     subject.layout("blah-set-by-rspec"){ |r| r == resource }
-    subject.process_resources resources
+    subject.process_resources root
   end
   context "without layout in frontmatter" do
     it "sets resource.data['layout'] key" do
@@ -15,7 +15,7 @@ describe Mascot::Extensions::Layouts do
     end
   end
   context "with layout in frontmatter" do
-    let(:resource) { resources.first.tap{ |r| r.data["layout"] = "kung-fu"} }
+    let(:resource) { root.first.tap{ |r| r.data["layout"] = "kung-fu"} }
     it "does not set resource.data['layout'] key" do
       expect(resource.data['layout']).to eql("kung-fu")
     end
