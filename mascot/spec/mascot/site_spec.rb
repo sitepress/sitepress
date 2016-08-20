@@ -4,7 +4,7 @@ context Mascot::Site do
   subject { Mascot::Site.new(root_path: "spec/pages") }
   let(:resource_count) { 5 }
   it "has 5 resources" do
-    expect(subject.root.to_a.size).to eql(resource_count)
+    expect(subject.root.resources.to_a.size).to eql(resource_count)
   end
   context "#glob" do
     it "globs resources" do

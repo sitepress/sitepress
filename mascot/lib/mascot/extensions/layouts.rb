@@ -13,8 +13,8 @@ module Mascot
         @rules << Rule.new(layout, block)
       end
 
-      def process_resources(resources)
-        resources.each do |resource|
+      def process_resources(node)
+        node.resources.each do |resource|
           @rules.each do |rule|
             if rule.processor.call(resource)
               resource.data["layout"] ||= rule.layout

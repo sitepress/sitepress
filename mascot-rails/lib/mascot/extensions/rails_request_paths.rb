@@ -3,12 +3,12 @@ module Mascot
     # Removes the file extension from the file so that /hi/there/fun.html can be
     # resolved via /hi/there/fun.
     class RailsRequestPaths
-      def process_resources(resources)
-        resources.each do |r|
+      def process_resources(node)
+        node.resources.each do |r|
           asset = r.asset
           request_path = r.request_path
           r.node.remove
-          resources.add path: self.class.format_path(request_path), asset: asset
+          node.add path: self.class.format_path(request_path), asset: asset
         end
       end
 

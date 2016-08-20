@@ -25,7 +25,7 @@ module Mascot
 
     def glob(glob)
       paths = Dir.glob(root_path.join(glob))
-      root.select{ |r| paths.include? r.asset.path.to_s }
+      root.resources.select{ |r| paths.include? r.asset.path.to_s }
     end
 
     # Returns a list of resources.

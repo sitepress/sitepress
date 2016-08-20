@@ -5,8 +5,8 @@ module Mascot
       # Partial rails prefix.
       PARTIAL_PREFIX = "_".freeze
 
-      def process_resources(resources)
-        resources.each do |r|
+      def process_resources(node)
+        node.resources.each do |r|
           r.node.remove if self.class.partial? r.asset.path # Looks like a smiley face, doesn't it?
         end
       end

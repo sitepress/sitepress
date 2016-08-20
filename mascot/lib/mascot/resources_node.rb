@@ -7,8 +7,6 @@ module Mascot
   class ResourcesNode
     attr_reader :parent, :name
 
-    include Enumerable
-
     DELIMITER = "/".freeze
 
     def initialize(parent: nil, delimiter: ResourcesNode::DELIMITER, name: nil)
@@ -50,12 +48,16 @@ module Mascot
       child_nodes.empty?
     end
 
-    # Iterates through resources in the current node and all child resources.
-    # TODO: Should this include all children? Perhaps I should move this method
-    # into an eumerator that more clearly states it returns an entire sub-tree.
-    def each(&block)
-      formats.each(&block)
-      children.each{ |c| c.each(&block) }
+    # TODO: This slows down the rails benchmakr from .15 to .20. Instead
+    # of creating a bunch of enumerators, loop through using for loops
+    # and yield those top-level.
+    def resources
+      Enumerator.new do |yielder|
+        formats.each{ |resource| yielder << resource }
+        children.each do |child|
+          child.resources.each{ |resource| yielder << resource }
+        end
+      end
     end
 
     def remove

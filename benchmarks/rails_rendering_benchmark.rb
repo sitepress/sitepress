@@ -18,10 +18,10 @@ fake_site do |site|
     File.write path, """---
 title: The page #{path}
 ---
-<h1>There are <%= pluralize resources.to_a.size, 'page' %> in the site<h1>
+<h1>There are <%= pluralize root.resources.to_a.size, 'page' %> in the site<h1>
 <p>And they are...<p>
 <ul>
-<% resources.each do |r| %>
+<% root.resources.each do |r| %>
   <li><%= link_to r.data['title'], r.request_path %></li>
 <% end %>
 </ul>"""
@@ -35,7 +35,8 @@ title: The page #{path}
   end
 
   site = Mascot.configuration.site
-  resources = Mascot.configuration.resources
+  root = Mascot.configuration.root
+  resources = root.resources
   path = resources.first.request_path
   last_path = resources.to_a.last.request_path
 
@@ -53,11 +54,11 @@ title: The page #{path}
 
     benchmark "Rails #{Rails.env} environment (Mascot.configuration.cache_resources = #{caching})" do |x|
       x.report "Mascot.configuration.resources.get(#{path.inspect})" do
-        Mascot.configuration.resources.get path
+        Mascot.configuration.root.get path
       end
 
       rails_request = Struct.new(:path).new(path)
-      route_constraint = Mascot::RouteConstraint.new(resources: Mascot.configuration.resources)
+      route_constraint = Mascot::RouteConstraint.new(root: Mascot.configuration.root)
       x.report "Mascot::RouteConstraint#match?" do
         route_constraint.matches? rails_request
       end
