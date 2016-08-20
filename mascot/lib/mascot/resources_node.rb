@@ -95,13 +95,7 @@ module Mascot
     alias :[] :get
 
     def inspect
-      "<#{self.class}: resources=#{formats.map(&:request_path)} children=#{children.map(&:name).inspect}>"
-    end
-
-    protected
-    def remove_child(path)
-      *_, segment, _ = tokenize(path)
-      child_nodes.delete(segment)
+      "<#{self.class}: formats=#{formats.map(&:request_path)} children=#{children.map(&:name).inspect}>"
     end
 
     # TODO: I don't really like how the path is broken up with the "ext" at the end.
@@ -116,6 +110,12 @@ module Mascot
       else
         nil
       end
+    end
+
+    protected
+    def remove_child(path)
+      *_, segment, _ = tokenize(path)
+      child_nodes.delete(segment)
     end
 
     private

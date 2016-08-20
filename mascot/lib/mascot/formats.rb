@@ -37,5 +37,9 @@ module Mascot
         @formats[ext] = resource
       end
     end
+
+    def inspect
+      "<#{self.class}: resources=#{map(&:request_path)}>"
+    end
   end
 end
