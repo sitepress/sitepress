@@ -31,7 +31,7 @@ module Mascot
     # Returns a list of resources.
     def root
       ResourcesNode.new.tap do |root_node|
-        assets.each { |a| root_node.add path: asset_path_to_request_path(a), asset: a }
+        DirectoryCollection.new(assets: assets, path: root_path).mount(root_node)
         resources_pipeline.process root_node
       end
     end
@@ -53,14 +53,6 @@ module Mascot
 
     def resources_pipeline
       @resources_pipeline ||= ResourcesPipeline.new
-    end
-
-    private
-    # Given a @file_path of `/hi`, this method changes `/hi/there/friend.html.erb`
-    # to an absolute `/there/friend` format by removing the file extensions
-    def asset_path_to_request_path(asset)
-      # Relative path of resource to the file_path of this project.
-      asset.path.dirname.join(asset.format_basename).relative_path_from(root_path).to_s
     end
   end
 end
