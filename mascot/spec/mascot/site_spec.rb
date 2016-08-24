@@ -8,7 +8,7 @@ context Mascot::Site do
   end
   context "#glob" do
     it "globs resources" do
-      expect(subject.glob("*sin_frontmatter*").size).to eql(1)
+      expect(subject.root.resources.glob(subject.root_path.join("*sin_frontmatter*")).size).to eql(1)
     end
   end
   describe "#manipulate" do

@@ -16,16 +16,8 @@ module Mascot
       self.root_path = root_path
     end
 
-    # Lazy stream of files that will be rendered by resources.
-    def assets(glob = DEFAULT_GLOB)
-      Dir.glob(root_path.join(glob)).select(&File.method(:file?)).lazy.map do |path|
-        Asset.new(path: path)
-      end
-    end
-
     def glob(glob)
-      paths = Dir.glob(root_path.join(glob))
-      root.resources.select{ |r| paths.include? r.asset.path.to_s }
+      root.resources.glob(root_path.join(glob))
     end
 
     # Returns a list of resources.
@@ -53,6 +45,14 @@ module Mascot
 
     def resources_pipeline
       @resources_pipeline ||= ResourcesPipeline.new
+    end
+
+    private
+    # Lazy stream of files that will be rendered by resources.
+    def assets(glob = DEFAULT_GLOB)
+      Dir.glob(root_path.join(glob)).select(&File.method(:file?)).lazy.map do |path|
+        Asset.new(path: path)
+      end
     end
   end
 end

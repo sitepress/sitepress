@@ -48,16 +48,26 @@ module Mascot
       child_nodes.empty?
     end
 
-    # TODO: This slows down the rails benchmakr from .15 to .20. Instead
-    # of creating a bunch of enumerators, loop through using for loops
-    # and yield those top-level.
-    def resources
-      Enumerator.new do |yielder|
-        formats.each{ |resource| yielder << resource }
-        children.each do |child|
-          child.resources.each{ |resource| yielder << resource }
-        end
+    class Resources
+      include Enumerable
+
+      def initialize(node: )
+        @node = node
       end
+
+      def each(&block)
+        @node.formats.each(&block)
+        @node.children.each { |child| child.resources.each(&block) }
+      end
+
+      def glob(pattern)
+        paths = Dir.glob(pattern)
+        select { |r| paths.include? r.asset.path.to_s }
+      end
+    end
+
+    def resources
+      Resources.new(node: self)
     end
 
     def remove
