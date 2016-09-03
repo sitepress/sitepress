@@ -15,4 +15,7 @@ describe Mascot do
       expect(subject.routes).to be true
     end
   end
+  it "prepends Site#root_path to ActionController::Base.view_paths" do
+    expect(ActionController::Base.view_paths.first.to_s).to eql(Mascot.configuration.site.root_path.to_s)
+  end
 end
