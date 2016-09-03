@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Mascot::SiteController, type: :controller do
-  context "existing templated page" do
+  context "templated page" do
     render_views
     before { get :show, resource_path: "/time" }
     let(:resource) { Mascot.configuration.site.get("/time") }
@@ -12,23 +12,23 @@ describe Mascot::SiteController, type: :controller do
       expect(response.body).to include("<h1>Tick tock, tick tock</h1>")
     end
     it "renders layout" do
-      expect(response.body).to include("<title>Dummy</title>")
+      expect(response.body).to include("<title>Test layout</title>")
     end
     it "responds with content type" do
       expect(response.content_type).to eql("text/html")
     end
-    context "@_mascot_locals assignment" do
-      subject { assigns(:_mascot_locals) }
-      it ":current_page" do
-        expect(subject[:current_page].asset.path).to eql(resource.asset.path)
+    context "helper methods" do
+      subject { @controller }
+      it "#current_page" do
+        expect(subject.send(:current_page).asset.path).to eql(resource.asset.path)
       end
-      it ":site" do
-        expect(subject[:resources]).to eql(Mascot.configuration.resources)
+      it "#root" do
+        expect(subject.send(:root)).to eql(Mascot.configuration.root)
       end
     end
   end
 
-  context "existing static page" do
+  context "static page" do
     render_views
     before { get :show, resource_path: "/hi" }
     it "is status 200" do

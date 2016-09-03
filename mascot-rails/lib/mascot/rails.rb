@@ -7,7 +7,6 @@ module Mascot
   # Rescued by ActionController to display page not found error.
   PageNotFoundError = Class.new(StandardError)
 
-  autoload :ActionControllerContext,  "mascot/action_controller_context"
   autoload :RailsConfiguration,       "mascot/rails_configuration"
   autoload :RouteConstraint,          "mascot/route_constraint"
   module Extensions
