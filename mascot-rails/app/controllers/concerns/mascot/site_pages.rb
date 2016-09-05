@@ -7,7 +7,7 @@ module Mascot
 
     included do
       rescue_from Mascot::PageNotFoundError, with: :page_not_found
-      helper_method :current_page, :root
+      helper_method :current_page, :root, :resources
     end
 
     def show
@@ -18,12 +18,16 @@ module Mascot
     end
 
     protected
+    def root
+      @_root ||= Mascot.configuration.root
+    end
+
     def current_page
       @_current_page ||= find_resource
     end
 
-    def root
-      @_root ||= Mascot.configuration.root
+    def resources
+      @_resources ||= root.resources
     end
 
     def page_not_found(e)

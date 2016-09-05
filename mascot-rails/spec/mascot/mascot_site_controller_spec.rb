@@ -25,6 +25,9 @@ describe Mascot::SiteController, type: :controller do
       it "#root" do
         expect(subject.send(:root)).to eql(Mascot.configuration.root)
       end
+      it "#resources" do
+        expect(subject.send(:resources)).to be_instance_of(Mascot::ResourcesNode::Resources)
+      end
     end
   end
 
