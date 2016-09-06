@@ -6,7 +6,7 @@ module Mascot
       end
 
       def process_resources(node)
-        node.resources.each do |resource|
+        node.flatten.each do |resource|
           if @block.arity == 1
             @block.call resource
           else # This will blow up if 0 or greater than 2.

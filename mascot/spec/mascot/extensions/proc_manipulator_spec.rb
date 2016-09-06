@@ -8,7 +8,7 @@ describe Mascot::Extensions::ProcManipulator do
   describe "#arity 1 procs" do
     let(:block) { Proc.new { |resource| } }
     it "is called with (resource)" do
-      root.resources.each do |resource|
+      root.flatten.each do |resource|
         expect(block).to receive(:call).with(resource)
       end
       subject.process_resources(root)
@@ -17,7 +17,7 @@ describe Mascot::Extensions::ProcManipulator do
   describe "arity 2 procs" do
     let(:block) { Proc.new { |resource, resources| } }
     it "is called with (resource, resources) for arity 2 procs" do
-      root.resources.each do |resource|
+      root.flatten.each do |resource|
         expect(block).to receive(:call).with(resource, root)
       end
       subject.process_resources(root)

@@ -6,7 +6,7 @@ module Mascot
       PARTIAL_PREFIX = "_".freeze
 
       def process_resources(node)
-        node.resources.each do |r|
+        node.flatten.each do |r|
           r.node.remove if self.class.partial? r.asset.path # Looks like a smiley face, doesn't it?
         end
       end

@@ -44,7 +44,7 @@ context Mascot::ResourcesNode do
     end
     context "enumerable" do
       it "iterates through resources" do
-        expect(root.resources.map(&:request_path)).to match_array(routes)
+        expect(root.flatten.map(&:request_path)).to match_array(routes)
       end
     end
     it { should have_parents(["/a.html"]) }
@@ -63,7 +63,7 @@ context Mascot::ResourcesNode do
         subject.formats.clear
       end
       it "removes route" do
-        expect(root.resources.map(&:request_path)).to match_array(routes - ["/a/b.html"])
+        expect(root.flatten.map(&:request_path)).to match_array(routes - ["/a/b.html"])
       end
     end
   end
@@ -79,7 +79,7 @@ context Mascot::ResourcesNode do
     end
     context "enumerable" do
       it "iterates through resources" do
-        expect(root.resources.map(&:request_path)).to match_array(routes)
+        expect(root.flatten.map(&:request_path)).to match_array(routes)
       end
     end
     it { should have_parents(["/a"]) }
@@ -98,7 +98,7 @@ context Mascot::ResourcesNode do
         subject.formats.clear
       end
       it "removes route" do
-        expect(root.resources.map(&:request_path)).to match_array(routes - ["/a/b"])
+        expect(root.flatten.map(&:request_path)).to match_array(routes - ["/a/b"])
       end
     end
   end

@@ -48,26 +48,12 @@ module Mascot
       child_nodes.empty?
     end
 
-    class Resources
-      include Enumerable
-
-      def initialize(node: )
-        @node = node
+    def flatten(resources: [])
+      formats.each{ |resource| resources << resource }
+      children.each do |child|
+        child.flatten.each{ |resource| resources << resource }
       end
-
-      def each(&block)
-        @node.formats.each(&block)
-        @node.children.each { |child| child.resources.each(&block) }
-      end
-
-      def glob(pattern)
-        paths = Dir.glob(pattern)
-        select { |r| paths.include? r.asset.path.to_s }
-      end
-    end
-
-    def resources
-      Resources.new(node: self)
+      resources
     end
 
     def remove

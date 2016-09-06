@@ -10,7 +10,7 @@ module Mascot
       end
 
       def process_resources(node)
-        node.resources.each do |r|
+        node.flatten.each do |r|
           asset = r.asset
           if asset.path.basename.to_s.start_with? @file_name
             request_path = Pathname.new("/").join(r.request_path).dirname.cleanpath.to_s

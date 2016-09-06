@@ -23,7 +23,7 @@ module Mascot
     end
 
     def resources
-      @_resources ||= root.resources
+      @_resources ||= root.flatten
     end
 
     def page_not_found(e)

@@ -4,7 +4,7 @@ module Mascot
     # resolved via /hi/there/fun.
     class RailsRequestPaths
       def process_resources(node)
-        node.resources.each do |r|
+        node.flatten.each do |r|
           asset = r.asset
           request_path = r.request_path
           r.node.remove

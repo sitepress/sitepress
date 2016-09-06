@@ -36,7 +36,7 @@ title: The page #{path}
 
   site = Mascot.configuration.site
   root = Mascot.configuration.root
-  resources = root.resources
+  resources = root.flatten
   path = resources.first.request_path
   last_path = resources.to_a.last.request_path
 

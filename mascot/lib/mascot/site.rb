@@ -18,14 +18,19 @@ module Mascot
 
     # Returns a list of resources.
     def root
-      ResourcesNode.new.tap do |root_node|
-        DirectoryCollection.new(assets: assets, path: root_path).mount(root_node)
-        resources_pipeline.process root_node
+      ResourcesNode.new.tap do |node|
+        DirectoryCollection.new(assets: assets, path: root_path).mount(node)
+        resources_pipeline.process node
       end
     end
 
-    def glob(glob)
-      root.resources.glob(root_path.join(glob))
+    def resources
+      root.flatten
+    end
+
+    def glob(pattern)
+      paths = Dir.glob root_path.join(pattern)
+      resources.select { |r| paths.include? r.asset.path.to_s }
     end
 
     # Find the page with a path.

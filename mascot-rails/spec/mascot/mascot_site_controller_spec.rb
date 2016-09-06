@@ -23,7 +23,7 @@ describe Mascot::SiteController, type: :controller do
         expect(subject.send(:current_page).asset.path).to eql(resource.asset.path)
       end
       it "#resources" do
-        expect(subject.send(:resources)).to be_instance_of(Mascot::ResourcesNode::Resources)
+        expect(subject.send(:resources)).to match_array(Mascot.configuration.site.resources)
       end
     end
   end

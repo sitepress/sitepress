@@ -14,7 +14,7 @@ module Mascot
       end
 
       def process_resources(node)
-        node.resources.each do |resource|
+        node.flatten.each do |resource|
           @rules.each do |rule|
             if rule.processor.call(resource)
               resource.data["layout"] ||= rule.layout
