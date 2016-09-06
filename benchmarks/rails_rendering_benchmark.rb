@@ -18,10 +18,10 @@ fake_site do |site|
     File.write path, """---
 title: The page #{path}
 ---
-<h1>There are <%= pluralize root.resources.to_a.size, 'page' %> in the site<h1>
+<h1>There are <%= pluralize resources.to_a.size, 'page' %> in the site<h1>
 <p>And they are...<p>
 <ul>
-<% root.resources.each do |r| %>
+<% resources.each do |r| %>
   <li><%= link_to r.data['title'], r.request_path %></li>
 <% end %>
 </ul>"""
