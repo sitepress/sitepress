@@ -16,7 +16,7 @@ module Mascot
       self.root_path = root_path
     end
 
-    # Returns a list of resources.
+    # A tree representation of the resourecs wthin the site.
     def root
       ResourcesNode.new.tap do |node|
         DirectoryCollection.new(assets: assets, path: root_path).mount(node)
@@ -24,6 +24,7 @@ module Mascot
       end
     end
 
+    # Returns a list of all the resources within #root.
     def resources
       root.flatten
     end
