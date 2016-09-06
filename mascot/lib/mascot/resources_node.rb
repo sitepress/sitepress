@@ -91,18 +91,18 @@ module Mascot
     end
     alias :[]= :add
 
-    def get_resource(path)
+    def get(path)
       *path, ext = tokenize(path)
       if node = dig(*path)
         node.formats.ext(ext)
       end
     end
 
-    def get(path)
-      *path, ext = tokenize(path)
+    def get_node(path)
+      *path, _ = tokenize(path)
       dig(*path)
     end
-    alias :[] :get
+    alias :[] :get_node
 
     def inspect
       "<#{self.class}: formats=#{formats.map(&:request_path)} children=#{children.map(&:name).inspect}>"

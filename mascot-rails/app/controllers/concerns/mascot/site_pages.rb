@@ -34,8 +34,8 @@ module Mascot
 
     # Mascot::PageNotFoundError is handled in the default Mascot::SiteController
     # with an execption that Rails can use to display a 404 error.
-    def get_resource(path)
-      resource = root.get_resource(path)
+    def get(path)
+      resource = root.get(path)
       if resource.nil?
         # TODO: Display error in context of Reources class root.
         raise Mascot::PageNotFoundError, "No such page: #{path}"
@@ -46,7 +46,7 @@ module Mascot
 
     # Default finder of the resource for the current controller context.###
     def find_resource
-      get_resource params[:resource_path]
+      get params[:resource_path]
     end
 
     # Returns the current layout for the inline Mascot renderer.

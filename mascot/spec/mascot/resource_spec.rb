@@ -27,14 +27,14 @@ context Mascot::Resource do
   describe "resource node relationships" do
     let(:site) { Mascot::Site.new(root_path: "spec/tree") }
     let(:root) { site.root }
-    subject{ root.get_resource(path) }
+    subject{ root.get(path) }
     context "/about.html" do
       let(:path) { "/about.html" }
       it "has no parents" do
         expect(subject.parents).to be_empty
       end
       it "has siblings" do
-        expect(subject.siblings).to eql([root.get_resource("/index.html")])
+        expect(subject.siblings).to eql([root.get("/index.html")])
       end
       it "has no children" do
         expect(subject.children).to be_empty

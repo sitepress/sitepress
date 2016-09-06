@@ -9,7 +9,7 @@ describe Mascot::Extensions::IndexRequestPath do
     before { subject.process_resources(root) }
     it "changes /index.html request_path to /" do
       # require "pry" ; binding.pry
-      expect(root.get_resource("/").request_path).to eql("/")
+      expect(root.get("/").request_path).to eql("/")
     end
   end
 end

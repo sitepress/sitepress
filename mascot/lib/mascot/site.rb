@@ -16,10 +16,6 @@ module Mascot
       self.root_path = root_path
     end
 
-    def glob(glob)
-      root.resources.glob(root_path.join(glob))
-    end
-
     # Returns a list of resources.
     def root
       ResourcesNode.new.tap do |root_node|
@@ -28,15 +24,19 @@ module Mascot
       end
     end
 
-    # Quick and dirty way to manipulate resources in the site without
-    # creating classes that implement the #process_resources method
-    def manipulate(&block)
-      resources_pipeline << Extensions::ProcManipulator.new(block)
+    def glob(glob)
+      root.resources.glob(root_path.join(glob))
     end
 
     # Find the page with a path.
     def get(request_path)
-      root.get_resource(request_path)
+      root.get(request_path)
+    end
+
+    # Quick and dirty way to manipulate resources in the site without
+    # creating classes that implement the #process_resources method
+    def manipulate(&block)
+      resources_pipeline << Extensions::ProcManipulator.new(block)
     end
 
     def root_path=(path)

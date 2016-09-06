@@ -11,13 +11,13 @@ context Mascot::ResourcesNode do
       /app/boo.html
       /app/boo/radly.html] }
   let(:root) { Mascot::ResourcesNode.new }
-  subject { root.get(path) }
+  subject { root.get_node(path) }
   before { routes.each { |r| root.add(path: r, asset: Mascot::Asset.new(path: r)) } }
   it "is_root" do
     expect(root).to be_root
   end
   it "is_leaf" do
-    expect(root.get("/app/boo/radly.html")).to be_leaf
+    expect(root.get_node("/app/boo/radly.html")).to be_leaf
   end
   context "/app/is/bad.html" do
     let(:path) { "/app/is/bad.html" }
@@ -51,7 +51,7 @@ context Mascot::ResourcesNode do
     it { should have_siblings(%w[/a/1.html]) }
     it { should have_children(%w[/a/b/c.html]) }
     context "remove c.html" do
-      before { subject.get("c.html").remove }
+      before { subject.get_node("c.html").remove }
       it { should have_children([]) }
     end
     context "remove /a/b.html" do
@@ -86,7 +86,7 @@ context Mascot::ResourcesNode do
     it { should have_siblings(%w[/a/1]) }
     it { should have_children(%w[/a/b/c]) }
     context "remove c" do
-      before { subject.get("c").remove }
+      before { subject.get_node("c").remove }
       it { should have_children([]) }
     end
     context "remove /a/b" do
