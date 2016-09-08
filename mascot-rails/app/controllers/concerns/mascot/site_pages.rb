@@ -7,7 +7,7 @@ module Mascot
 
     included do
       rescue_from Mascot::PageNotFoundError, with: :page_not_found
-      helper_method :current_page, :resources
+      helper_method :current_page, :site
     end
 
     def show
@@ -22,8 +22,8 @@ module Mascot
       @_current_page ||= find_resource
     end
 
-    def resources
-      @_resources ||= Mascot.site.resources
+    def site
+      Mascot.site
     end
 
     def page_not_found(e)
@@ -35,7 +35,7 @@ module Mascot
     # Mascot::PageNotFoundError is handled in the default Mascot::SiteController
     # with an execption that Rails can use to display a 404 error.
     def get(path)
-      resource = resources.get(path)
+      resource = Mascot.site.resources.get(path)
       if resource.nil?
         # TODO: Display error in context of Reources class root.
         raise Mascot::PageNotFoundError, "No such page: #{path}"

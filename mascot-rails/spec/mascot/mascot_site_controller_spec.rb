@@ -22,8 +22,8 @@ describe Mascot::SiteController, type: :controller do
       it "#current_page" do
         expect(subject.send(:current_page).asset.path).to eql(resource.asset.path)
       end
-      it "#resources" do
-        expect(subject.send(:resources)).to match_array(Mascot.site.resources)
+      it "#site" do
+        expect(subject.send(:site)).to eql(Mascot.site)
       end
     end
   end
