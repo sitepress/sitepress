@@ -34,8 +34,8 @@ title: The page #{path}
     end
   end
 
-  site = Mascot.configuration.site
-  resources = Mascot.configuration.site.resources
+  site = Mascot.site
+  resources = Mascot.site.resources
   path = resources.first.request_path
   last_path = resources.to_a.last.request_path
 
@@ -53,11 +53,11 @@ title: The page #{path}
 
     benchmark "Rails #{Rails.env} environment (Mascot.configuration.cache_resources = #{caching})" do |x|
       x.report "Mascot.configuration.resources.get(#{path.inspect})" do
-        Mascot.configuration.site.resources.get path
+        Mascot.site.resources.get path
       end
 
       rails_request = Struct.new(:path).new(path)
-      route_constraint = Mascot::RouteConstraint.new(resources: Mascot.configuration.site.resources)
+      route_constraint = Mascot::RouteConstraint.new(resources: Mascot.site.resources)
       x.report "Mascot::RouteConstraint#match?" do
         route_constraint.matches? rails_request
       end

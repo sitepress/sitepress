@@ -23,7 +23,7 @@ module Mascot
     end
 
     def resources
-      @_resources ||= Mascot.configuration.site.resources
+      @_resources ||= Mascot.site.resources
     end
 
     def page_not_found(e)

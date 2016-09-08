@@ -4,7 +4,7 @@ describe Mascot::SiteController, type: :controller do
   context "templated page" do
     render_views
     before { get :show, resource_path: "/time" }
-    let(:resource) { Mascot.configuration.site.get("/time") }
+    let(:resource) { Mascot.site.get("/time") }
     it "is status 200" do
       expect(response.status).to eql(200)
     end
@@ -23,7 +23,7 @@ describe Mascot::SiteController, type: :controller do
         expect(subject.send(:current_page).asset.path).to eql(resource.asset.path)
       end
       it "#resources" do
-        expect(subject.send(:resources)).to match_array(Mascot.configuration.site.resources)
+        expect(subject.send(:resources)).to match_array(Mascot.site.resources)
       end
     end
   end
