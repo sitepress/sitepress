@@ -1,12 +1,12 @@
 module Mascot
   # Route constraint for rails routes.rb file.
   class RouteConstraint
-    def initialize(root: Mascot.configuration.root)
-      @root = root
+    def initialize(resources: Mascot.configuration.site.resources)
+      @resources = resources
     end
 
     def matches?(request)
-      !!@root.get(request.path)
+      !!@resources.get(request.path)
     end
   end
 end

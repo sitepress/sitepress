@@ -12,6 +12,7 @@ module Mascot
   autoload :Formats,              "mascot/formats"
   autoload :Frontmatter,          "mascot/frontmatter"
   autoload :Resource,             "mascot/resource"
+  autoload :ResourceCollection,   "mascot/resource_collection"
   autoload :ResourcesPipeline,    "mascot/resources_pipeline"
   autoload :ResourcesNode,        "mascot/resources_node"
   autoload :Site,                 "mascot/site"

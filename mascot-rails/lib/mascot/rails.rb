@@ -15,6 +15,11 @@ module Mascot
     autoload :IndexRequestPath,       "mascot/extensions/index_request_path"
   end
 
+  # Make site available via Mascot.site from Rails app.
+  def self.site
+    configuration.site
+  end
+
   # Default configuration object for Mascot Rails integration.
   def self.configuration
     @configuration ||= RailsConfiguration.new

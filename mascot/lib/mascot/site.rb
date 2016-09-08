@@ -12,8 +12,18 @@ module Mascot
 
     attr_reader :root_path, :resources_pipeline
 
-    def initialize(root_path: DEFAULT_ROOT_PATH)
+    # Cache resources for production runs of Mascot. Development
+    # modes don't cache to optimize for files reloading.
+    attr_accessor :cache_resources
+    alias :cache_resources? :cache_resources
+
+    # TODO: Get rid of these so that folks have ot call site.resources.get ...
+    extend Forwardable
+    def_delegators :resources, :get, :glob
+
+    def initialize(root_path: DEFAULT_ROOT_PATH, cache_resources: false)
       self.root_path = root_path
+      self.cache_resources = cache_resources
     end
 
     # A tree representation of the resourecs wthin the site.
@@ -26,27 +36,18 @@ module Mascot
 
     # Returns a list of all the resources within #root.
     def resources
-      root.flatten
+      @resources = nil unless cache_resources
+      @resources ||= ResourceCollection.new(node: root, root_path: root_path)
     end
 
-    def glob(pattern)
-      paths = Dir.glob root_path.join(pattern)
-      resources.select { |r| paths.include? r.asset.path.to_s }
-    end
-
-    # Find the page with a path.
-    def get(request_path)
-      root.get(request_path)
+    def root_path=(path)
+      @root_path = Pathname.new(path)
     end
 
     # Quick and dirty way to manipulate resources in the site without
     # creating classes that implement the #process_resources method
     def manipulate(&block)
       resources_pipeline << Extensions::ProcManipulator.new(block)
-    end
-
-    def root_path=(path)
-      @root_path = Pathname.new(path)
     end
 
     def resources_pipeline

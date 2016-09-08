@@ -23,7 +23,7 @@ module Mascot
     end
 
     def resources
-      @_resources ||= root.flatten
+      @_resources ||= Mascot.configuration.site.resources
     end
 
     def page_not_found(e)
@@ -35,7 +35,7 @@ module Mascot
     # Mascot::PageNotFoundError is handled in the default Mascot::SiteController
     # with an execption that Rails can use to display a 404 error.
     def get(path)
-      resource = root.get(path)
+      resource = resources.get(path)
       if resource.nil?
         # TODO: Display error in context of Reources class root.
         raise Mascot::PageNotFoundError, "No such page: #{path}"
@@ -57,10 +57,6 @@ module Mascot
       else
         File.basename(layout.identifier).split('.').first
       end
-    end
-
-    def root
-      @_root ||= Mascot.configuration.root
     end
   end
 end

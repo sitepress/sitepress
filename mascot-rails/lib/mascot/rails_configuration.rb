@@ -1,35 +1,29 @@
+require "forwardable"
+
 module Mascot
   # Configuration object for rails application.
   class RailsConfiguration
     # Store in ./app/pages by default.
     DEFAULT_SITE_ROOT = "app/pages".freeze
 
-    attr_accessor :site, :resources, :parent_engine, :routes, :cache_resources, :partials
+    attr_accessor :site, :parent_engine, :routes, :cache_resources
+
+    # Delegates configuration points into the Mascot site.
+    extend Forwardable
+    def_delegators :site, :cache_resources, :cache_resources=, :cache_resources?
 
     # Set defaults.
     def initialize
-      @routes = true
-      @parent_engine = Rails.application
-      @cache_resources = @parent_engine.config.cache_classes
-      @partials = false
+      self.routes = true
+      self.parent_engine = Rails.application
+      self.cache_resources = parent_engine.config.cache_classes
     end
 
     def site
-      @site ||= Site.new(root_path: default_root).tap do |site|
-        site.resources_pipeline << Extensions::PartialsRemover.new unless partials
+      @site ||= Site.new(root_path: default_root, cache_resources: @cache_resources).tap do |site|
+        site.resources_pipeline << Extensions::PartialsRemover.new
         site.resources_pipeline << Extensions::RailsRequestPaths.new
       end
-    end
-
-    def root
-      # Production will cache root globally. This drastically speeds up
-      # the speed at which root are served, but if they change it won't be updated.
-      @root = nil unless cache_resources?
-      @root ||= site.root
-    end
-
-    def cache_resources?
-      !!@cache_resources
     end
 
     private
