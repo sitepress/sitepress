@@ -1,7 +1,7 @@
 require "fileutils"
 require "tmpdir"
 
-module Mascot
+module Sitepress
   class FakeSiteGenerator
     attr_reader :dir, :pages
 
@@ -26,7 +26,7 @@ module Mascot
     end
 
     def site
-      Mascot::Site.new(root_path: @dir)
+      Sitepress::Site.new(root_path: @dir)
     end
 
     private

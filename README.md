@@ -1,21 +1,21 @@
-# Mascot
+# Sitepress
 
-Mascot is a file-backed website content manager that can be embedded in popular web frameworks like Rails, run stand-alone, or be compiled into static sites. Its useful for marketing pages or small websites that you need to deploy within your web frameworks.
+Sitepress is a file-backed website content manager that can be embedded in popular web frameworks like Rails, run stand-alone, or be compiled into static sites. Its useful for marketing pages or small websites that you need to deploy within your web frameworks.
 
-[![Build Status](https://travis-ci.org/bradgessler/mascot.svg?branch=master)](https://travis-ci.org/bradgessler/mascot) [![Code Climate](https://codeclimate.com/github/bradgessler/mascot/badges/gpa.svg)](https://codeclimate.com/github/bradgessler/mascot) [![Test Coverage](https://codeclimate.com/github/bradgessler/mascot/badges/coverage.svg)](https://codeclimate.com/github/bradgessler/mascot/coverage)
+[![Build Status](https://travis-ci.org/bradgessler/sitepress.svg?branch=master)](https://travis-ci.org/bradgessler/sitepress) [![Code Climate](https://codeclimate.com/github/bradgessler/sitepress/badges/gpa.svg)](https://codeclimate.com/github/bradgessler/sitepress) [![Test Coverage](https://codeclimate.com/github/bradgessler/sitepress/badges/coverage.svg)](https://codeclimate.com/github/bradgessler/sitepress/coverage)
 
 ## Installation
 
 ### Rails Installation
 
-Follow the instructions in the [Mascot Rails](./mascot-rails) gem.
+Follow the instructions in the [Sitepress Rails](./sitepress-rails) gem.
 
 ### Standalone Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'mascot'
+gem 'sitepress'
 ```
 
 And then execute:
@@ -24,7 +24,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install mascot
+    $ gem install sitepress
 
 ## Usage
 
@@ -47,12 +47,12 @@ meta:
     %h2 There
 ```
 
-Mascot can parse out the frontmatter and body to render inside your framework of choice, like Rails:
+Sitepress can parse out the frontmatter and body to render inside your framework of choice, like Rails:
 
 ```ruby
-class MascotController < ApplicationController
+class SitepressController < ApplicationController
   def show
-    mascot.render "/hi"
+    sitepress.render "/hi"
   end
 end
 ```
@@ -66,11 +66,11 @@ so when you call `current_page.data` from your templates, you get something like
 => "One"
 ```
 
-Mascot is designed to be embedded in rails and other Ruby web frameworks.
+Sitepress is designed to be embedded in rails and other Ruby web frameworks.
 
 # Features
 
-Mascot implements a subset of the best features from the [Middleman](http://www.middlemanapp.com/) static site generator including the Site and Frontmatter.
+Sitepress implements a subset of the best features from the [Middleman](http://www.middlemanapp.com/) static site generator including the Site and Frontmatter.
 
 ## Frontmatter
 
@@ -97,15 +97,15 @@ background_color: #0f0
 The Site accepts a directory path
 
 ```irb
-> site = Mascot::Site.new(root_path: "spec/pages")
-=> #<Mascot::Site:0x007fcd24103710 @root=#<Pathname:spec/pages>, @request_path=#<Pathname:/>>
+> site = Sitepress::Site.new(root_path: "spec/pages")
+=> #<Sitepress::Site:0x007fcd24103710 @root=#<Pathname:spec/pages>, @request_path=#<Pathname:/>>
 ```
 
 Then you can request a resource by request path:
 
 ```irb
 > resource = site.get("/test")
-=> #<Mascot::Resource:0x007fcd2488a128 @request_path="/test", @content_type="text/html", @file_path=#<Pathname:spec/pages/test.html.haml>, @frontmatter=#<Mascot::Frontmatter:0x007fcd24889e80 @data="title: Name\nmeta:\n  keywords: One", @body="\n!!!\n%html\n  %head\n    %title=current_page.data[\"title\"]\n  %body\n    %h1 Hi\n    %p This is just some content\n    %h2 There\n">>
+=> #<Sitepress::Resource:0x007fcd2488a128 @request_path="/test", @content_type="text/html", @file_path=#<Pathname:spec/pages/test.html.haml>, @frontmatter=#<Sitepress::Frontmatter:0x007fcd24889e80 @data="title: Name\nmeta:\n  keywords: One", @body="\n!!!\n%html\n  %head\n    %title=current_page.data[\"title\"]\n  %body\n    %h1 Hi\n    %p This is just some content\n    %h2 There\n">>
 ```
 
 And access the frontmatter data (if available) and body of the template.
@@ -135,4 +135,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/bradgessler/mascot.
+Bug reports and pull requests are welcome on GitHub at https://github.com/bradgessler/sitepress.

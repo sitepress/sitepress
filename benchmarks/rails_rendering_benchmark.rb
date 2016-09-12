@@ -29,13 +29,13 @@ title: The page #{path}
 
   initialize_rails do
     # Setup rails to use the fake site.
-    Mascot.configure do |config|
+    Sitepress.configure do |config|
       config.site = site.site
     end
   end
 
-  site = Mascot.site
-  resources = Mascot.site.resources
+  site = Sitepress.site
+  resources = Sitepress.site.resources
   path = resources.first.request_path
   last_path = resources.to_a.last.request_path
 
@@ -49,16 +49,16 @@ title: The page #{path}
 
   # Test caching configurations.
   [true,false].each do |caching|
-    Mascot.configuration.cache_resources = caching
+    Sitepress.configuration.cache_resources = caching
 
-    benchmark "Rails #{Rails.env} environment (Mascot.configuration.cache_resources = #{caching})" do |x|
-      x.report "Mascot.configuration.resources.get(#{path.inspect})" do
-        Mascot.site.resources.get path
+    benchmark "Rails #{Rails.env} environment (Sitepress.configuration.cache_resources = #{caching})" do |x|
+      x.report "Sitepress.configuration.resources.get(#{path.inspect})" do
+        Sitepress.site.resources.get path
       end
 
       rails_request = Struct.new(:path).new(path)
-      route_constraint = Mascot::RouteConstraint.new(resources: Mascot.site.resources)
-      x.report "Mascot::RouteConstraint#match?" do
+      route_constraint = Sitepress::RouteConstraint.new(resources: Sitepress.site.resources)
+      x.report "Sitepress::RouteConstraint#match?" do
         route_constraint.matches? rails_request
       end
 

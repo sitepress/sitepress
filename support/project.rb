@@ -1,4 +1,4 @@
-module Mascot
+module Sitepress
   class Project
     def initialize(gemspec_path)
       @gemspec_path = gemspec_path

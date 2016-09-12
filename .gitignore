@@ -2,12 +2,12 @@ Gemfile.lock
 **/pkg/
 .sass-cache
 
-mascot-rails/**/*.sqlite3
-mascot-rails/.bundle/
-mascot-rails/.yardoc
-mascot-rails/_yardoc/
-mascot-rails/coverage/
-mascot-rails/doc/
-mascot-rails/spec/reports/
-mascot-rails/spec/dummy/log/*.log
-mascot-rails/tmp/
+sitepress-rails/**/*.sqlite3
+sitepress-rails/.bundle/
+sitepress-rails/.yardoc
+sitepress-rails/_yardoc/
+sitepress-rails/coverage/
+sitepress-rails/doc/
+sitepress-rails/spec/reports/
+sitepress-rails/spec/dummy/log/*.log
+sitepress-rails/tmp/

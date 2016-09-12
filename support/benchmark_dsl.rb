@@ -1,6 +1,6 @@
 require_relative "./fake_site_generator"
 
-module Mascot
+module Sitepress
   # Make writing benchmarks a little easier.
   module BenchmarkDSL
     def desc(text)
@@ -12,7 +12,7 @@ module Mascot
 
     # Generates a fake website.
     def fake_site(page_count: nil)
-      site = Mascot::FakeSiteGenerator.new
+      site = Sitepress::FakeSiteGenerator.new
       begin
         site.generate_pages(count: page_count) if page_count
         yield site
@@ -33,10 +33,10 @@ module Mascot
     def initialize_rails(&block)
       # Setup the fucking rails instance. What a side-affect loaded pile of shit.
       ENV["RAILS_ENV"] = "production"
-      require_relative "../mascot-rails/spec/dummy/config/application"
-      require "mascot/rails"
+      require_relative "../sitepress-rails/spec/dummy/config/application"
+      require "sitepress/rails"
 
-      # Likely a Mascot setup going on in here.
+      # Likely a Sitepress setup going on in here.
       block.call Rails.application if block_given?
 
       # Initialize the Rails application.
