@@ -2,7 +2,7 @@
 
 Sitepress is a file-backed website content manager that can be embedded in popular web frameworks like Rails, run stand-alone, or be compiled into static sites. Its useful for marketing pages or small websites that you need to deploy within your web frameworks.
 
-[![Build Status](https://travis-ci.org/bradgessler/sitepress.svg?branch=master)](https://travis-ci.org/bradgessler/sitepress) [![Code Climate](https://codeclimate.com/github/bradgessler/sitepress/badges/gpa.svg)](https://codeclimate.com/github/bradgessler/sitepress) [![Test Coverage](https://codeclimate.com/github/bradgessler/sitepress/badges/coverage.svg)](https://codeclimate.com/github/bradgessler/sitepress/coverage)
+[![Build Status](https://travis-ci.org/sitepress/sitepress.svg?branch=master)](https://travis-ci.org/sitepress/sitepress) [![Code Climate](https://codeclimate.com/github/sitepress/sitepress/badges/gpa.svg)](https://codeclimate.com/github/sitepress/sitepress) [![Test Coverage](https://codeclimate.com/github/sitepress/sitepress/badges/coverage.svg)](https://codeclimate.com/github/sitepress/sitepress/coverage)
 
 ## Installation
 
@@ -135,4 +135,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/bradgessler/sitepress.
+Bug reports and pull requests are welcome on GitHub at https://github.com/sitepress/sitepress.

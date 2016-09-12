@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["bradgessler@gmail.com"]
 
   spec.summary       = %q{Sitepress rails integration.}
-  spec.homepage      = "https://github.com/bradgessler/sitepress"
+  spec.homepage      = "https://github.com/sitepress/sitepress"
 
   spec.files         = Dir["{app,config,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   spec.bindir        = "exe"

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["bradgessler@gmail.com"]
 
   spec.summary       = %q{Sitepress rack app for stand-alone of embedded usage.}
-  spec.homepage      = "https://github.com/bradgessler/sitepress"
+  spec.homepage      = "https://github.com/sitepress/sitepress"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
