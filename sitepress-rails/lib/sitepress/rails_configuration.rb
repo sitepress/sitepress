@@ -3,8 +3,8 @@ require "forwardable"
 module Sitepress
   # Configuration object for rails application.
   class RailsConfiguration
-    # Store in ./app/pages by default.
-    DEFAULT_SITE_ROOT = "app/pages".freeze
+    # Store in ./app/content by default.
+    DEFAULT_SITE_ROOT = "app/content".freeze
 
     attr_accessor :site, :parent_engine, :routes, :cache_resources
 

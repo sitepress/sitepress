@@ -29,9 +29,13 @@ module Sitepress
     # A tree representation of the resourecs wthin the site.
     def root
       ResourcesNode.new.tap do |node|
-        DirectoryCollection.new(assets: assets, path: root_path).mount(node)
+        DirectoryCollection.new(assets: pages_assets, path: pages_path).mount(node)
         resources_pipeline.process node
       end
+    end
+
+    def pages_path
+      root_path.join("pages")
     end
 
     # Returns a list of all the resources within #root.
@@ -56,8 +60,8 @@ module Sitepress
 
     private
     # Lazy stream of files that will be rendered by resources.
-    def assets(glob = DEFAULT_GLOB)
-      Dir.glob(root_path.join(glob)).select(&File.method(:file?)).lazy.map do |path|
+    def pages_assets(glob = DEFAULT_GLOB)
+      Dir.glob(pages_path.join(glob)).select(&File.method(:file?)).lazy.map do |path|
         Asset.new(path: path)
       end
     end

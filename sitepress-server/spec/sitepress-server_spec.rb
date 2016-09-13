@@ -4,7 +4,7 @@ require 'sitepress-server'
 
 describe Sitepress::Server do
   include Rack::Test::Methods
-  let(:site) { Sitepress::Site.new(root_path: "spec/pages") }
+  let(:site) { Sitepress::Site.new(root_path: "spec/sites/sample") }
 
   def app
     Sitepress::Server.new(site: site)

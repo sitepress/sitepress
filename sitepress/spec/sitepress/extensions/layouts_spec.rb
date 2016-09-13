@@ -3,7 +3,7 @@ require "sitepress/extensions/layouts"
 
 describe Sitepress::Extensions::Layouts do
   subject { Sitepress::Extensions::Layouts.new }
-  let(:root) { Sitepress::Site.new(root_path: "spec/pages").root }
+  let(:root) { Sitepress::Site.new(root_path: "spec/sites/sample").root }
   let(:resource) { root.flatten.first }
   before do
     subject.layout("blah-set-by-rspec"){ |r| r == resource }

@@ -2,7 +2,7 @@ require "spec_helper"
 
 context Sitepress::Frontmatter do
   context "con frontmatter" do
-    subject { Sitepress::Frontmatter.new File.read "spec/pages/test.html.haml" }
+    subject { Sitepress::Frontmatter.new File.read "spec/sites/sample/pages/test.html.haml" }
     it "parses data" do
       expect(subject.data).to eql({
         "title" => "Name",
@@ -14,7 +14,7 @@ context Sitepress::Frontmatter do
     end
   end
   context "sin frontmatter" do # That's Spanish for pages that don't have Frontmatter.
-    subject { Sitepress::Frontmatter.new File.read "spec/pages/sin_frontmatter.html.haml" }
+    subject { Sitepress::Frontmatter.new File.read "spec/sites/sample/pages/sin_frontmatter.html.haml" }
     it "parses data" do
       expect(subject.data).to eql({})
     end
@@ -23,7 +23,7 @@ context Sitepress::Frontmatter do
     end
   end
   context "confusing frontmatter" do
-    subject { Sitepress::Frontmatter.new File.read "spec/pages/confusion.html.md" }
+    subject { Sitepress::Frontmatter.new File.read "spec/sites/sample/pages/confusion.html.md" }
     it "parses data" do
       expect(subject.data).to eql({"title" => "Hi there"})
     end

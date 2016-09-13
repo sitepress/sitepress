@@ -1,14 +1,23 @@
 require "spec_helper"
 
 context Sitepress::Site do
-  subject { Sitepress::Site.new(root_path: "spec/pages") }
+  subject { Sitepress::Site.new(root_path: "spec/sites/sample") }
   let(:resource_count) { 5 }
   it "has 5 resources" do
     expect(subject.resources.to_a.size).to eql(resource_count)
   end
+  describe "paths" do
+    it "has root_path" do
+      expect(subject.root_path.to_s).to eql("spec/sites/sample")
+    end
+
+    it "has pages_path" do
+      expect(subject.pages_path.to_s).to eql("spec/sites/sample/pages")
+    end
+  end
   context "#glob" do
     it "globs resources" do
-      expect(subject.glob("sin_frontmatter*").size).to eql(1)
+      expect(subject.glob("pages/sin_frontmatter*").size).to eql(1)
     end
   end
   describe "#manipulate" do

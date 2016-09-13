@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Sitepress::Extensions::IndexRequestPath do
   subject { Sitepress::Extensions::IndexRequestPath.new }
-  let(:site) { Sitepress::Site.new(root_path: "spec/pages") }
+  let(:site) { Sitepress::Site.new(root_path: "spec/sites/sample") }
   let(:root) { site.root }
 
   context "#process_resources" do

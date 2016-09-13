@@ -1,7 +1,7 @@
 require "spec_helper"
 
 context Sitepress::Asset do
-  let(:path) { "spec/pages/test.html.haml" }
+  let(:path) { "spec/sites/sample/pages/test.html.haml" }
   subject { Sitepress::Asset.new(path: path) }
 
   it "has data" do
@@ -23,7 +23,7 @@ context Sitepress::Asset do
     expect(subject.format_basename).to eql("test.html")
   end
   it "has request_path" do
-    expect(subject.to_request_path.to_s).to eql("spec/pages/test.html")
+    expect(subject.to_request_path.to_s).to eql("spec/sites/sample/pages/test.html")
   end
   context "#exists?" do
     it "is true" do

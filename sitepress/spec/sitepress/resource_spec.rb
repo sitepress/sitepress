@@ -1,7 +1,7 @@
 require "spec_helper"
 
 context Sitepress::Resource do
-  let(:asset_path) { "spec/pages/test.html.haml" }
+  let(:asset_path) { "spec/sites/sample/pages/test.html.haml" }
   let(:asset) { Sitepress::Asset.new(path: asset_path) }
   let(:request_path) { asset.to_request_path }
   let(:node) { Sitepress::ResourcesNode.new }
@@ -25,7 +25,7 @@ context Sitepress::Resource do
     end
   end
   describe "resource node relationships" do
-    let(:site) { Sitepress::Site.new(root_path: "spec/tree") }
+    let(:site) { Sitepress::Site.new(root_path: "spec/sites/tree") }
     let(:root) { site.root }
     subject{ root.get(path) }
     context "/about.html" do
