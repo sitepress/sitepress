@@ -6,3 +6,9 @@ title: Tick tock, tick tock
 <h1><%= current_page.data["title"] %></h1>
 
 <p>Its <%= Time.now %> o'clock</p>
+
+<h2>Lets see if a partial renders</h2>
+
+<% render partial: "pages/stupid" %>
+
+<% render partial: "pages/partials/really_stupid" %>

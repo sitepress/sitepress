@@ -16,6 +16,6 @@ describe Sitepress do
     end
   end
   it "prepends Site#root_path to ActionController::Base.view_paths" do
-    expect(ActionController::Base.view_paths.first.to_s).to eql(Sitepress.site.root_path.to_s)
+    expect(ActionController::Base.view_paths.to_a.last.to_s).to eql(Sitepress.site.root_path.to_s)
   end
 end

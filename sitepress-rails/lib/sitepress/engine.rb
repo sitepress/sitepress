@@ -1,7 +1,7 @@
 module Sitepress
   class Engine < ::Rails::Engine
     initializer "Add site root to view paths" do |app|
-      ActionController::Base.prepend_view_path Sitepress.site.root_path
+      ActionController::Base.append_view_path Sitepress.site.root_path
     end
 
     initializer "Require concerns path" do |app|
