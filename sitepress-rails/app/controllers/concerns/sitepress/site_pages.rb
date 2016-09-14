@@ -7,6 +7,7 @@ module Sitepress
 
     included do
       rescue_from Sitepress::PageNotFoundError, with: :page_not_found
+      helper Sitepress::Engine.helpers
       helper_method :current_page, :site
     end
 
@@ -35,7 +36,7 @@ module Sitepress
     # Sitepress::PageNotFoundError is handled in the default Sitepress::SiteController
     # with an execption that Rails can use to display a 404 error.
     def get(path)
-      resource = Sitepress.site.resources.get(path)
+      resource = site.resources.get(path)
       if resource.nil?
         # TODO: Display error in context of Reources class root.
         raise Sitepress::PageNotFoundError, "No such page: #{path}"
