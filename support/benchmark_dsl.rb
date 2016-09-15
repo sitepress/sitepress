@@ -12,12 +12,12 @@ module Sitepress
 
     # Generates a fake website.
     def fake_site(page_count: nil)
-      site = Sitepress::FakeSiteGenerator.new
+      fake = Sitepress::FakeSiteGenerator.new
       begin
-        site.generate_pages(count: page_count) if page_count
-        yield site
+        fake.generate_pages(count: page_count) if page_count
+        yield fake
       ensure
-        site.delete
+        fake.delete
       end
     end
 
