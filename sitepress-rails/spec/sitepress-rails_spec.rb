@@ -15,7 +15,19 @@ describe Sitepress do
       expect(subject.routes).to be true
     end
   end
-  it "prepends Site#root_path to ActionController::Base.view_paths" do
-    expect(ActionController::Base.view_paths.to_a.last.to_s).to eql(Sitepress.site.root_path.to_s)
+  context "Rails.configuration.paths" do
+    subject { Rails.configuration.paths[path].to_a }
+    context "views" do
+      let(:path) { "app/views" }
+      it { should include(Sitepress.site.root_path.to_s) }
+    end
+    context "helpers" do
+      let(:path) { "app/helpers" }
+      it { should include(Sitepress.site.root_path.join("helpers").to_s) }
+    end
+    context "assets" do
+      let(:path) { "app/assets" }
+      it { should include(Sitepress.site.root_path.join("assets").to_s) }
+    end
   end
 end
