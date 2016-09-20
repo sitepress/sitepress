@@ -21,7 +21,6 @@ context Sitepress::ResourcesNode do
   end
   context "/app/is/bad.html" do
     let(:path) { "/app/is/bad.html" }
-    # TODO: Should the root resource be nil?
     it { should have_parents(["/app/is.html", "/app.html"]) }
     it { should have_siblings(%w[/app/is/good.html]) }
     it { should have_children(%w[/app/is/bad/really.html]) }

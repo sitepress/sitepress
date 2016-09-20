@@ -40,16 +40,20 @@ module Sitepress
       "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{@asset.path.to_s.inspect}>"
     end
 
+    def parent(**args)
+      parents(**args).first
+    end
+
     def parents(**args)
       filter_resources(**args){ node.parents }
     end
 
     def siblings(**args)
-      filter_resources(**args){ node.siblings }
+      filter_resources(**args){ node.siblings }.compact
     end
 
     def children(**args)
-      filter_resources(**args){ node.children }
+      filter_resources(**args){ node.children }.compact
     end
 
     def ==(resource)
@@ -73,13 +77,13 @@ module Sitepress
 
       case type
       when :all
-        nodes.map(&:formats)
+        nodes.map{ |node| node.formats }
       when :same
-        nodes.map{ |n| n.formats.ext(ext) }.flatten.compact
+        nodes.map{ |n| n.formats.ext(ext) }.flatten
       when String
-        nodes.map{ |n| n.formats.ext(type) }.flatten.compact
+        nodes.map{ |n| n.formats.ext(type) }.flatten
       when MIME::Type
-        nodes.map{ |n| n.formats.mime_type(type) }.flatten.compact
+        nodes.map{ |n| n.formats.mime_type(type) }.flatten
       else
         raise ArgumentError, "Invalid type argument #{type}. Must be either :same, :all, an extension string, or a Mime::Type"
       end
