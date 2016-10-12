@@ -3,7 +3,7 @@ module Sitepress
   # resource via globbing, paths, etc.
   class ResourceCollection
     extend Forwardable
-    def_delegators :resources, :each, :size
+    def_delegators :resources, :each, :size, :index, :[], :last, :length, :fetch, :count, :at
 
     include Enumerable
 
