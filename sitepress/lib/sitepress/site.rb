@@ -1,5 +1,6 @@
 require "pathname"
 require "sitepress/extensions/proc_manipulator"
+require "forwardable"
 
 module Sitepress
   # A collection of pages from a directory.
