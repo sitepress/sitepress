@@ -9,10 +9,10 @@ module Sitepress
       @asset = asset
     end
 
-    def render(locals: {}, layout: nil, &block)
+    def render(locals: {}, layout: nil, context: , &block)
       template = engine.new { @asset.body }
-      with_layout layout: layout, locals: locals do
-        template.render(Object.new, **locals, &block)
+      with_layout layout: layout, context: context do
+        template.render(context, **locals, &block)
       end
     end
 
@@ -37,10 +37,9 @@ module Sitepress
       @resource = resource
     end
 
-    def render(locals: {})
+    def render(context: )
       if renderable_resource?
-        renderer.render layout: layout,
-          locals: locals.merge(resource: @resource)
+        renderer.render layout: layout, context: context
       else
         @resource.body
       end
@@ -86,7 +85,41 @@ module Sitepress
 
     private
     def render(resource)
-      ResourceRenderer.new(resource: resource).render(locals: {resources: @site.resources})
+      # TODO: Lets slim this down a bit.
+      helpers = HelperLoader.new paths: Dir.glob(@site.root_path.join("helpers/**.rb"))
+      context = helpers.context(locals: { current_page: resource, site: @site })
+      ResourceRenderer.new(resource: resource).render(context: context)
+    end
+  end
+
+  # Loads modules into an isolated namespace that will be
+  # used for the rendering context. This loader is designed to
+  # be immutable so that it throws away the constants and modules
+  # on each load.
+  class HelperLoader
+    def initialize(paths:)
+      @paths = Array(paths)
+    end
+
+    def context(locals: {})
+      modules = helpers
+      Object.new.tap do |object|
+        modules.constants.each do |module_name|
+          locals.each do |name, value|
+            object.define_singleton_method(name) { value }
+          end
+          object.send(:extend, modules.const_get(module_name))
+        end
+      end
+    end
+
+    private
+    def helpers
+      Module.new.tap do |m|
+        @paths.each do |path|
+          m.module_eval File.read(path)
+        end
+      end
     end
   end
 
@@ -99,10 +132,17 @@ module Sitepress
     def call(env)
       req = Rack::Request.new(env)
       resource = @site.get req.path
+
       if resource
+        # TODO: Lets slim this down a bit.
+        helpers = HelperLoader.new paths: Dir.glob(@site.root_path.join("helpers/**.rb"))
+        context = helpers.context(locals: { current_page: resource, site: @site })
+
         mime_type = resource.mime_type.to_s
         renderer = ResourceRenderer.new resource: resource
-        body = renderer.render locals: {resources: @site.resources}
+        # TODO: Remove locals from this chain. Don't need 'em!
+        body = renderer.render context: context
+
         [ 200, {"Content-Type" => mime_type}, Array(body) ]
       else
         [ 404, {"Content-Type" => "text/plain"}, ["Not Found"]]
