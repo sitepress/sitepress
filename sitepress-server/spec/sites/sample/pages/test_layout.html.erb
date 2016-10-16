@@ -1,9 +1,9 @@
 <html>
   <head>
-    <title><%= resource.data["title"] %></title>
+    <title><%= current_page.data["title"] %></title>
   </head>
   <body>
-    <%= resource.data["title"] %>
+    <%= current_page.data["title"] %>
     <%= yield %>
   </body>
 </html>

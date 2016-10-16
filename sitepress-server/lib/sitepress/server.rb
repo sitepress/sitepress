@@ -3,6 +3,9 @@ module Sitepress
   class Server
     def initialize(site: )
       @site = site
+      # TODO: This is in the wrong place. Needs to be configurable by
+      # Sitepress::Site.
+      @helper_paths = Dir.glob(@site.root_path.join("helpers/**.rb"))
     end
 
     def call(env)
@@ -11,8 +14,9 @@ module Sitepress
 
       if resource
         # TODO: Lets slim this down a bit.
-        helpers = HelperLoader.new paths: Dir.glob(@site.root_path.join("helpers/**.rb"))
-        context = helpers.context(locals: { current_page: resource, site: @site })
+        helpers = HelperLoader.new paths: @helper_paths
+        context = helpers.context locals: {
+          current_page: resource, site: @site }
 
         mime_type = resource.mime_type.to_s
         renderer = ResourceRenderer.new resource: resource
