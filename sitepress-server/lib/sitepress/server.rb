@@ -17,10 +17,9 @@ module Sitepress
         helpers = HelperLoader.new paths: @helper_paths
         context = helpers.context locals: {
           current_page: resource, site: @site }
+        renderer = ResourceRenderer.new resource: resource
 
         mime_type = resource.mime_type.to_s
-        renderer = ResourceRenderer.new resource: resource
-        # TODO: Remove locals from this chain. Don't need 'em!
         body = renderer.render context: context
 
         [ 200, {"Content-Type" => mime_type}, Array(body) ]
