@@ -16,7 +16,7 @@ module Sitepress
     def initialize
       self.routes = true
       self.parent_engine = Rails.application
-      self.cache_resources = parent_engine.config.cache_classes
+      self.cache_resources = !!parent_engine.config.cache_classes
     end
 
     def site
