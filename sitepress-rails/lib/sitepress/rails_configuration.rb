@@ -20,7 +20,7 @@ module Sitepress
     end
 
     def site
-      @site ||= Site.new(root_path: default_root, cache_resources: @cache_resources).tap do |site|
+      @site ||= Site.new(root_path: default_root).tap do |site|
         site.resources_pipeline << Extensions::PartialsRemover.new
         site.resources_pipeline << Extensions::RailsRequestPaths.new
       end

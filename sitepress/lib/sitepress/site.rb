@@ -21,9 +21,8 @@ module Sitepress
     extend Forwardable
     def_delegators :resources, :get, :glob
 
-    def initialize(root_path: DEFAULT_ROOT_PATH, cache_resources: false)
+    def initialize(root_path: DEFAULT_ROOT_PATH)
       self.root_path = root_path
-      self.cache_resources = cache_resources
     end
 
     # A tree representation of the resourecs wthin the site. The root is a node that's
