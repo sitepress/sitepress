@@ -11,6 +11,9 @@ describe Sitepress do
     it "has Rails.application as parent engine" do
       expect(subject.parent_engine).to eql(Rails.application)
     end
+    it "has Rails.application as parent engine" do
+      expect(subject.cache_resources).to be true
+    end
     it "has routes enabled by default" do
       expect(subject.routes).to be true
     end
