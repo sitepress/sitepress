@@ -2,6 +2,9 @@ require "sitepress"
 require "tilt"
 
 module Sitepress
+  # TODO: These renderers are confusing. They need to render
+  # a resource, be able to wrap a resource with another resource,
+  # and have rendering partial from within the context of the resource redender.
   class AssetRenderer
     def initialize(asset)
       @asset = asset
@@ -35,7 +38,7 @@ module Sitepress
       @resource = resource
     end
 
-    def render(context: )
+    def render(context:)
       if renderable_resource?
         renderer.render layout: layout, context: context
       else
@@ -58,7 +61,6 @@ module Sitepress
     end
   end
 
-  autoload :Compiler,     "sitepress/compiler"
   autoload :HelperLoader, "sitepress/helper_loader"
   autoload :Server,       "sitepress/server"
 end
