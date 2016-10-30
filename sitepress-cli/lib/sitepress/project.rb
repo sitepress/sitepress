@@ -24,10 +24,6 @@ module Sitepress
       Server.new(site: site)
     end
 
-    def preview_server
-      PreviewServer.new(project: self)
-    end
-
     def site
       ConfigurationFile.new(path: @config_file).parse
     end
