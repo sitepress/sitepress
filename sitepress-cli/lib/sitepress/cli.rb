@@ -1,6 +1,7 @@
 require "thor"
 require "rack"
 require "sitepress-server"
+require "irb"
 
 module Sitepress
   # Command line interface for compiling Sitepress sites.
@@ -25,6 +26,12 @@ module Sitepress
       project.compiler.compile target_path: options.fetch("output_path")
     end
 
+    option :config_file, default: Project::DEFAULT_CONFIG_FILE, aliases: :c
+    desc "console", "REPL for site"
+    def console
+      repl project
+    end
+
     # desc "new", "Create a Sitepress project"
     # def new
     #   puts "Creating new Sitepress project..."
@@ -33,6 +40,13 @@ module Sitepress
     private
     def project
       @_project ||= Sitepress::Project.new config_file: options.fetch("config_file")
+    end
+
+    def repl(context)
+      IRB.setup nil
+      IRB.conf[:MAIN_CONTEXT] = IRB::Irb.new.context
+      require 'irb/ext/multi-irb'
+      IRB.irb nil, context
     end
   end
 end
