@@ -1,6 +1,5 @@
 require "pathname"
 require "forwardable"
-require "sitepress/server"
 
 module Sitepress
   # Configures a site server, compiler, etc from a single configuration

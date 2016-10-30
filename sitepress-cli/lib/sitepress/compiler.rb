@@ -4,6 +4,8 @@ require "fileutils"
 module Sitepress
   # Compile all resources from a Sitepress site into static pages.
   class Compiler
+    include FileUtils
+
     def initialize(site: )
       @site = site
     end
@@ -12,14 +14,14 @@ module Sitepress
     def compile(target_path:)
       target_path = Pathname.new(target_path)
       # TODO: Should file operations go here? Probably not.
-      FileUtils::mkdir_p target_path
+      mkdir_p target_path
       root = Pathname.new("/")
       puts "Compiling #{@site.root_path.expand_path}"
       @site.resources.each do |resource|
         # These are root `resource.request_path`
         derooted = Pathname.new(resource.request_path).relative_path_from(root)
         path = target_path.join(derooted)
-        FileUtils::mkdir_p path.dirname
+        mkdir_p path.dirname
         puts "  #{path}"
         File.open(path.expand_path, "w"){ |f| f.write render(resource) }
       end

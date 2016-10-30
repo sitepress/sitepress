@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+
+gem "sitepress-cli"
+gem "haml"
+gem "sass"

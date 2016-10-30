@@ -4,6 +4,10 @@ require "sitepress-server"
 module Sitepress
   # Command line interface for compiling Sitepress sites.
   class CLI < Thor
+    include Thor::Actions
+
+    source_root File.expand_path("../../../templates/default", __FILE__)
+
     option :config_file, default: Project::DEFAULT_CONFIG_FILE, aliases: :c
     option :bind_address, default: PreviewServer::DEFAULT_BIND_ADDRESS, aliases: :a
     option :port, default: PreviewServer::DEFAULT_PORT, aliases: :p, type: :numeric
@@ -21,14 +25,22 @@ module Sitepress
     end
 
     option :config_file, default: Project::DEFAULT_CONFIG_FILE, aliases: :c
-    desc "console", "REPL for site"
+    desc "console", "Interactive project shell"
     def console
       REPL.new(context: project).start
     end
 
-    desc "new", "Create a Sitepress project"
-    def new
-      puts "Creating new Sitepress project..."
+    desc "new PATH", "Create new project at PATH"
+    def new(target)
+      inside target do
+        directory self.class.source_root, "."
+        run "bundle install"
+      end
+    end
+
+    desc "version", "Show version"
+    def version
+      say "Sitepress #{Sitepress::VERSION}"
     end
 
     private
