@@ -16,7 +16,11 @@ module Sitepress
     def server
       Rack::Handler::WEBrick.run project.preview_server,
         BindAddress: options.fetch("bind_address"),
-        Port: options.fetch("port")
+        Port: options.fetch("port") do |server|
+          Signal.trap "SIGINT" do
+            server.stop
+          end
+      end
     end
 
     option :config_file, default: Project::DEFAULT_CONFIG_FILE, aliases: :c
