@@ -1,4 +1,4 @@
-require "sitepress"
+require "sitepress-core"
 
 module Sitepress
   # Contains singletons for rails and some configuration data.

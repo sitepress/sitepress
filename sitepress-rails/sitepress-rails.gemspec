@@ -21,6 +21,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "sqlite3"
   spec.add_development_dependency "rspec-rails"
 
-  spec.add_runtime_dependency "rails", "~> 4.2.0"
-  spec.add_runtime_dependency "sitepress", spec.version
+  spec.add_runtime_dependency "rails", "~> 4.0"
+  spec.add_runtime_dependency "sitepress-core", spec.version
 end

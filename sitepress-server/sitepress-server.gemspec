@@ -21,6 +21,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rack-test"
   spec.add_development_dependency "rack"
 
-  spec.add_runtime_dependency "sitepress", spec.version
-  spec.add_runtime_dependency "tilt"
+  spec.add_runtime_dependency "sitepress-core", spec.version
+  spec.add_runtime_dependency "tilt", "~> 2.0"
 end

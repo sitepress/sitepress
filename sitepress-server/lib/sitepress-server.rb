@@ -1,4 +1,4 @@
-require "sitepress"
+require "sitepress-core"
 require "tilt"
 
 module Sitepress
