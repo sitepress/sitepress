@@ -1,12 +1,12 @@
 module Sitepress
   # Route constraint for rails routes.rb file.
   class RouteConstraint
-    def initialize(resources: Sitepress.site.resources)
-      @resources = resources
+    def initialize(site: Sitepress.site)
+      @site = site
     end
 
     def matches?(request)
-      !!@resources.get(request.path)
+      !!@site.resources.get(request.path)
     end
   end
 end
