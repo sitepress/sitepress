@@ -57,7 +57,7 @@ title: The page #{path}
       end
 
       rails_request = Struct.new(:path).new(path)
-      route_constraint = Sitepress::RouteConstraint.new(resources: Sitepress.site.resources)
+      route_constraint = Sitepress::RouteConstraint.new(site: Sitepress.site)
       x.report "Sitepress::RouteConstraint#match?" do
         route_constraint.matches? rails_request
       end
