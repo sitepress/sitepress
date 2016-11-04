@@ -37,8 +37,8 @@ module Sitepress
 
     # Returns a list of all the resources within #root.
     def resources
-      @resources = nil unless cache_resources
-      @resources ||= ResourceCollection.new(node: root, root_path: root_path)
+      @_resources = nil unless cache_resources
+      @_resources ||= ResourceCollection.new(node: root, root_path: root_path)
     end
 
     # Root path to website project. Contains helpers, pages, and more.
@@ -87,7 +87,7 @@ module Sitepress
     # An array of procs that manipulate the tree and resources from the
     # ResourceNode returned by #root.
     def resources_pipeline
-      @resources_pipeline ||= ResourcesPipeline.new
+      @_resources_pipeline ||= ResourcesPipeline.new
     end
 
     private
