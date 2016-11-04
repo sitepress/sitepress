@@ -7,7 +7,8 @@ gemspec path: "sitepress-cli"
 gemspec path: "sitepress-rails"
 
 group :test do
-  gem "codeclimate-test-reporter", ">= 0.6.0", require: nil
+  gem "simplecov"
+  gem "codeclimate-test-reporter", "~> 1.0.0"
   gem "pry", require: nil
   gem "rack-test", require: nil
 end
