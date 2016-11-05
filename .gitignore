@@ -11,3 +11,5 @@ sitepress-rails/doc/
 sitepress-rails/spec/reports/
 sitepress-rails/spec/dummy/log/*.log
 sitepress-rails/tmp/
+
+sitepress-core/coverage
