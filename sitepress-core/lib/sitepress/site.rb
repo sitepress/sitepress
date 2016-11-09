@@ -24,6 +24,9 @@ module Sitepress
 
     def initialize(root_path: DEFAULT_ROOT_PATH)
       self.root_path = root_path
+      # When Site#resources is called, the results should be cached in production
+      # environments for performance reasons, but not in development environments.
+      self.cache_resources = false
     end
 
     # A tree representation of the resourecs wthin the site. The root is a node that's

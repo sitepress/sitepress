@@ -26,6 +26,11 @@ context Sitepress::Site do
       expect(subject.resources_pipeline.last).to be_instance_of(Sitepress::Extensions::ProcManipulator)
     end
   end
+  describe "#cache_resources" do
+    it "is false by default" do
+      expect(subject.cache_resources).to be false
+    end
+  end
   describe "#get" do
     it "finds with leading /" do
       expect(subject.get("/test.html")).to_not be_nil
