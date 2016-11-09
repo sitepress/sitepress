@@ -14,6 +14,9 @@ module Sitepress
     autoload :PartialsRemover,        "sitepress/extensions/partials_remover"
     autoload :IndexRequestPath,       "sitepress/extensions/index_request_path"
   end
+  module Middleware
+    autoload :RequestCache,           "sitepress/middleware/request_cache"
+  end
 
   # Make site available via Sitepress.site from Rails app.
   def self.site

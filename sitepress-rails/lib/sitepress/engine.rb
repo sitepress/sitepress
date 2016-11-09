@@ -20,5 +20,9 @@ module Sitepress
         config.cache_resources = app.config.cache_classes
       end
     end
+
+    initializer "sitepress.middleware" do |app|
+      app.middleware.use Sitepress::Middleware::RequestCache, site: Sitepress.site
+    end
   end
 end
