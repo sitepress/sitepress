@@ -30,10 +30,7 @@ module Sitepress
 
     private
     def render(resource)
-      # TODO: Lets slim this down a bit.
-      helpers = HelperLoader.new paths: Dir.glob(@site.root_path.join("helpers/**.rb"))
-      context = helpers.context(locals: { current_page: resource, site: @site })
-      ResourceRenderer.new(resource: resource).render(context: context)
+      RenderingContext.new(resource: resource, site: @site).render
     end
   end
 end
