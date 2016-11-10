@@ -16,4 +16,7 @@ module Sitepress
   autoload :ResourcesPipeline,    "sitepress/resources_pipeline"
   autoload :ResourcesNode,        "sitepress/resources_node"
   autoload :Site,                 "sitepress/site"
+  module Middleware
+    autoload :RequestCache,       "sitepress/middleware/request_cache"
+  end
 end
