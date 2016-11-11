@@ -40,8 +40,13 @@ module Sitepress
 
     # Returns a list of all the resources within #root.
     def resources
-      @_resources = nil unless cache_resources
-      @_resources ||= ResourceCollection.new(node: root, root_path: root_path)
+      with_resources_cache do
+        ResourceCollection.new(node: root, root_path: root_path)
+      end
+    end
+
+    def clear_resources_cache
+      @_resources = nil
     end
 
     # Root path to website project. Contains helpers, pages, and more.
@@ -98,6 +103,11 @@ module Sitepress
     end
 
     private
+    def with_resources_cache
+      clear_resources_cache unless cache_resources
+      @_resources ||= yield
+    end
+
     # Lazy stream of files that will be rendered by resources.
     def pages_assets(glob = DEFAULT_GLOB)
       Dir.glob(pages_path.join(glob)).select(&File.method(:file?)).lazy.map do |path|
