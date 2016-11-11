@@ -6,7 +6,9 @@ describe Sitepress::Compiler do
   let(:root_path) { File.expand_path("spec/sites/sample") }
   let(:site) { Sitepress::Site.new(root_path: "spec/sites/sample") }
   let(:target) { Pathname.new(Dir::tmpdir).join("build") }
-  subject { Sitepress::Compiler.new(site: site) }
+  # Write compiler output to /dev/null
+  let(:stdout) { File.open(File::NULL, "w")  }
+  subject { Sitepress::Compiler.new(site: site, stdout: stdout) }
 
   describe "#compile" do
     include
