@@ -108,11 +108,23 @@ module Sitepress
       @_resources ||= yield
     end
 
+    # TODO: Move this into the DirectoryHandler class so that its not
+    # a concern of site.rb
+    # Exclude swap files created by Textmate and vim from being added
+    # to the sitemap.
+    SWAP_FILE_EXTENSIONS = [
+      "~",
+      ".swp"
+    ]
+
     # Lazy stream of files that will be rendered by resources.
     def pages_assets(glob = DEFAULT_GLOB)
-      Dir.glob(pages_path.join(glob)).select(&File.method(:file?)).lazy.map do |path|
-        Asset.new(path: path)
+      # TODO: Move this into the DirectoryHandler class so that its not
+      # a concern of site.rb
+      paths = Dir.glob(pages_path.join(glob)).reject do |path|
+        File.directory? path or SWAP_FILE_EXTENSIONS.any? { |ext| path.end_with? ext }
       end
+      paths.lazy.map { |path| Asset.new(path: path) }
     end
   end
 end

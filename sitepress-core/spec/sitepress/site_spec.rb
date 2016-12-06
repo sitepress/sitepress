@@ -19,6 +19,27 @@ context Sitepress::Site do
     it "globs resources" do
       expect(subject.glob("pages/sin_frontmatter*").size).to eql(1)
     end
+    context "ignores swap files" do
+      let(:path) { "spec/sites/sample/pages/text.txt#{ext}" }
+      describe "ending with ~" do
+        let(:ext) { "~" }
+        it "exists" do
+          expect(File.exist?(path)).to be true
+        end
+        it "is not in site resources" do
+          expect(subject.resources.map{ |r| r.asset.path.to_s }).to_not include(path)
+        end
+      end
+      describe "ending with .swp" do
+        let(:ext) { ".swp" }
+        it "exists" do
+          expect(File.exist?(path)).to be true
+        end
+        it "is not in site resources" do
+          expect(subject.resources.map{ |r| r.asset.path.to_s }).to_not include(path)
+        end
+      end
+    end
   end
   describe "#manipulate" do
     it "adds ProcManipulator to_pipeline" do
