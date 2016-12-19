@@ -12,6 +12,20 @@ module Sitepress
     end
 
     def show
+      if testable? && alternative_exists?
+        page = File::basename current_page.request_path
+        original_percent = current_page.data.dig("percent")
+        side = ab_test(page, {"original" => original_percent.fdiv(100)},
+                       {"alternative" => 1 - original_percent.fdiv(100)})
+
+        if side == "alternative"
+          engage_alternate
+          return render inline: current_page.body,
+                  type: current_page.asset.template_extensions.last,
+                  layout: current_page.data.fetch("layout", controller_layout),
+                  content_type: current_page.mime_type.to_s
+        end
+      end
       render inline: current_page.body,
         type: current_page.asset.template_extensions.last,
         layout: current_page.data.fetch("layout", controller_layout),
@@ -23,6 +37,10 @@ module Sitepress
       @_current_page ||= find_resource
     end
 
+    def current_alternative
+      @_current_alternative ||= find_alternative
+    end
+
     def site
       Sitepress.site
     end
@@ -32,6 +50,18 @@ module Sitepress
     end
 
     private
+    def engage_alternate
+      @_current_page = current_alternative
+    end
+
+    def testable?
+      self.respond_to?(:ab_test) && current_page.data.dig("percent")
+    end
+
+    def alternative_exists?
+      alt = site.resources.get(alternative_path)
+      site.resources.get(alternative_path)
+    end
 
     # Sitepress::PageNotFoundError is handled in the default Sitepress::SiteController
     # with an execption that Rails can use to display a 404 error.
@@ -48,6 +78,14 @@ module Sitepress
     # Default finder of the resource for the current controller context.###
     def find_resource
       get params[:resource_path]
+    end
+
+    def alternative_path
+      "alternatives/#{params[:resource_path]}"
+    end
+
+    def find_alternative
+      get alternative_path
     end
 
     # Returns the current layout for the inline Sitepress renderer.
