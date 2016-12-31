@@ -12,13 +12,17 @@ module Sitepress
     end
 
     def show
-      render inline: current_page.body,
-        type: current_page.asset.template_extensions.last,
-        layout: current_page.data.fetch("layout", controller_layout),
-        content_type: current_page.mime_type.to_s
+      render_page current_page
     end
 
     protected
+    def render_page(page)
+      render inline: page.body,
+        type: page.asset.template_extensions.last,
+        layout: page.data.fetch("layout", controller_layout),
+        content_type: page.mime_type.to_s
+    end
+
     def current_page
       @_current_page ||= find_resource
     end
