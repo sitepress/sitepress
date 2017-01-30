@@ -7,7 +7,8 @@ module Sitepress
   # perform faster
   class Frontmatter
     DELIMITER = "---".freeze
-    PATTERN = /\A(#{DELIMITER}\n(.+?)\n#{DELIMITER}\n*)?(.+)\Z/m
+    NEWLINE = /\r\n?|\n/.freeze
+    PATTERN = /\A(#{DELIMITER}#{NEWLINE}(.+?)#{NEWLINE}#{DELIMITER}#{NEWLINE}*)?(.+)\Z/m
 
     attr_reader :body
 
