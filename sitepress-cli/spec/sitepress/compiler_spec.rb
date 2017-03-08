@@ -11,7 +11,6 @@ describe Sitepress::Compiler do
   subject { Sitepress::Compiler.new(site: site, stdout: stdout) }
 
   describe "#compile" do
-    include
     before do
       FileUtils.mkdir_p(target)
       subject.compile(target_path: target)
