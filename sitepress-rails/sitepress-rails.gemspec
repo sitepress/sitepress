@@ -22,6 +22,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency "pry"
 
-  spec.add_runtime_dependency "rails", "~> 4.0"
+  spec.add_runtime_dependency "rails", ">= 4.0"
   spec.add_runtime_dependency "sitepress-core", spec.version
 end

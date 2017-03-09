@@ -25,6 +25,10 @@ module Sitepress
       @formats[ext]
     end
 
+    def extensions
+      @formats.keys
+    end
+
     def mime_type(mime_type)
       find { |f| f.mime_type == mime_type }
     end
