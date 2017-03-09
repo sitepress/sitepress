@@ -1,9 +1,18 @@
 require "spec_helper"
 
 describe Sitepress::SiteController, type: :controller do
+  # Rails 5 introduces a new format of calling the `get` rspec helper method.
+  def get_resource(path)
+    if Gem::Version.new(Rails.version) >= Gem::Version.new("5.0.0")
+      get :show, params: { resource_path: path }
+    else
+      get :show, resource_path: path
+    end
+  end
+
   context "templated page" do
     render_views
-    before { get :show, resource_path: "/time" }
+    before { get_resource "/time" }
     let(:resource) { Sitepress.site.get("/time") }
     it "is status 200" do
       expect(response.status).to eql(200)
@@ -30,7 +39,7 @@ describe Sitepress::SiteController, type: :controller do
 
   context "static page" do
     render_views
-    before { get :show, resource_path: "/hi" }
+    before { get_resource "/hi" }
     it "is status 200" do
       expect(response.status).to eql(200)
     end
@@ -48,7 +57,7 @@ describe Sitepress::SiteController, type: :controller do
   context "non-existent page" do
     it "is status 404" do
       expect {
-        get :show, resource_path: "/non-existent"
+        get_resource "/non-existent"
       }.to raise_exception(ActionController::RoutingError)
     end
   end

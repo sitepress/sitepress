@@ -4,5 +4,12 @@ rvm:
   - 2.3.0
   - 2.2.0
   - 2.1.0
-before_install: gem install bundler -v 1.11.2
-script: bundle exec rake ci
+gemfile:
+  - gemfiles/rails_4.gemfile
+  - gemfiles/rails_5.gemfile
+env:
+  global:
+    - PATH=$TRAVIS_BUILD_DIR/bin:$PATH
+before_install: gem install bundler
+install: bundle install --jobs=3 --retry=3 --binstubs
+script: rake ci
