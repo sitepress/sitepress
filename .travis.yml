@@ -4,5 +4,15 @@ rvm:
   - 2.3.0
   - 2.2.0
   - 2.1.0
-before_install: gem install bundler -v 1.11.2
+gemfile:
+  - gemfiles/rails_4.gemfile
+  - gemfiles/rails_5.gemfile
+matrix:
+  exclude:
+  - rvm: 2.2.0
+    gemfile: gemfiles/rails_5.gemfile
+  - rvm: 2.1.0
+    gemfile: gemfiles/rails_5.gemfile
+bundler_args: --without appraisal
+before_install: gem install bundler -v 1.14.6
 script: bundle exec rake ci

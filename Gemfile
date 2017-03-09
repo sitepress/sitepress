@@ -1,10 +1,12 @@
 source 'https://rubygems.org'
 
 gemspec path: "sitepress"
-gemspec path: "sitepress-core"
-gemspec path: "sitepress-server"
 gemspec path: "sitepress-cli"
+gemspec path: "sitepress-core"
 gemspec path: "sitepress-rails"
+gemspec path: "sitepress-server"
+
+gem "appraisal", "~> 2.2.0"
 
 group :test do
   gem "simplecov"

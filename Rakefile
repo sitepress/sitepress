@@ -14,7 +14,11 @@ Sitepress::Project.all.each do |project|
     desc "Run specs for #{project.gem_name}"
     task :spec do
       puts "Verifying #{project.gem_name}"
-      project.chdir { sh "bundle exec rspec" }
+      Bundler.with_clean_env do
+        project.chdir do
+          sh "bundle exec rspec"
+        end
+      end
     end
   end
 end

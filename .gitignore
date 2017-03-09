@@ -2,6 +2,8 @@ Gemfile.lock
 **/pkg/
 .sass-cache
 
+gemfiles/*.gemfile.lock
+
 sitepress-rails/**/*.sqlite3
 sitepress-rails/.bundle/
 sitepress-rails/.yardoc
