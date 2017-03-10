@@ -1,9 +1,11 @@
 # frozen_string_literal: true
+require "rubygems"
+require "bundler/setup"
+require "bundler/gem_helper"
 
 require "rake/clean"
 CLOBBER.include "pkg"
 
-require "bundler/gem_helper"
 require_relative "support/project"
 
 Sitepress::Project.all.each do |project|
@@ -15,7 +17,9 @@ Sitepress::Project.all.each do |project|
     task :spec do
       puts "Verifying #{project.gem_name}"
       project.chdir do
-        sh "rspec"
+        Bundler.with_clean_env do
+          sh "bundle exec rspec"
+        end
       end
     end
   end

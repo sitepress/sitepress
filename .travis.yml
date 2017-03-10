@@ -4,8 +4,17 @@ rvm:
   - 2.3.0
   - 2.2.0
   - 2.1.0
+gemfile:
+  - gemfiles/rails_4.gemfile
+  - gemfiles/rails_5.gemfile
+matrix:
+  exclude:
+  - rvm: 2.2.0
+    gemfile: gemfiles/rails_5.gemfile
+  - rvm: 2.1.0
+    gemfile: gemfiles/rails_5.gemfile
 before_install: gem install bundler
 install:
   - bundle install --jobs=3 --retry=3
-  - appraisal bundle
-script: rake ci
+  - bundle exec appraisal install
+script: bundle exec rake ci
