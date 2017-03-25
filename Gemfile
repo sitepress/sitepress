@@ -6,8 +6,10 @@ gemspec path: "sitepress-core"
 gemspec path: "sitepress-rails"
 gemspec path: "sitepress-server"
 
-# Remove branch when https://github.com/thoughtbot/appraisal/issues/124 is merged and released.
-#gem "appraisal", git: "https://github.com/bradgessler/appraisal", branch: "multiple-gemspecs"
+group :development do
+  # Remove branch when https://github.com/thoughtbot/appraisal/issues/124 is merged and released.
+  gem "appraisal", git: "https://github.com/bradgessler/appraisal", branch: "multiple-gemspecs"
+end
 
 group :test do
   gem "simplecov"
