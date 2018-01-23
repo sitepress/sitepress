@@ -1,7 +1,6 @@
 module Sitepress
-  # TODO: We're starting to get too many rendering contexts ... and this
-  # won't quite fit in with the Tilt rendering context. We'll want to merge
-  # this and support `capture` so that we can get `wrap_layout` working.
+  # Setups a rendering context with methods that are accessible to the view.
+  # This is where helper methods are loaded, site, resource, etc. are exposed.
   class RenderingContext
     attr_reader :resource, :site
     alias :current_page :resource
@@ -9,34 +8,34 @@ module Sitepress
     def initialize(resource:, site:)
       @resource = resource
       @site = site
-      # TODO: Remove this from RenderingContext ... it should build
-      load_helpers
+      extend_instance_with_helpers
     end
 
-    def render(layout: nil, locals: {}, &block)
-      layout ||= resource.data["layout"]
-      render_with_layout(layout) { renderer.render(self, **locals, &block) }
+    def render(asset = nil, locals: {}, &block)
+      asset = ceorce_asset(asset || resource.asset)
+      renderer = AssetRenderer.new(asset)
+      renderer.render(self, **locals, &block)
     end
 
     private
-    def render_with_layout(path, &block)
-      if path
-        template = AssetTemplate.new(path)
-        template.render(self, &block)
-      else
-        block.call
-      end
-    end
-
-    def renderer
-      @_renderer ||= AssetTemplate.new(resource.asset)
-    end
-
-    # TODO: This might be accessible from the rendering scope, which wouldn't be good.
-    # Figure out if this needs to be removed.
-    def load_helpers
+    # Loads all of the helper modules and extends the instance of the
+    # `RenderingContext`. This makes all of the helpers available to
+    # the views.
+    def extend_instance_with_helpers
       paths = Dir.glob @site.helpers_path.join("**.rb")
       HelperLoader.new(paths: paths).extend_instance(self)
+    end
+
+    # TODO: Replace this with a "fuzzy asset finder" class.
+    def ceorce_asset(assetish)
+      case assetish
+      when String
+        site.get(assetish).asset # TODO: If this is nil we should just throw an exception.
+      when Asset
+        assetish
+      else
+        raise RuntimeError, "#{assetish.inspect} cannot be coerce into Sitepress::Asset"
+      end
     end
   end
 end
