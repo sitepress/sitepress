@@ -10,10 +10,19 @@ describe Sitepress::Server do
     Sitepress::Server.new(site: site)
   end
 
-  let(:request_path) { "/test.html" }
+  context "GET existing resource" do
+    let(:request_path) { "/test.html" }
+    before { get request_path }
+    it "returns 200" do
+      expect(last_response.status).to eql(200)
+    end
+  end
 
-  it "gets page" do
-    get request_path
-    expect(last_response.status).to eql(200)
+  context "GET non-existing resource" do
+    let(:request_path) { "/does-not-exist.html" }
+    before { get request_path }
+    it "returns 404" do
+      expect(last_response.status).to eql(404)
+    end
   end
 end
