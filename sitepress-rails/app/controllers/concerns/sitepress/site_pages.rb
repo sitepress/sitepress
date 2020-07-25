@@ -62,16 +62,15 @@ module Sitepress
     # exposed via some really convoluted private methods inside of the various
     # versions of Rails, so I try my best to hack out the path to the layout below.
     def controller_layout
-      # Rails 4 and 5 expose the `_layout` via methods with different arity. Since
-      # I don't want to hard code the version, I'm detecting arity and hoping that Rails 6
-      # doesn't break this approach. If it does I'll probably have to get into the business
-      # of version detection.
       private_layout_method = self.method(:_layout)
-      layout = if private_layout_method.arity == 1 # Rails 5
-        private_layout_method.call current_page_rails_formats
-      else # Rails 4
-        private_layout_method.call
-      end
+      layout =
+        if Rails.version >= "6"
+          private_layout_method.call lookup_context, current_page_rails_formats
+        elsif Rails.version >= "5"
+          private_layout_method.call current_page_rails_formats
+        else
+          private_layout_method.call
+        end
 
       if layout.instance_of? String # Rails 4 and 5 return a string from above.
         layout
