@@ -6,7 +6,7 @@ gemspec path: "sitepress-core"
 gemspec path: "sitepress-rails"
 gemspec path: "sitepress-server"
 
-gem "appraisal", "~> 2.2.0"
+gem "appraisal", "~> 2.3.0"
 
 group :test do
   gem "simplecov"

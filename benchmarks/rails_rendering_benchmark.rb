@@ -7,8 +7,7 @@ title "Rails requests for #{page_count} asset site"
 # Verifies that a non-200 response isn't mistaken as a valid benchmark.
 def get!(path)
   resp = get(path)
-  status, _, body = resp
-  fail "GET #{path.inspect} - HTTP #{status} resp\n---\n#{body.body}\n---" if status != 200
+  fail "GET #{path.inspect} - HTTP #{resp.status} resp\n---\n#{resp.body}\n---" if resp.status != 200
   resp
 end
 
