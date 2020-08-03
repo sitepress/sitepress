@@ -79,9 +79,8 @@ module Sitepress
 
     def get(path)
       *path, ext = tokenize(path)
-      if node = dig(*path)
-        node.formats.ext(ext)
-      end
+      node = dig(*path)
+      node.formats.ext(ext) if node
     end
 
     def get_node(path)
