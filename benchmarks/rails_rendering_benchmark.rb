@@ -65,9 +65,9 @@ title: The page #{path}
         get! "/baseline/render"
       end
 
-      [path, last_path].each do |path|
-        x.report "GET #{path} (complex erb render)" do
-          get! path
+      [path, last_path].each do |request_path|
+        x.report "GET #{request_path} (complex erb render)" do
+          get! request_path
         end
       end
     end
