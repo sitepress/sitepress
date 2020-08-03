@@ -6,7 +6,8 @@ module Sitepress
     # Store in ./app/content by default.
     DEFAULT_SITE_ROOT = "app/content".freeze
 
-    attr_accessor :site, :parent_engine, :routes, :cache_resources
+    attr_accessor :routes
+    attr_writer :site, :parent_engine
 
     # Delegates configuration points into the Sitepress site.
     extend Forwardable

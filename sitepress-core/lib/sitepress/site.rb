@@ -11,7 +11,8 @@ module Sitepress
     # Default root_path for site.
     DEFAULT_ROOT_PATH = Pathname.new(".").freeze
 
-    attr_reader :root_path, :resources_pipeline
+    attr_reader :root_path
+    attr_writer :resources_pipeline
 
     # Cache resources for production runs of Sitepress. Development
     # modes don't cache to optimize for files reloading.
@@ -99,7 +100,7 @@ module Sitepress
     # An array of procs that manipulate the tree and resources from the
     # ResourceNode returned by #root.
     def resources_pipeline
-      @_resources_pipeline ||= ResourcesPipeline.new
+      @resources_pipeline ||= ResourcesPipeline.new
     end
 
     private
