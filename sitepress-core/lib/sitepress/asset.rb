@@ -64,7 +64,7 @@ module Sitepress
     end
 
     def exists?
-      File.exists? path
+      File.exist? path
     end
 
     # Spits out a reasonable default request path. This may be changed
