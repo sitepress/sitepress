@@ -9,8 +9,6 @@ module Sitepress
     # Default path of project configuration file.
     DEFAULT_CONFIG_FILE = "site.rb".freeze
 
-    attr_reader :site
-
     def initialize(config_file: DEFAULT_CONFIG_FILE)
       @config_file = config_file
     end
