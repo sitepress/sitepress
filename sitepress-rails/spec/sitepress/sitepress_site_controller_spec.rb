@@ -61,4 +61,28 @@ describe Sitepress::SiteController, type: :controller do
       }.to raise_exception(ActionController::RoutingError)
     end
   end
+
+  context "render cache" do
+    context "cache_resources=true" do
+      before { Sitepress.site.cache_resources = true }
+      it "enables cache" do
+        expect(Sitepress.site.cache_resources).to be true
+        expect(Sitepress.site).to receive(:cache_resources=).with(true)
+        expect(Sitepress.site).to receive(:cache_resources=).with(true)
+        get_resource "/time"
+        expect(Sitepress.site.cache_resources).to be true
+      end
+    end
+    context "cache_resources=false" do
+      before { Sitepress.site.cache_resources = false }
+      it "enables cache" do
+        expect(Sitepress.site.cache_resources).to be false
+        expect(Sitepress.site).to receive(:cache_resources=).with(true)
+        expect(Sitepress.site).to receive(:cache_resources=).with(false)
+        get_resource "/time"
+        expect(Sitepress.site.cache_resources).to be false
+      end
+    end
+
+  end
 end

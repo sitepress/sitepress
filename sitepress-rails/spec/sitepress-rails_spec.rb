@@ -43,11 +43,6 @@ describe "Sitepress.configuration" do
       end
     end
   end
-  context "Sitepress::Middleware::RequestCache" do
-    it "is in Rails middleware stack" do
-      expect(Rails.configuration.middleware).to include(Sitepress::Middleware::RequestCache)
-    end
-  end
   context "Rails.configuration.paths" do
     subject { Rails.configuration.paths[path].to_a }
     context "views" do

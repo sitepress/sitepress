@@ -21,10 +21,12 @@ module Sitepress
 
     protected
     def render_page(page)
-      render inline: page.body,
-        type: page.asset.template_extensions.last,
-        layout: page.data.fetch("layout", controller_layout),
-        content_type: page.mime_type.to_s
+      with_sitepress_render_cache do
+        render inline: page.body,
+          type: page.asset.template_extensions.last,
+          layout: page.data.fetch("layout", controller_layout),
+          content_type: page.mime_type.to_s
+      end
     end
 
     def current_page
@@ -56,6 +58,19 @@ module Sitepress
     # Default finder of the resource for the current controller context.###
     def find_resource
       get params[:resource_path]
+    end
+
+    # When development environments disable the cache, we still want to turn it
+    # on during rendering so that view doesn't rebuild the site on each call.
+    def with_sitepress_render_cache(&block)
+      cache_resources = site.cache_resources
+      begin
+        site.cache_resources = true
+        yield
+      ensure
+        site.cache_resources = cache_resources
+        site.clear_resources_cache unless site.cache_resources
+      end
     end
 
     # Returns the current layout for the inline Sitepress renderer. This is
