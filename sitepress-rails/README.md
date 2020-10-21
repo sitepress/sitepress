@@ -25,7 +25,7 @@ mount Sitepress::Engine => "/"
 Create the `app/content/pages` in your rails project:
 
 ```bash
-$ mkdir app/content/pages
+$ mkdir -p app/content/pages
 ```
 
 Then add pages to the `app/content/pages` directory:
