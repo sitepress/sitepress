@@ -10,7 +10,7 @@ describe Sitepress::Server do
     Sitepress::Server.new(site: site)
   end
 
-  let(:request_path) { "/test.html" }
+  let(:request_path) { "/test" }
 
   it "gets page" do
     get request_path

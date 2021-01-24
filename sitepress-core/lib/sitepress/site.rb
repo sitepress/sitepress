@@ -34,7 +34,7 @@ module Sitepress
     # processed by the `resources_pipeline`.
     def root
       ResourcesNode.new.tap do |node|
-        DirectoryCollection.new(assets: pages_assets, path: pages_path).mount(node)
+        SourceNodeMapper.new(assets: pages_assets, path: pages_path).mount(node)
         resources_pipeline.process node
       end
     end
@@ -109,7 +109,7 @@ module Sitepress
       @_resources ||= yield
     end
 
-    # TODO: Move this into the DirectoryHandler class so that its not
+    # TODO: Move this into the SoureNodeMapper class so that its not
     # a concern of site.rb
     # Exclude swap files created by Textmate and vim from being added
     # to the sitemap.
