@@ -49,10 +49,10 @@ context Sitepress::Site do
   end
   describe "#get" do
     it "finds with leading /" do
-      expect(subject.get("/test.html")).to_not be_nil
+      expect(subject.get("/test")).to_not be_nil
     end
     it "finds without leading /" do
-      expect(subject.get("test.html")).to_not be_nil
+      expect(subject.get("test")).to_not be_nil
     end
     it "finds nil" do
       expect(subject.get(nil)).to be_nil

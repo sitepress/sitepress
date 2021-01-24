@@ -12,7 +12,6 @@ module Sitepress
   module Extensions
     autoload :RailsRequestPaths,      "sitepress/extensions/rails_request_paths"
     autoload :PartialsRemover,        "sitepress/extensions/partials_remover"
-    autoload :IndexRequestPath,       "sitepress/extensions/index_request_path"
   end
 
   # Make site available via Sitepress.site from Rails app.

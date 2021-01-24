@@ -8,7 +8,6 @@ module Sitepress
   ExistingRequestPathError = Class.new(InvalidRequestPathError)
 
   autoload :Asset,                "sitepress/asset"
-  autoload :DirectoryCollection,  "sitepress/directory_collection"
   autoload :Formats,              "sitepress/formats"
   autoload :Frontmatter,          "sitepress/frontmatter"
   autoload :Resource,             "sitepress/resource"
@@ -16,6 +15,7 @@ module Sitepress
   autoload :ResourcesPipeline,    "sitepress/resources_pipeline"
   autoload :ResourcesNode,        "sitepress/resources_node"
   autoload :Site,                 "sitepress/site"
+  autoload :SourceNodeMapper,     "sitepress/source_node_mapper"
   module Middleware
     autoload :RequestCache,       "sitepress/middleware/request_cache"
   end

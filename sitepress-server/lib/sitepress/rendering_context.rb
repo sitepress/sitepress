@@ -35,8 +35,11 @@ module Sitepress
     # TODO: This might be accessible from the rendering scope, which wouldn't be good.
     # Figure out if this needs to be removed.
     def load_helpers
-      paths = Dir.glob @site.helpers_path.join("**.rb")
-      HelperLoader.new(paths: paths).extend_instance(self)
+      HelperLoader.new(paths: helper_paths).extend_instance(self)
+    end
+
+    def helper_paths
+      Dir.glob @site.helpers_path.join("**.rb")
     end
   end
 end

@@ -5,7 +5,7 @@ context Sitepress::Resource do
   let(:asset) { Sitepress::Asset.new(path: asset_path) }
   let(:request_path) { asset.to_request_path }
   let(:node) { Sitepress::ResourcesNode.new }
-  subject { node.add path: "/test.html", asset: asset }
+  subject { node.add path: "/test", asset: asset }
 
   it "has #mime_type" do
     expect(subject.mime_type.to_s).to eql("text/html")
@@ -21,40 +21,61 @@ context Sitepress::Resource do
   end
   describe "#request_path" do
     it "infers request_path from Asset#to_request_path" do
-      expect(subject.request_path).to eql("/test.html")
+      expect(subject.request_path).to eql("/test")
     end
   end
   describe "resource node relationships" do
     let(:site) { Sitepress::Site.new(root_path: "spec/sites/tree") }
     let(:root) { site.root }
     subject{ root.get(path) }
-    context "/about.html" do
-      let(:path) { "/about.html" }
-      it "has parents" do
-        expect(subject.parents).to eql([nil])
-      end
+    context "/" do
+      let(:path) { "/" }
       it "has no parent" do
         expect(subject.parent).to be_nil
       end
+      it "has no siblings" do
+        expect(subject.siblings).to be_empty
+      end
+      it "has children" do
+        expect(subject.children).to_not be_empty
+      end
+    end
+    context "/vehicles/trucks/freightliner" do
+      let(:path) { "/vehicles/trucks/freightliner" }
+      it "has parent" do
+        expect(subject.parent).to eql(root.get("/vehicles/trucks"))
+      end
       it "has siblings" do
-        expect(subject.siblings).to eql([root.get("/index.html")])
+        expect(subject.siblings).to eql([root.get("/vehicles/trucks/mac")])
       end
       it "has no children" do
         expect(subject.children).to be_empty
       end
     end
-    context "/vehicles/cars/compacts.html" do
-      let(:path) { "/vehicles/cars/compacts.html" }
+    context "/about" do
+      let(:path) { "/about" }
+      it "has parent" do
+        expect(subject.parent).to eql root.get("/")
+      end
+      it "has siblings" do
+        expect(subject.siblings).to eql([root.get("/rules")])
+      end
+      it "has no children" do
+        expect(subject.children).to be_empty
+      end
+    end
+    context "/vehicles/cars/compacts" do
+      let(:path) { "/vehicles/cars/compacts" }
       let(:parents_paths) { subject.parents(**filter).map{ |n| n.request_path if n } }
       let(:parent_path) { subject.parent(**filter).request_path }
       context "parents" do
         context "no filter" do
           let(:filter){ {} }
           it "has 3 parents" do
-            expect(parents_paths).to eql(["/vehicles/cars.html", nil, nil])
+            expect(parents_paths).to eql(["/vehicles/cars", nil, "/"])
           end
           it "has 1 parent" do
-            expect(parent_path).to eql("/vehicles/cars.html")
+            expect(parent_path).to eql("/vehicles/cars")
           end
         end
         context "ext string filter" do
@@ -76,22 +97,22 @@ context Sitepress::Resource do
           end
         end
         context ":all resources filter" do
-          it "has 1 parent with 2 resources, 2 empty parents" do
+          it "has 1 parent with 2 resources, 1 empty parent, and 1 root parent" do
             paths = subject.parents(type: :all).map do |nodes|
               nodes.map{ |n| n.request_path if n }
             end
-            expect(paths).to eql([%w[/vehicles/cars.html /vehicles/cars.xml], [], []])
+            expect(paths).to eql([%w[/vehicles/cars /vehicles/cars.xml], [], %w[/]])
           end
           it "has parent" do
-            expect(subject.parent(type: :all).map(&:request_path)).to eql(%w[/vehicles/cars.html /vehicles/cars.xml])
+            expect(subject.parent(type: :all).map(&:request_path)).to eql(%w[/vehicles/cars /vehicles/cars.xml])
           end
         end
       end
       it "has siblings" do
-        expect(subject.siblings.map(&:request_path)).to match_array(%w[/vehicles/cars/cierra.html /vehicles/cars/camry.html])
+        expect(subject.siblings.map(&:request_path)).to match_array(%w[/vehicles/cars/cierra /vehicles/cars/camry])
       end
       it "has children" do
-        expect(subject.children.map(&:request_path)).to match_array(%w[/vehicles/cars/compacts/smart.html])
+        expect(subject.children.map(&:request_path)).to match_array(%w[/vehicles/cars/compacts/smart])
       end
     end
   end

@@ -98,7 +98,7 @@ module Sitepress
     # just pass `index.html` through to the end.
     def dig(*args)
       head, *tail = args
-      if head.nil? and tail.empty?
+      if (head.nil? or head.empty?) and tail.empty?
         self
       elsif child_nodes.has_key?(head)
         child_nodes[head].dig(*tail)
