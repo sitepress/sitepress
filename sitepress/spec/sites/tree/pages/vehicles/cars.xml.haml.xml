@@ -1,3 +1,0 @@
-%cars
-  -resource.children.each do |p|
-    %car=p.data["title"]
