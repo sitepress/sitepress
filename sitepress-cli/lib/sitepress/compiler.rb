@@ -6,9 +6,10 @@ module Sitepress
   class Compiler
     include FileUtils
 
-    def initialize(site:, stdout: $stdout)
+    def initialize(site:, stdout: $stdout, default_page_name: "index.html")
       @site = site
       @stdout = stdout
+      @default_page_name = default_page_name
     end
 
     # Iterates through all pages and writes them to disk
@@ -22,7 +23,11 @@ module Sitepress
         @site.cache_resources = true
         @site.resources.each do |resource|
           derooted = Pathname.new(resource.request_path).relative_path_from(root)
-          path = target_path.join(derooted)
+          path = if resource.ext.empty?
+            target_path.join(derooted, @default_page_name)
+          else
+            target_path.join(derooted)
+          end
           mkdir_p path.dirname
           @stdout.puts "  #{path}"
           File.open(path.expand_path, "w"){ |f| f.write render(resource) }
