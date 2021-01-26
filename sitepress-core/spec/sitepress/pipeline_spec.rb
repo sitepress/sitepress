@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Sitepress::ResourcesPipeline do
-  let(:site) { Sitepress::Site.new(root_path: "spec/pages") }
+  let(:site) { Sitepress::Site.new(root_path: "spec/sites/tree") }
   subject{ site.resources_pipeline }
 
   describe "#process" do

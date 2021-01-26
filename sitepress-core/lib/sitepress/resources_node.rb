@@ -89,8 +89,12 @@ module Sitepress
     end
     alias :[] :get_node
 
+    def build_child(name)
+      child_nodes[name]
+    end
+
     def inspect
-      "<#{self.class}: formats=#{formats.map(&:request_path)} children=#{children.map(&:name).inspect}>"
+      "<#{self.class}: name=#{name.inspect} formats=#{formats.map(&:request_path)} children=#{children.map(&:name).inspect}>"
     end
 
     # TODO: I don't really like how the path is broken up with the "ext" at the end.
