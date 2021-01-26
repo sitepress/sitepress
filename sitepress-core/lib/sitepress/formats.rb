@@ -40,7 +40,7 @@ module Sitepress
     def add(asset: , ext: BLANK_EXTENSION)
       resource = Resource.new(asset: asset, node: @node, ext: ext)
       if @formats.has_key? ext
-        raise Sitepress::ExistingRequestPathError, "Resource at #{resource.request_path} already set"
+        raise Sitepress::ExistingRequestPathError, "Resource at #{resource.request_path} already set with format #{ext.inspect}"
       else
         @formats[ext] = resource
       end

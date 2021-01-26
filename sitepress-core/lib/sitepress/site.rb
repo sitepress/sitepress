@@ -34,7 +34,7 @@ module Sitepress
     # processed by the `resources_pipeline`.
     def root
       ResourcesNode.new.tap do |node|
-        SourceNodeMapper.new(assets: pages_assets, path: pages_path).mount(node)
+        source_node_mapper.mount(node)
         resources_pipeline.process node
       end
     end
@@ -103,29 +103,14 @@ module Sitepress
       @resources_pipeline ||= ResourcesPipeline.new
     end
 
+    def source_node_mapper
+      @source_node_mapper ||= SourceNodeMapper.new(path: pages_path)
+    end
+
     private
     def with_resources_cache
       clear_resources_cache unless cache_resources
       @_resources ||= yield
-    end
-
-    # TODO: Move this into the SoureNodeMapper class so that its not
-    # a concern of site.rb
-    # Exclude swap files created by Textmate and vim from being added
-    # to the sitemap.
-    SWAP_FILE_EXTENSIONS = [
-      "~",
-      ".swp"
-    ]
-
-    # Lazy stream of files that will be rendered by resources.
-    def pages_assets(glob = DEFAULT_GLOB)
-      # TODO: Move this into the DirectoryHandler class so that its not
-      # a concern of site.rb
-      paths = Dir.glob(pages_path.join(glob)).reject do |path|
-        File.directory? path or SWAP_FILE_EXTENSIONS.any? { |ext| path.end_with? ext }
-      end
-      paths.lazy.map { |path| Asset.new(path: path) }
     end
   end
 end
