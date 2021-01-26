@@ -5,14 +5,15 @@ module Sitepress
     DEFAULT_BASENAME = "index".freeze
     DEFAULT_FORMAT = "html".freeze
 
-    # TODO: Move this into the SoureNodeMapper class so that its not
-    # a concern of site.rb
     # Exclude swap files created by Textmate and vim from being added
     # to the sitemap.
     SWAP_FILE_EXTENSIONS = [
       "~",
       ".swp"
     ]
+
+    # Partial rails prefix.
+    PARTIAL_PREFIX = "_".freeze
 
     attr_reader :assets, :path
     alias :root :path
@@ -21,30 +22,45 @@ module Sitepress
       @path = path
     end
 
+    # Mounts the source files from the path to the given node.
     def mount(node)
-      root.each_child do |path|
-        next if is_swap_file? path
-
-        node_name, node_format, template_handler = path.basename.to_s.split(".")
-        child_node = node.build_child(node_name)
+      paths.each do |path, name, format|
+        child_node = node.build_child(name)
 
         if path.directory?
           SourceNodeMapper.new(path: path).mount(child_node)
         else
           asset = Asset.new(path: path)
 
-          if node_format == DEFAULT_FORMAT and node_name == DEFAULT_BASENAME
+          if format == DEFAULT_FORMAT and name == DEFAULT_BASENAME
             node.formats.add(asset: asset)
-          elsif node_format == DEFAULT_FORMAT
+          elsif format == DEFAULT_FORMAT
             child_node.formats.add(asset: asset)
           else
-            child_node.formats.add(asset: asset, ext: ".#{node_format}")
+            child_node.formats.add(asset: asset, ext: ".#{format}")
           end
         end
       end
     end
 
     private
+    # Returns a list of files, paths, and node names to iterate through to build out nodes
+    def paths
+      Enumerator.new do |y|
+        root.each_child do |path|
+          next if is_swap_file? path
+          next if is_partial_file? path
+
+          node_name, node_format, template_handler = path.basename.to_s.split(".")
+          y << [ path, node_name, node_format ]
+        end
+      end
+    end
+
+    def is_partial_file?(path)
+      path.basename.to_s.start_with? PARTIAL_PREFIX
+    end
+
     def is_swap_file?(path)
       SWAP_FILE_EXTENSIONS.any? { |ext| path.to_s.end_with? ext }
     end
