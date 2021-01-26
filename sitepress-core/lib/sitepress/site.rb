@@ -34,7 +34,7 @@ module Sitepress
     # processed by the `resources_pipeline`.
     def root
       ResourcesNode.new.tap do |node|
-        source_node_mapper.mount(node)
+        source_node_mapper.mount node
         resources_pipeline.process node
       end
     end

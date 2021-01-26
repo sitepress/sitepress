@@ -11,7 +11,6 @@ module Sitepress
   autoload :RouteConstraint,          "sitepress/route_constraint"
   module Extensions
     autoload :RailsRequestPaths,      "sitepress/extensions/rails_request_paths"
-    autoload :PartialsRemover,        "sitepress/extensions/partials_remover"
   end
 
   # Make site available via Sitepress.site from Rails app.
