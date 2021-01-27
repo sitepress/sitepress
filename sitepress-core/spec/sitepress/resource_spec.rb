@@ -5,7 +5,7 @@ context Sitepress::Resource do
   let(:asset) { Sitepress::Asset.new(path: asset_path) }
   let(:request_path) { asset.to_request_path }
   let(:node) { Sitepress::ResourcesNode.new }
-  subject { node.add path: "/test", asset: asset }
+  subject { node.build_child("test").formats.add(ext: "", asset: asset) }
 
   it "has #mime_type" do
     expect(subject.mime_type.to_s).to eql("text/html")

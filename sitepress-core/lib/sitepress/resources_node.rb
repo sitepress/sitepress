@@ -13,6 +13,7 @@ module Sitepress
       @parent = parent
       @name = name.freeze
       @delimiter = delimiter.freeze
+      yield self if block_given?
     end
 
     def formats
@@ -66,17 +67,6 @@ module Sitepress
       end
     end
 
-    def add(path: , asset: )
-      head, *path = tokenize(path)
-      if path.empty?
-        # When there's no more paths, we're left with the format (e.g. ".html")
-        formats.add(asset: asset, ext: head)
-      else
-        child_nodes[head].add(path: path, asset: asset)
-      end
-    end
-    alias :[]= :add
-
     def get(path)
       *path, ext = tokenize(path)
       node = dig(*path)
@@ -90,7 +80,9 @@ module Sitepress
     alias :[] :get_node
 
     def build_child(name)
-      child_nodes[name]
+      child_nodes[name].tap do |node|
+        yield node if block_given?
+      end
     end
 
     def inspect
