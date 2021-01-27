@@ -23,9 +23,7 @@ module Sitepress
     end
 
     def site
-      @site ||= Site.new(root_path: default_root).tap do |site|
-        site.resources_pipeline << Extensions::RailsRequestPaths.new
-      end
+      @site ||= Site.new(root_path: default_root)
     end
 
     private

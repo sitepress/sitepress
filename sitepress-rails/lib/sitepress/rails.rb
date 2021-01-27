@@ -9,9 +9,6 @@ module Sitepress
 
   autoload :RailsConfiguration,       "sitepress/rails_configuration"
   autoload :RouteConstraint,          "sitepress/route_constraint"
-  module Extensions
-    autoload :RailsRequestPaths,      "sitepress/extensions/rails_request_paths"
-  end
 
   # Make site available via Sitepress.site from Rails app.
   def self.site
