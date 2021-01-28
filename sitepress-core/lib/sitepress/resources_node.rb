@@ -9,10 +9,9 @@ module Sitepress
 
     DELIMITER = "/".freeze
 
-    def initialize(parent: nil, delimiter: ResourcesNode::DELIMITER, name: nil)
+    def initialize(parent: nil, name: nil)
       @parent = parent
       @name = name.freeze
-      @delimiter = delimiter.freeze
       yield self if block_given?
     end
 
@@ -68,14 +67,14 @@ module Sitepress
     end
 
     def get(path)
-      *path, ext = tokenize(path)
-      node = dig(*path)
-      node.formats.ext(ext) if node
+      path = Path.new(path)
+      node = dig(*path.node_names)
+      node.formats.ext(path.ext) if node
     end
 
     def get_node(path)
-      *path, _ = tokenize(path)
-      dig(*path)
+      path = Path.new(path)
+      dig(*path.node_names)
     end
     alias :[] :get_node
 
@@ -105,26 +104,16 @@ module Sitepress
 
     protected
     def remove_child(path)
-      *_, segment, _ = tokenize(path)
-      child_nodes.delete(segment)
+      child_nodes.delete(Path.new(path).node_names.last)
     end
 
     private
     def add_child_node(name)
-      ResourcesNode.new(parent: self, delimiter: @delimiter, name: name)
+      ResourcesNode.new(parent: self, name: name)
     end
 
     def child_nodes
       @child_nodes ||= Hash.new { |hash, key| hash[key] = add_child_node(key) }
-    end
-
-    # Returns all of the names for the path along with the format, if set.
-    def tokenize(path)
-      return path if path.respond_to? :to_a
-      path, _, file = path.gsub(/^\//, "").rpartition(@delimiter)
-      ext = File.extname(file)
-      file = File.basename(file, ext)
-      path.split(@delimiter).push(file).push(ext)
     end
   end
 end

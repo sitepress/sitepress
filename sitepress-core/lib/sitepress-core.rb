@@ -10,6 +10,7 @@ module Sitepress
   autoload :Asset,                "sitepress/asset"
   autoload :Formats,              "sitepress/formats"
   autoload :Frontmatter,          "sitepress/frontmatter"
+  autoload :Path,                 "sitepress/path"
   autoload :Resource,             "sitepress/resource"
   autoload :ResourceCollection,   "sitepress/resource_collection"
   autoload :ResourcesPipeline,    "sitepress/resources_pipeline"
