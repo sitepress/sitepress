@@ -3,7 +3,7 @@ module Sitepress
   # the `path` root.
   class SourceNodeMapper
     DEFAULT_BASENAME = "index".freeze
-    DEFAULT_FORMAT = "html".freeze
+    DEFAULT_FORMAT = :html
 
     # Exclude swap files created by Textmate and vim from being added
     # to the sitemap.
@@ -37,7 +37,7 @@ module Sitepress
           elsif format == DEFAULT_FORMAT
             child_node.formats.add(asset: asset)
           else
-            child_node.formats.add(asset: asset, ext: ".#{format}")
+            child_node.formats.add(ext: ".#{format}", asset: asset)
           end
         end
       end
@@ -52,7 +52,7 @@ module Sitepress
           next if is_partial_file? path
 
           node_name, node_format, template_handler = path.basename.to_s.split(".")
-          y << [ path, node_name, node_format ]
+          y << [ path, node_name, node_format&.to_sym ]
         end
       end
     end
