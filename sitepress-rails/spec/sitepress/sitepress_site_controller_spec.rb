@@ -24,7 +24,7 @@ describe Sitepress::SiteController, type: :controller do
       expect(response.body).to include("<title>Test layout</title>")
     end
     it "responds with content type" do
-      expect(response.content_type).to eql("text/html")
+      expect(response.content_type).to include("text/html")
     end
     context "helper methods" do
       subject { @controller }
@@ -50,7 +50,7 @@ describe Sitepress::SiteController, type: :controller do
       expect(response.body).to include("<title>Dummy</title>")
     end
     it "responds with content type" do
-      expect(response.content_type).to eql("text/html")
+      expect(response.content_type).to include("text/html")
     end
   end
 
