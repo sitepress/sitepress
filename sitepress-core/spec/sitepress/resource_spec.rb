@@ -79,7 +79,7 @@ context Sitepress::Resource do
           end
         end
         context "ext string filter" do
-          let(:filter) { {type: ".xml"} }
+          let(:filter) { {type: :xml} }
           it "has 1 xml parent, 2 nil parents" do
             expect(parents_paths).to match_array(["/vehicles/cars.xml", nil, nil])
           end

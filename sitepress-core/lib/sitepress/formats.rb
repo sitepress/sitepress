@@ -21,12 +21,12 @@ module Sitepress
       @formats.values.each(&block)
     end
 
-    def remove(ext)
-      @formats.delete(ext)
+    def remove(extension)
+      @formats.delete(cast(extension))
     end
 
-    def ext(ext)
-      @formats[ext]
+    def get(extension)
+      @formats[cast(extension)]
     end
 
     def extensions
@@ -38,17 +38,21 @@ module Sitepress
     end
 
     def add(asset:, format: nil)
-      ext = format ? ".#{format}" : ""
-      resource = Resource.new(asset: asset, node: @node, ext: ext)
-      if @formats.has_key? ext
-        raise Sitepress::ExistingRequestPathError, "Resource at #{resource.request_path} already set with format #{ext.inspect}"
+      format = cast(format)
+      resource = Resource.new(asset: asset, node: @node, format: format)
+      if @formats.has_key? format
+        raise Sitepress::ExistingRequestPathError, "Resource at #{resource.request_path} already set with format #{format.inspect}"
       else
-        @formats[ext] = resource
+        @formats[format] = resource
       end
     end
 
     def inspect
       "<#{self.class}: resources=#{map(&:request_path)}>"
+    end
+
+    def cast(format)
+      format&.to_sym
     end
   end
 end
