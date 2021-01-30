@@ -1,6 +1,6 @@
 module Sitepress
-  # Manages collections of resources that share the same ResourceNode. Given the files `/a.html` and `/a.gif`,
-  # both of these assets would be stored in the `ResourceNode#name = "a"` under `ResourceNode#formats` with
+  # Manages collections of resources that share the same Node. Given the files `/a.html` and `/a.gif`,
+  # both of these assets would be stored in the `Node#name = "a"` under `Node#formats` with
   # the extensions `.gif`, and `.html`.
   class Formats
     include Enumerable

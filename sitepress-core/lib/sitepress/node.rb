@@ -4,7 +4,7 @@ module Sitepress
   # a tree of resource nodes would be built named `foo`, `bar`, `biz`, `buz`. `foo` would be the "root" node and `buz`
   # a leaf node. The actual `buz.html` asset is then stored on the leaf node as a resource. This tree structure
   # makes it possible to reason through path relationships from code to build out elements in a website like tree navigation.
-  class ResourcesNode
+  class Node
     attr_reader :parent, :name
 
     DELIMITER = "/".freeze
@@ -109,7 +109,7 @@ module Sitepress
 
     private
     def add_child_node(name)
-      ResourcesNode.new(parent: self, name: name)
+      Node.new(parent: self, name: name)
     end
 
     def child_nodes

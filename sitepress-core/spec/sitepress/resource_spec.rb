@@ -4,7 +4,7 @@ context Sitepress::Resource do
   let(:asset_path) { "spec/sites/sample/pages/test.html.haml" }
   let(:asset) { Sitepress::Asset.new(path: asset_path) }
   let(:request_path) { asset.to_request_path }
-  let(:node) { Sitepress::ResourcesNode.new }
+  let(:node) { Sitepress::Node.new }
   subject { node.build_child("test").formats.add(ext: "", asset: asset) }
 
   it "has #mime_type" do

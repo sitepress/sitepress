@@ -14,7 +14,7 @@ module Sitepress
   autoload :Resource,             "sitepress/resource"
   autoload :ResourceCollection,   "sitepress/resource_collection"
   autoload :ResourcesPipeline,    "sitepress/resources_pipeline"
-  autoload :ResourcesNode,        "sitepress/resources_node"
+  autoload :Node,        "sitepress/node"
   autoload :Site,                 "sitepress/site"
   autoload :SourceNodeMapper,     "sitepress/source_node_mapper"
   module Middleware
