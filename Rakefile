@@ -16,7 +16,9 @@ Sitepress::Project.all.each do |project|
       puts "Verifying #{project.gem_name}"
       Bundler.with_original_env do
         project.chdir do
-          sh "bundle exec rspec"
+          sh "bundle exec rspec" do |ok, res|
+            puts res unless ok
+          end
         end
       end
     end
