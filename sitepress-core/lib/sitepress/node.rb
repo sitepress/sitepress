@@ -70,7 +70,7 @@ module Sitepress
       node.formats.get(path.format) if node
     end
 
-    def build_child(name)
+    def add_child(name)
       child_nodes[name].tap do |node|
         yield node if block_given?
       end
@@ -80,9 +80,6 @@ module Sitepress
       "<#{self.class}: name=#{name.inspect} formats=#{formats.map(&:request_path)} children=#{children.map(&:name).inspect}>"
     end
 
-    # TODO: I don't really like how the path is broken up with the "ext" at the end.
-    # It feels inconsistent. Either make an object/struct that encaspulates this or
-    # just pass `index.html` through to the end.
     def dig(*args)
       head, *tail = args
       if (head.nil? or head.empty?) and tail.empty?
@@ -100,12 +97,12 @@ module Sitepress
     end
 
     private
-    def add_child_node(name)
+    def build_child(name)
       Node.new(parent: self, name: name)
     end
 
     def child_nodes
-      @child_nodes ||= Hash.new { |hash, key| hash[key] = add_child_node(key) }
+      @child_nodes ||= Hash.new { |hash, key| hash[key] = build_child(key) }
     end
   end
 end

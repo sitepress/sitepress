@@ -25,7 +25,7 @@ module Sitepress
     # Mounts the source files from the path to the given node.
     def mount(node)
       paths.each do |path, name, format|
-        child_node = node.build_child(name)
+        child_node = node.add_child(name)
 
         if path.directory?
           SourceNodeMapper.new(path: path).mount(child_node)
