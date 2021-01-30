@@ -23,7 +23,7 @@ module Sitepress
         @site.cache_resources = true
         @site.resources.each do |resource|
           derooted = Pathname.new(resource.request_path).relative_path_from(root)
-          path = if resource.ext.empty?
+          path = if resource.format.nil?
             target_path.join(derooted, @default_page_name)
           else
             target_path.join(derooted)

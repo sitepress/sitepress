@@ -9,23 +9,27 @@ module Sitepress
     def_delegators :asset, :mime_type
 
     attr_writer :body, :data
-    attr_reader :node, :asset, :ext
+    attr_reader :node, :asset, :format
 
     # Default scope for querying parent/child/sibling resources.
     DEFAULT_FILTER_SCOPE = :same
 
-    def initialize(asset: , node: , ext: "")
+    def initialize(asset: , node: , format: nil)
       @asset = asset
       @node = node
-      @ext = ext # TODO: Meh, feels dirty but I suppose the thingy has to drop it in.
+      @format = format
     end
 
     def request_path
       return unless node
       # TODO: This `compact` makes me nervous. How can we handle this better?
       lineage = node.parents.reverse.map(&:name).compact
-      file_name = [node.name, @ext].join
-      File.join("/", *lineage, file_name)
+      file_name = if @format.nil? or @format.empty?
+        node.name
+      else
+        [node.name, ".", @format].join
+      end
+      File.join("/", *lineage, file_name.to_s)
     end
 
     def data
@@ -79,9 +83,9 @@ module Sitepress
       when :all
         nodes.map{ |node| node.formats }
       when :same
-        nodes.map{ |n| n.formats.ext(ext) }.flatten
-      when String
-        nodes.map{ |n| n.formats.ext(type) }.flatten
+        nodes.map{ |n| n.formats.get(format) }.flatten
+      when String, Symbol, NilClass
+        nodes.map{ |n| n.formats.get(type) }.flatten
       when MIME::Type
         nodes.map{ |n| n.formats.mime_type(type) }.flatten
       else

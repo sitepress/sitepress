@@ -11,7 +11,9 @@ module Sitepress
     end
 
     def format
-      @ext.partition(".").last&.to_sym
+      format = @ext.partition(".").last
+      return nil if format.nil? or format.empty?
+      format.to_sym
     end
 
     private
