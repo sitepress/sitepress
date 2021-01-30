@@ -33,7 +33,7 @@ module Sitepress
     # A tree representation of the resourecs wthin the site. The root is a node that's
     # processed by the `resources_pipeline`.
     def root
-      ResourcesNode.new.tap do |node|
+      Node.new.tap do |node|
         source_node_mapper.mount node
         resources_pipeline.process node
       end
@@ -98,7 +98,7 @@ module Sitepress
     end
 
     # An array of procs that manipulate the tree and resources from the
-    # ResourceNode returned by #root.
+    # Node returned by #root.
     def resources_pipeline
       @resources_pipeline ||= ResourcesPipeline.new
     end

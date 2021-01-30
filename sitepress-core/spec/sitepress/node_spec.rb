@@ -1,9 +1,9 @@
 require "spec_helper"
 
-context Sitepress::ResourcesNode do
+context Sitepress::Node do
   let(:asset) { Sitepress::Asset.new(path: "/") }
   let(:root) do
-    Sitepress::ResourcesNode.new do |root|
+    Sitepress::Node.new do |root|
       root.formats.add(ext: ".html", asset: asset)
       root.build_child("app") do |app|
         app.formats.add(ext: ".html", asset: asset)
@@ -57,7 +57,7 @@ context Sitepress::ResourcesNode do
         /a/1.html
         /a/b/c.html] }
     let(:root) do
-      Sitepress::ResourcesNode.new do |root|
+      Sitepress::Node.new do |root|
         root.build_child("a") do |a|
           a.formats.add(ext: ".html", asset: asset)
           a.build_child("1").formats.add(ext: ".html", asset: asset)
@@ -104,7 +104,7 @@ context Sitepress::ResourcesNode do
         /a/1
         /a/b/c] }
     let(:root) do
-      Sitepress::ResourcesNode.new do |root|
+      Sitepress::Node.new do |root|
         root.build_child("a") do |a|
           a.formats.add(ext: "", asset: asset)
           a.build_child("1").formats.add(ext: "", asset: asset)
