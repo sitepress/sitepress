@@ -30,10 +30,10 @@ module Sitepress
       path.basename.to_s.split(".").drop(1)
     end
 
-    # TODO: This is really a "key" or "leafname".
     def basename
       path.basename.to_s.split(".").first
     end
+    alias :node_name :basename
 
     def format_basename
       [basename, format_extension].join(".")

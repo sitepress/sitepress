@@ -37,7 +37,8 @@ module Sitepress
       find { |f| f.mime_type == mime_type }
     end
 
-    def add(asset: , ext: BLANK_EXTENSION)
+    def add(asset:, format: nil)
+      ext = format ? ".#{format}" : ""
       resource = Resource.new(asset: asset, node: @node, ext: ext)
       if @formats.has_key? ext
         raise Sitepress::ExistingRequestPathError, "Resource at #{resource.request_path} already set with format #{ext.inspect}"

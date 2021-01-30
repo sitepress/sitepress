@@ -37,7 +37,7 @@ module Sitepress
           elsif format == DEFAULT_FORMAT
             child_node.formats.add(asset: asset)
           else
-            child_node.formats.add(ext: ".#{format}", asset: asset)
+            child_node.formats.add(format: format, asset: asset)
           end
         end
       end
