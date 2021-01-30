@@ -4,20 +4,20 @@ context Sitepress::Node do
   let(:asset) { Sitepress::Asset.new(path: "/") }
   let(:root) do
     Sitepress::Node.new do |root|
-      root.formats.add(ext: ".html", asset: asset)
+      root.formats.add(format: :html, asset: asset)
       root.build_child("app") do |app|
-        app.formats.add(ext: ".html", asset: asset)
+        app.formats.add(format: :html, asset: asset)
         app.build_child("is") do |is|
-          is.formats.add(ext: ".html", asset: asset)
-          is.build_child("good").formats.add(ext: ".html", asset: asset)
+          is.formats.add(format: :html, asset: asset)
+          is.build_child("good").formats.add(format: :html, asset: asset)
           is.build_child("bad") do |bad|
-            bad.formats.add(ext: ".html", asset: asset)
-            bad.build_child("really").formats.add(ext: ".html", asset: asset)
+            bad.formats.add(format: :html, asset: asset)
+            bad.build_child("really").formats.add(format: :html, asset: asset)
           end
         end
         app.build_child("boo") do |boo|
-          boo.formats.add(ext: ".html", asset: asset)
-          boo.build_child("radly").formats.add(ext: ".html", asset: asset)
+          boo.formats.add(format: :html, asset: asset)
+          boo.build_child("radly").formats.add(format: :html, asset: asset)
         end
       end
     end
@@ -59,11 +59,11 @@ context Sitepress::Node do
     let(:root) do
       Sitepress::Node.new do |root|
         root.build_child("a") do |a|
-          a.formats.add(ext: ".html", asset: asset)
-          a.build_child("1").formats.add(ext: ".html", asset: asset)
+          a.formats.add(format: :html, asset: asset)
+          a.build_child("1").formats.add(format: :html, asset: asset)
           a.build_child("b") do |b|
-            b.formats.add(ext: ".html", asset: asset)
-            b.build_child("c").formats.add(ext: ".html", asset: asset)
+            b.formats.add(format: :html, asset: asset)
+            b.build_child("c").formats.add(format: :html, asset: asset)
           end
         end
       end
@@ -106,11 +106,11 @@ context Sitepress::Node do
     let(:root) do
       Sitepress::Node.new do |root|
         root.build_child("a") do |a|
-          a.formats.add(ext: "", asset: asset)
-          a.build_child("1").formats.add(ext: "", asset: asset)
+          a.formats.add(asset: asset)
+          a.build_child("1").formats.add(asset: asset)
           a.build_child("b") do |b|
-            b.formats.add(ext: "", asset: asset)
-            b.build_child("c").formats.add(ext: "", asset: asset)
+            b.formats.add(asset: asset)
+            b.build_child("c").formats.add(asset: asset)
           end
         end
       end
