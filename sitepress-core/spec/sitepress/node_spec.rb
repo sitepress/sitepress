@@ -31,12 +31,12 @@ context Sitepress::Node do
       /app/is/bad/really.html
       /app/boo.html
       /app/boo/radly.html] }
-  subject { root.get_node(path) }
+  subject { root.get(path).node }
   it "is_root" do
     expect(root).to be_root
   end
   it "is_leaf" do
-    expect(root.get_node("/app/boo/radly.html")).to be_leaf
+    expect(root.get("/app/boo/radly.html").node).to be_leaf
   end
   context "/app/is/bad.html" do
     let(:path) { "/app/is/bad.html" }
@@ -81,7 +81,7 @@ context Sitepress::Node do
     it { should have_siblings(%w[/a/1.html]) }
     it { should have_children(%w[/a/b/c.html]) }
     context "remove c.html" do
-      before { subject.get_node("c.html").remove }
+      before { subject.get("c.html").node.remove }
       it { should have_children([]) }
     end
     context "remove /a/b.html" do
@@ -128,7 +128,7 @@ context Sitepress::Node do
     it { should have_siblings(%w[/a/1]) }
     it { should have_children(%w[/a/b/c]) }
     context "remove c" do
-      before { subject.get_node("c").remove }
+      before { subject.get("c").node.remove }
       it { should have_children([]) }
     end
     context "remove /a/b" do

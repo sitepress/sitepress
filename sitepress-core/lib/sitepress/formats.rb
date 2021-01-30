@@ -5,10 +5,6 @@ module Sitepress
   class Formats
     include Enumerable
 
-    # This is our "default" extension, which is usually an html file. Other formats,
-    # like .png or .css, would require an explicit extension.
-    BLANK_EXTENSION = "".freeze
-
     extend Forwardable
     def_delegators :@formats, :size, :clear
 
@@ -22,11 +18,11 @@ module Sitepress
     end
 
     def remove(extension)
-      @formats.delete(cast(extension))
+      @formats.delete(symbolize(extension))
     end
 
     def get(extension)
-      @formats[cast(extension)]
+      @formats[symbolize(extension)]
     end
 
     def extensions
@@ -38,7 +34,8 @@ module Sitepress
     end
 
     def add(asset:, format: nil)
-      format = cast(format)
+      format = symbolize(format)
+
       resource = Resource.new(asset: asset, node: @node, format: format)
       if @formats.has_key? format
         raise Sitepress::ExistingRequestPathError, "Resource at #{resource.request_path} already set with format #{format.inspect}"
@@ -51,7 +48,8 @@ module Sitepress
       "<#{self.class}: resources=#{map(&:request_path)}>"
     end
 
-    def cast(format)
+    private
+    def symbolize(format)
       format&.to_sym
     end
   end
