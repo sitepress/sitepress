@@ -7,8 +7,6 @@ module Sitepress
   class Node
     attr_reader :parent, :name
 
-    DELIMITER = "/".freeze
-
     def initialize(parent: nil, name: nil)
       @parent = parent
       @name = name.freeze
@@ -71,12 +69,6 @@ module Sitepress
       node = dig(*path.node_names)
       node.formats.get(path.format) if node
     end
-
-    def get_node(path)
-      path = Path.new(path)
-      dig(*path.node_names)
-    end
-    alias :[] :get_node
 
     def build_child(name)
       child_nodes[name].tap do |node|
