@@ -3,9 +3,9 @@ require "spec_helper"
 context Sitepress::Resource do
   let(:asset_path) { "spec/sites/sample/pages/test.html.haml" }
   let(:asset) { Sitepress::Asset.new(path: asset_path) }
-  let(:request_path) { asset.to_request_path }
   let(:node) { Sitepress::Node.new }
-  subject { node.build_child("test").formats.add(ext: "", asset: asset) }
+  let(:resource) { node.build_child("test").formats.add(ext: "", asset: asset) }
+  subject { resource }
 
   it "has #mime_type" do
     expect(subject.mime_type.to_s).to eql("text/html")
@@ -17,7 +17,7 @@ context Sitepress::Resource do
     expect(subject.body).to include("This is just some content")
   end
   it "has #inspect" do
-    expect(subject.inspect).to include(request_path)
+    expect(subject.inspect).to include("test.html")
   end
   describe "#request_path" do
     it "infers request_path from Asset#to_request_path" do

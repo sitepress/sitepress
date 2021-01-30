@@ -22,9 +22,6 @@ context Sitepress::Asset do
   it "has basename.html" do
     expect(subject.format_basename).to eql("test.html")
   end
-  it "has request_path" do
-    expect(subject.to_request_path.to_s).to eql("spec/sites/sample/pages/test.html")
-  end
   context "#exists?" do
     it "is true" do
       expect(subject.exists?).to be true
@@ -60,9 +57,6 @@ context Sitepress::Asset do
           expect(subject.mime_type).to eql(MIME::Types["text/plain"].first)
         end
       end
-      it "#to_request_path" do
-        expect(subject.to_request_path.to_s).to eql("spec/pages.ar-awesome is here/text.txt")
-      end
     end
     context "none" do
       let(:path) { "spec/pages/nothing" }
@@ -80,9 +74,6 @@ context Sitepress::Asset do
         it "is empty" do
           expect(subject.template_extensions).to be_empty
         end
-      end
-      it "#to_request_path" do
-        expect(subject.to_request_path.to_s).to eql("spec/pages/nothing")
       end
     end
     context "overriden mime_type " do
