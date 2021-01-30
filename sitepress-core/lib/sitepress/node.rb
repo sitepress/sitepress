@@ -55,13 +55,8 @@ module Sitepress
     end
 
     def remove
-      if leaf?
-        # TODO: Check the parents to see if they also need to be removed if
-        # this call orphans the tree up to a resource.
-        parent.remove_child(name)
-      else
-        formats.clear
-      end
+      formats.clear
+      parent.remove_child(name) if leaf?
     end
 
     def get(path)
@@ -92,8 +87,8 @@ module Sitepress
     end
 
     protected
-    def remove_child(path)
-      child_nodes.delete(Path.new(path).node_names.last)
+    def remove_child(name)
+      child_nodes.delete(name)
     end
 
     private
