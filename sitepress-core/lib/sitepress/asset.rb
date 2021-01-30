@@ -67,18 +67,6 @@ module Sitepress
       File.exist? path
     end
 
-    # Spits out a reasonable default request path. This may be changed
-    # via Resource#request_path.
-    def to_request_path
-      ext = format_extension
-
-      if ext
-        path.dirname.join(basename).sub_ext(".#{ext}").to_s
-      else
-        path.to_s
-      end
-    end
-
     private
     def frontmatter
       Frontmatter.new File.read @path
