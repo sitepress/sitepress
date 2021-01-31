@@ -5,11 +5,18 @@ module Sitepress
   # a leaf node. The actual `buz.html` asset is then stored on the leaf node as a resource. This tree structure
   # makes it possible to reason through path relationships from code to build out elements in a website like tree navigation.
   class Node
-    attr_reader :parent, :name
+    attr_reader :parent, :name, :default_format, :default_name
 
-    def initialize(parent: nil, name: nil)
+    # Default extension
+    DEFAULT_EXTENSION = :html
+
+    DEFAULT_NAME = "index".freeze
+
+    def initialize(parent: nil, name: nil, default_format: DEFAULT_EXTENSION, default_name: DEFAULT_NAME)
       @parent = parent
       @name = name.freeze
+      @default_format = default_format
+      @default_name = default_name
       yield self if block_given?
     end
 
@@ -66,6 +73,7 @@ module Sitepress
     end
 
     def add_child(name)
+      return self if name == default_name
       child_nodes[name].tap do |node|
         yield node if block_given?
       end
@@ -77,7 +85,7 @@ module Sitepress
 
     def dig(*args)
       head, *tail = args
-      if (head.nil? or head.empty?) and tail.empty?
+      if (head.nil? or head.empty? or head == default_name) and tail.empty?
         self
       elsif child_nodes.has_key?(head)
         child_nodes[head].dig(*tail)
@@ -93,7 +101,7 @@ module Sitepress
 
     private
     def build_child(name)
-      Node.new(parent: self, name: name)
+      Node.new(parent: self, name: name, default_format: default_format, default_name: default_name)
     end
 
     def child_nodes
