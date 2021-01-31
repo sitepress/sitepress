@@ -7,6 +7,7 @@ module Sitepress
 
     extend Forwardable
     def_delegators :@formats, :size, :clear
+    def_delegators :@node, :default_format
 
     def initialize(node: )
       @node = node
@@ -22,7 +23,7 @@ module Sitepress
     end
 
     def get(extension)
-      @formats[symbolize(extension)]
+      @formats[symbolize(extension || default_format)]
     end
 
     def extensions
@@ -34,7 +35,7 @@ module Sitepress
     end
 
     def add(asset:, format: nil)
-      format = symbolize(format)
+      format = symbolize(format || default_format)
 
       resource = Resource.new(asset: asset, node: @node, format: format)
       if @formats.has_key? format

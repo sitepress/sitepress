@@ -2,9 +2,6 @@ module Sitepress
   # Maps a directory of assets into a set of routes that correspond with
   # the `path` root.
   class SourceNodeMapper
-    DEFAULT_BASENAME = "index".freeze
-    DEFAULT_FORMAT = :html
-
     # Exclude swap files created by Textmate and vim from being added
     # to the sitemap.
     SWAP_FILE_EXTENSIONS = [
@@ -25,20 +22,11 @@ module Sitepress
     # Mounts the source files from the path to the given node.
     def mount(node)
       paths.each do |path, name, format|
-        child_node = node.add_child(name)
-
         if path.directory?
-          SourceNodeMapper.new(path: path).mount(child_node)
+          SourceNodeMapper.new(path: path).mount node.add_child(name)
         else
           asset = Asset.new(path: path)
-
-          if format == DEFAULT_FORMAT and name == DEFAULT_BASENAME
-            node.formats.add(asset: asset)
-          elsif format == DEFAULT_FORMAT
-            child_node.formats.add(asset: asset)
-          else
-            child_node.formats.add(format: format, asset: asset)
-          end
+          node.add_child(name).formats.add(format: format, asset: asset)
         end
       end
     end

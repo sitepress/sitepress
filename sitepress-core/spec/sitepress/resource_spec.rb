@@ -81,7 +81,7 @@ context Sitepress::Resource do
         context "ext string filter" do
           let(:filter) { {type: :xml} }
           it "has 1 xml parent, 2 nil parents" do
-            expect(parents_paths).to match_array(["/vehicles/cars.xml", nil, nil])
+            expect(parents_paths).to match_array(["/vehicles/cars.xml", nil, "/index.xml"])
           end
           it "has 1 xml parent" do
             expect(parent_path).to eql("/vehicles/cars.xml")
@@ -90,7 +90,7 @@ context Sitepress::Resource do
         context "MIME::Types filter" do
           let(:filter) { {type: MIME::Types.type_for("xml").first} }
           it "has 1 xml parent when filtered by Mime::Type['xml']" do
-            expect(parents_paths).to match_array(["/vehicles/cars.xml", nil, nil])
+            expect(parents_paths).to match_array(["/vehicles/cars.xml", nil, "/index.xml"])
           end
           it "has 1 xml parent" do
             expect(parent_path).to eql("/vehicles/cars.xml")
@@ -101,7 +101,7 @@ context Sitepress::Resource do
             paths = subject.parents(type: :all).map do |nodes|
               nodes.map{ |n| n.request_path if n }
             end
-            expect(paths).to eql([%w[/vehicles/cars /vehicles/cars.xml], [], %w[/]])
+            expect(paths).to eql([%w[/vehicles/cars /vehicles/cars.xml], [], %w[/ /index.xml]])
           end
           it "has parent" do
             expect(subject.parent(type: :all).map(&:request_path)).to eql(%w[/vehicles/cars /vehicles/cars.xml])

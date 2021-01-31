@@ -22,14 +22,24 @@ module Sitepress
 
     def request_path
       return unless node
-      # TODO: This `compact` makes me nervous. How can we handle this better?
-      lineage = node.parents.reverse.map(&:name).compact
-      file_name = if @format.nil? or @format.empty?
-        node.name
+      if node.root?
+        if node.default_format == format
+          "/"
+        elsif format
+          File.join("/", "#{node.default_name}.#{format}")
+        else
+          File.join("/", node.default_name)
+        end
       else
-        [node.name, ".", @format].join
+        # TODO: This `compact` makes me nervous. How can we handle this better?
+        lineage = node.parents.reverse.map(&:name).compact
+        file_name = if @format.nil? or @format.empty? or node.default_format == @format
+          node.name
+        else
+          [node.name, ".", @format].join
+        end
+        File.join("/", *lineage, file_name.to_s)
       end
-      File.join("/", *lineage, file_name.to_s)
     end
 
     def data
