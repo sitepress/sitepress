@@ -49,13 +49,13 @@ context Sitepress::Node do
   context "/app/is/bad.html" do
     let(:path) { "/app/is/bad.html" }
     it { should have_parents(%w[/app/is.html /app.html /default.html]) }
-    it { should have_siblings(%w[/app/is/good.html]) }
+    it { should have_siblings(%w[/app/is/good.html /app/is/bad.html]) }
     it { should have_children(%w[/app/is/bad/really.html]) }
   end
   context "/app.html" do
     let(:path) { "/app.html" }
     it { should have_parents(%w[/default.html]) }
-    it { should have_siblings([]) }
+    it { should have_siblings(%w[/app.html]) }
     it { should have_children(%w[/app/is.html /app/boo.html]) }
   end
   context "/a/b/c.html" do
@@ -86,7 +86,7 @@ context Sitepress::Node do
         expect(subject.formats.map(&:request_path)).to eql(["/index.html"])
       end
       it { should have_parents([]) }
-      it { should have_siblings(%w[/a.html]) }
+      it { should have_siblings(%w[/index.html /a.html]) }
       it { should have_children([]) }
     end
     context "/a/b.html" do
@@ -100,7 +100,7 @@ context Sitepress::Node do
         end
       end
       it { should have_parents(["/a.html"]) }
-      it { should have_siblings(%w[/a/1.html]) }
+      it { should have_siblings(%w[/a/1.html /a/b.html]) }
       it { should have_children(%w[/a/b/c.html]) }
       context "remove c.html" do
         before { subject.get("c.html").node.remove }
@@ -150,7 +150,7 @@ context Sitepress::Node do
       end
     end
     it { should have_parents(["/a"]) }
-    it { should have_siblings(%w[/a/1]) }
+    it { should have_siblings(%w[/a/1 /a/b.xml /a/b]) }
     it { should have_children(%w[/a/b/c]) }
     context "remove c" do
       before { subject.get("c").node.remove }
