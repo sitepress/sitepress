@@ -17,7 +17,7 @@ context Sitepress::Site do
   end
   context "#glob" do
     it "globs resources" do
-      expect(subject.glob("pages/sin_frontmatter*").size).to eql(1)
+      expect(subject.glob("sin_frontmatter*").size).to eql(1)
     end
     context "ignores swap files" do
       let(:path) { "spec/sites/sample/pages/text.txt#{ext}" }
