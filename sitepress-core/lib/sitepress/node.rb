@@ -29,9 +29,9 @@ module Sitepress
       child_nodes.values
     end
 
-    # Returns sibling nodes.
+    # Returns sibling nodes and self.
     def siblings
-      parent ? parent.children.reject{ |c| c == self } : []
+      parent ? parent.children : []
     end
 
     # Returns all parents up to the root node.

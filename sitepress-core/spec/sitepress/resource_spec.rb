@@ -46,7 +46,7 @@ context Sitepress::Resource do
         expect(subject.parent).to eql(root.get("/vehicles/trucks"))
       end
       it "has siblings" do
-        expect(subject.siblings).to eql([root.get("/vehicles/trucks/mac")])
+        expect(subject.siblings).to eql %w[/vehicles/trucks/mac /vehicles/trucks/freightliner].map { |path| root.get(path) }
       end
       it "has no children" do
         expect(subject.children).to be_empty
@@ -58,7 +58,7 @@ context Sitepress::Resource do
         expect(subject.parent).to eql root.get("/")
       end
       it "has siblings" do
-        expect(subject.siblings).to eql([root.get("/rules")])
+        expect(subject.siblings).to eql %w[/about /rules].map { |path| root.get(path) }
       end
       it "has no children" do
         expect(subject.children).to be_empty
@@ -109,7 +109,7 @@ context Sitepress::Resource do
         end
       end
       it "has siblings" do
-        expect(subject.siblings.map(&:request_path)).to match_array(%w[/vehicles/cars/cierra /vehicles/cars/camry])
+        expect(subject.siblings.map(&:request_path)).to match_array(%w[/vehicles/cars/cierra /vehicles/cars/camry /vehicles/cars/compacts])
       end
       it "has children" do
         expect(subject.children.map(&:request_path)).to match_array(%w[/vehicles/cars/compacts/smart])

@@ -14,7 +14,7 @@ module Sitepress
     # Default scope for querying parent/child/sibling resources.
     DEFAULT_FILTER_SCOPE = :same
 
-    def initialize(asset: , node: , format: nil)
+    def initialize(asset:, node:, format: nil)
       @asset = asset
       @node = node
       @format = format
@@ -22,6 +22,7 @@ module Sitepress
 
     def request_path
       return unless node
+
       if node.root?
         if node.default_format == format
           "/"
