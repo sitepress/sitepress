@@ -42,7 +42,7 @@ module Sitepress
     # Returns a list of all the resources within #root.
     def resources
       with_resources_cache do
-        ResourceCollection.new(node: root, root_path: root_path)
+        ResourceCollection.new(node: root, root_path: pages_path)
       end
     end
 

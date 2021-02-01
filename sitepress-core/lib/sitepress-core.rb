@@ -10,11 +10,11 @@ module Sitepress
   autoload :Asset,                "sitepress/asset"
   autoload :Formats,              "sitepress/formats"
   autoload :Frontmatter,          "sitepress/frontmatter"
+  autoload :Node,                 "sitepress/node"
   autoload :Path,                 "sitepress/path"
   autoload :Resource,             "sitepress/resource"
   autoload :ResourceCollection,   "sitepress/resource_collection"
   autoload :ResourcesPipeline,    "sitepress/resources_pipeline"
-  autoload :Node,        "sitepress/node"
   autoload :Site,                 "sitepress/site"
   autoload :SourceNodeMapper,     "sitepress/source_node_mapper"
   module Middleware
