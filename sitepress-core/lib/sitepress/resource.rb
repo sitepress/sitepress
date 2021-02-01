@@ -21,26 +21,11 @@ module Sitepress
     end
 
     def request_path
-      return unless node
+      File.join("/", *lineage, request_filename)
+    end
 
-      if node.root?
-        if node.default_format == format
-          "/"
-        elsif format
-          File.join("/", "#{node.default_name}.#{format}")
-        else
-          File.join("/", node.default_name)
-        end
-      else
-        # TODO: This `compact` makes me nervous. How can we handle this better?
-        lineage = node.parents.reverse.map(&:name).compact
-        file_name = if @format.nil? or @format.empty? or node.default_format == @format
-          node.name
-        else
-          [node.name, ".", @format].join
-        end
-        File.join("/", *lineage, file_name.to_s)
-      end
+    def compilation_path
+      File.join(*lineage, compilation_filename)
     end
 
     def data
@@ -52,7 +37,7 @@ module Sitepress
     end
 
     def inspect
-      "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{@asset.path.to_s.inspect}>"
+      "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{asset.path.to_s.inspect} compilation_path=#{compilation_path.inspect}>"
     end
 
     def parent(**args)
@@ -101,6 +86,39 @@ module Sitepress
         nodes.map{ |n| n.formats.mime_type(type) }.flatten
       else
         raise ArgumentError, "Invalid type argument #{type}. Must be either :same, :all, an extension string, or a Mime::Type"
+      end
+    end
+
+    # Used internally to construct paths from the current node up to the root node.
+    def lineage
+      @lineage ||= node.parents.reject(&:root?).reverse.map(&:name)
+    end
+
+    # Compiled assets have a slightly different filename for assets, especially the root node.
+    def compilation_filename
+      if node.root? and format.nil?
+        node.default_name
+      elsif node.root?
+        "#{node.default_name}.#{format}"
+      elsif format
+        "#{node.name}.#{format}"
+      else
+        node.name
+      end
+    end
+
+    # Deals with situations, particularly in the root node and other "index" nodes, for the `request_path`
+    def request_filename
+      if node.root? and node.default_format == format
+        ""
+      elsif node.root? and format
+        "#{node.default_name}.#{format}"
+      elsif node.root?
+        node.default_name
+      elsif format.nil? or node.default_format == format
+        node.name
+      else
+        "#{node.name}.#{format}"
       end
     end
   end
