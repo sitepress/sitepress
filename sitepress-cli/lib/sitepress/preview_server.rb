@@ -1,4 +1,6 @@
 require "rack"
+require "rails"
+require "sitepress-server"
 
 module Sitepress
   # Evaluates a configuration file on each site request, then delegates to
@@ -8,25 +10,22 @@ module Sitepress
     DEFAULT_PORT = 8080
     DEFAULT_BIND_ADDRESS = "0.0.0.0".freeze
 
-    def initialize(project:)
-      @project = project
+    attr_reader :server
+
+    def initialize(server: Sitepress::Server)
+      @server = server
     end
 
     def run(port: DEFAULT_PORT, bind_address: DEFAULT_BIND_ADDRESS)
       # TODO: Move all of this junk into the PreviewServer class. Move
       # what's in there now into PreviewServer::Rack
-      Rack::Handler::WEBrick.run rack_app,
+      Rack::Handler::WEBrick.run server,
         BindAddress: bind_address,
         Port: port do |server|
           Signal.trap "SIGINT" do
             server.stop
           end
       end
-    end
-
-    private
-    def rack_app
-      Proc.new { |env| @project.server.call(env) }
     end
   end
 end

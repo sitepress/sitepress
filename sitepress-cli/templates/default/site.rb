@@ -1,4 +1,6 @@
 # Default layout for Sitepress pages
-site.manipulate do |resource|
-  resource.data["layout"] = "layouts/layout.html.erb" if resource.mime_type == "text/html"
+Sitepress.configure do |config|
+  ## Change the root_path of the Sitepress site, or set to a different
+  ## Sitepress instance.
+  # config.site = Sitepress::Site.new root_path: "."
 end
