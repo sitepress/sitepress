@@ -8,10 +8,6 @@ describe "Sitepress.configuration" do
   before do
     app.config.eager_load = cache_classes # WTF?
   end
-  it "has site" do
-    app.initialize!
-    expect(subject.site.root_path).to eql(app.root.join("app/content"))
-  end
   it "has Rails.application as parent engine" do
     app.initialize!
     expect(subject.parent_engine).to eql(app)
@@ -41,26 +37,6 @@ describe "Sitepress.configuration" do
         app.initialize!
         expect(subject.cache_resources).to eql(false)
       end
-    end
-  end
-  context "Rails.configuration.paths" do
-    subject { Rails.configuration.paths[path].to_a }
-    context "views" do
-      let(:path) { "app/views" }
-      it { should include(app.root.join("app/content").to_s) }
-    end
-    context "helpers" do
-      let(:path) { "app/helpers" }
-      it { should include(app.root.join("app/content/helpers").to_s) }
-    end
-    context "assets" do
-      let(:path) { "app/assets" }
-      it { should include(app.root.join("app/content/assets").to_s) }
-    end
-  end
-  context "#partals" do
-    it "excludes partials" do
-      expect(subject.site.resources.size).to eql(2)
     end
   end
 end

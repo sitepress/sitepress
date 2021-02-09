@@ -1,18 +1,42 @@
+require "rails/engine"
+
 module Sitepress
   class Engine < ::Rails::Engine
-    config.before_configuration do |app|
-      Sitepress.configure do |config|
-        app.paths["app/helpers"].push config.site.root_path.join("helpers")
-        app.paths["app/assets"].push config.site.root_path.join("assets")
-        app.paths["app/views"].push config.site.root_path
+    # Set the path for the site configuration file.
+    paths.add "config/site.rb", with: [
+      File.expand_path("./config/site.rb"), # When Sitepress is launched via `sitepress server`.
+      "config/site.rb"                      # When Sitepress is launched embedded in Rails project.
+    ]
+
+    # Load the `config/site.rb` file so users can configure Sitepress.
+    initializer :load_site_initializer, before: :set_site_paths do
+      site_file = paths["config/site.rb"].existent.first
+      load site_file if site_file
+    end
+
+    # Load paths from `Sitepress#site` into rails so it can render views, helpers, etc. properly.
+    initializer :set_site_paths, before: :set_autoload_paths do |app|
+      [app, self].each do |engine|
+        engine.paths["app/helpers"].push site.helpers_path.expand_path
+        engine.paths["app/assets"].push site.assets_path.expand_path
+        engine.paths["app/views"].push site.root_path.expand_path
+        engine.paths["app/views"].push site.pages_path.expand_path
       end
     end
 
-    initializer "sitepress.configure" do |app|
-      Sitepress.configure do |config|
-        config.parent_engine = app
-        config.cache_resources = app.config.cache_classes
-      end
+    # Configure Sitepress with Rails settings.
+    initializer :configure_sitepress do |app|
+      sitepress_configuration.parent_engine = app
+      sitepress_configuration.cache_resources = app.config.cache_classes
+    end
+
+    private
+    def sitepress_configuration
+      Sitepress.configuration
+    end
+
+    def site
+      sitepress_configuration.site
     end
   end
 end

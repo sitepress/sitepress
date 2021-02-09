@@ -1,5 +1,5 @@
 module Sitepress
-  class SiteController < ::ApplicationController
+  class SiteController < ActionController::Base
     # Extracted into a module because other controllers may need
     # to be capable of serving Sitepress pages.
     include Sitepress::SitePages
