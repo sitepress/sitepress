@@ -13,6 +13,8 @@ module Sitepress
       rescue_from Sitepress::PageNotFoundError, with: :page_not_found
       helper Sitepress::Engine.helpers
       helper_method :current_page, :site
+
+      layout "layouts/layout"
     end
 
     def show
@@ -30,7 +32,7 @@ module Sitepress
     end
 
     def current_page
-      @_current_page ||= find_resource
+      @current_page ||= find_resource
     end
 
     def site
@@ -42,7 +44,6 @@ module Sitepress
     end
 
     private
-
     # Sitepress::PageNotFoundError is handled in the default Sitepress::SiteController
     # with an execption that Rails can use to display a 404 error.
     def get(path)

@@ -9,6 +9,9 @@ module Sitepress
     def initialize(site:, stdout: $stdout)
       @site = site
       @stdout = stdout
+      Sitepress.configuration.routes = false
+      Sitepress.configuration.site = @site
+      Sitepress::Server.initialize!
     end
 
     # Iterates through all pages and writes them to disk
@@ -17,6 +20,7 @@ module Sitepress
       mkdir_p target_path
       cache_resources = @site.cache_resources
       @stdout.puts "Compiling #{@site.root_path.expand_path}"
+
       begin
         @site.cache_resources = true
         @site.resources.each do |resource|
@@ -32,8 +36,9 @@ module Sitepress
     end
 
     private
-    def render(resource)
-      RenderingContext.new(resource: resource, site: @site).render
+    def render(page)
+      # ControllerCompiler.new(page).compile
+      ServerCompiler.new(page).compile
     end
   end
 end

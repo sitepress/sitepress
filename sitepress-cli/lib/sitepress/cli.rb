@@ -1,5 +1,4 @@
 require "thor"
-require "sitepress-server"
 
 module Sitepress
   # Command line interface for compiling Sitepress sites.

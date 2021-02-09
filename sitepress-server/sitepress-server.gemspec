@@ -21,6 +21,17 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rack-test"
   spec.add_development_dependency "rack"
 
-  spec.add_runtime_dependency "sitepress-core", spec.version
-  spec.add_runtime_dependency "tilt", "~> 2.0"
+  spec.add_development_dependency "haml-rails"
+  spec.add_development_dependency "sass-rails"
+  spec.add_development_dependency "markdown-rails"
+
+  spec.add_dependency "sitepress-rails", spec.version
+
+  # We don't need every single rals rependency, so grab the subset here.
+  rails_version      = "~> 6.0"
+  spec.add_dependency "railties",       rails_version
+  spec.add_dependency "activesupport",  rails_version
+  spec.add_dependency "actionpack",     rails_version
+  spec.add_dependency "actionview",     rails_version
+  spec.add_dependency "activemodel",    rails_version
 end

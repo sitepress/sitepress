@@ -1,14 +1,17 @@
 require "sitepress-core"
 
 module Sitepress
+  autoload :ControllerCompiler,       "sitepress/controller_compiler"
+  autoload :RailsConfiguration,       "sitepress/rails_configuration"
+  autoload :RouteConstraint,          "sitepress/route_constraint"
+  autoload :Server,                   "sitepress/server"
+  autoload :ServerCompiler,           "sitepress/server_compiler"
+
   # Contains singletons for rails and some configuration data.
   Configuration = Struct.new(:site, :routes, :parent_engine)
 
   # Rescued by ActionController to display page not found error.
   PageNotFoundError = Class.new(StandardError)
-
-  autoload :RailsConfiguration,       "sitepress/rails_configuration"
-  autoload :RouteConstraint,          "sitepress/route_constraint"
 
   # Make site available via Sitepress.site from Rails app.
   def self.site
