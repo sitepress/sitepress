@@ -1,11 +1,13 @@
 require "sitepress-core"
 
 module Sitepress
-  autoload :ControllerCompiler,       "sitepress/controller_compiler"
   autoload :RailsConfiguration,       "sitepress/rails_configuration"
   autoload :RouteConstraint,          "sitepress/route_constraint"
   autoload :Server,                   "sitepress/server"
-  autoload :ServerCompiler,           "sitepress/server_compiler"
+  module Renderers
+    autoload :Controller,             "sitepress/renderers/controller"
+    autoload :Server,                 "sitepress/renderers/server"
+  end
 
   # Contains singletons for rails and some configuration data.
   Configuration = Struct.new(:site, :routes, :parent_engine)

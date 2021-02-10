@@ -28,9 +28,9 @@ module Sitepress
 
     private
     def rack_app
-      Sitepress.configuration.routes = false
-      Sitepress.configuration.site = @project.site
-      Sitepress::Server.initialize!
+      Sitepress::Server.boot do |configuration|
+        configuration.site = @project.site
+      end
     end
   end
 end

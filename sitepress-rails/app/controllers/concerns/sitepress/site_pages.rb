@@ -13,8 +13,6 @@ module Sitepress
       rescue_from Sitepress::PageNotFoundError, with: :page_not_found
       helper Sitepress::Engine.helpers
       helper_method :current_page, :site
-
-      layout "layouts/layout"
     end
 
     def show
@@ -28,7 +26,7 @@ module Sitepress
           type: page.asset.template_extensions.last,
           layout: page.data.fetch("layout", controller_layout),
           content_type: page.mime_type.to_s
-      end
+        end
     end
 
     def current_page
@@ -90,8 +88,12 @@ module Sitepress
 
       if layout.instance_of? String # Rails 4 and 5 return a string from above.
         layout
-      else # Rails 3 and older return an object that gives us a file name
+      elsif layout # Rails 3 and older return an object that gives us a file name
         File.basename(layout.identifier).split('.').first
+      else
+        # If none of the conditions are met, then no layout was
+        # specified, so nil is returned.
+        nil
       end
     end
 

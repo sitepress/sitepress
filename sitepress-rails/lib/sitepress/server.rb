@@ -14,15 +14,22 @@ module Sitepress
 
     # Paths unique to Sitepress
     config.root = File.join(File.dirname(__FILE__), "../../app")
-    config.paths["app/helpers"].push site.root_path.join("helpers")
+    # config.paths["app/helpers"].push site.root_path.join("helpers")
     config.paths["app/views"].push site.root_path.expand_path
     config.paths["app/views"].push site.pages_path.expand_path
 
     # Setup routes
-    routes.append { root :to => "sitepress/site#show" }
-    routes.append { get "*resource_path", controller: "sitepress/site", action: "show", as: :page, format: false }
+    # routes.append { root :to => "sitepress/site#show" }
+    # routes.append { get "*resource_path", controller: "sitepress/site", action: "show", as: :page, format: false }
+
     # TODO: Remove this requirement for test environment.
     config.hosts << "example.org"
+
+    def self.boot
+      return self if initialized?
+      yield Sitepress.configuration if block_given?
+      initialize!
+    end
   end
 end
 

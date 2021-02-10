@@ -1,7 +1,4 @@
 module Sitepress
-  # module ApplicationHelper
-  # end
-
   module ApplicationHelper
     def link_to_page(page, **args, &block)
       if block_given?
@@ -43,5 +40,4 @@ module Sitepress
       end
     end
   end
-
 end
