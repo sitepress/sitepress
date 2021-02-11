@@ -3,7 +3,6 @@ require "sitepress-core"
 module Sitepress
   autoload :RailsConfiguration,       "sitepress/rails_configuration"
   autoload :RouteConstraint,          "sitepress/route_constraint"
-  autoload :Server,                   "sitepress/server"
   module Renderers
     autoload :Controller,             "sitepress/renderers/controller"
     autoload :Server,                 "sitepress/renderers/server"
@@ -14,11 +13,6 @@ module Sitepress
 
   # Rescued by ActionController to display page not found error.
   PageNotFoundError = Class.new(StandardError)
-
-  # Make site available via Sitepress.site from Rails app.
-  def self.site
-    configuration.site
-  end
 
   # Default configuration object for Sitepress Rails integration.
   def self.configuration

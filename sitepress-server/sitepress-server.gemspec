@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "sitepress-rails", spec.version
 
   # We don't need every single rals rependency, so grab the subset here.
-  rails_version      = "~> 6.0"
+  rails_version      = ">= 5.0"
   spec.add_dependency "railties",       rails_version
   spec.add_dependency "activesupport",  rails_version
   spec.add_dependency "actionpack",     rails_version

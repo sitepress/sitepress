@@ -1,6 +1,6 @@
 require "rack"
 require "rails"
-require "sitepress-rails"
+require "sitepress-server"
 
 module Sitepress
   # Evaluates a configuration file on each site request, then delegates to
@@ -28,9 +28,7 @@ module Sitepress
 
     private
     def rack_app
-      Sitepress::Server.boot do |configuration|
-        configuration.site = @project.site
-      end
+      Sitepress::Server.boot
     end
   end
 end

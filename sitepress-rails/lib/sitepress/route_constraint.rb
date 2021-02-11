@@ -1,7 +1,7 @@
 module Sitepress
   # Route constraint for rails routes.rb file.
   class RouteConstraint
-    def initialize(site: Sitepress.site)
+    def initialize(site: SiteController.site)
       @site = site
     end
 

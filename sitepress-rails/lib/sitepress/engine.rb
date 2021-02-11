@@ -1,15 +1,7 @@
+require "rails/engine"
+
 module Sitepress
   class Engine < ::Rails::Engine
-    # config.after_initialize do |app|
-    config.before_configuration do |app|
-      Sitepress.configure do |config|
-        app.paths["app/helpers"].push config.site.root_path.join("helpers")
-        app.paths["app/assets"].push config.site.root_path.join("assets")
-        app.paths["app/views"].push config.site.root_path
-        app.paths["app/views"].push config.site.pages_path
-      end
-    end
-
     initializer "sitepress.configure" do |app|
       Sitepress.configure do |config|
         config.parent_engine = app

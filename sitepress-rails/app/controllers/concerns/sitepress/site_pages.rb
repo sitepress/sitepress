@@ -7,12 +7,49 @@ module Sitepress
     # to return the path to the layout.
     DEFAULT_PAGE_RAILS_FORMATS = [:html].freeze
 
+    DEFAULT_ROOT_PATH = "app/content".freeze
+
     extend ActiveSupport::Concern
 
     included do
       rescue_from Sitepress::PageNotFoundError, with: :page_not_found
-      helper Sitepress::Engine.helpers
       helper_method :current_page, :site
+    end
+
+    class_methods do
+      attr_reader :site
+
+      # Configures controller when a `site` is set.
+      def site=(site)
+        @site = site.tap do |site|
+          # Add Sitepress paths to view path so Rails can pickup the templates, etc.
+          view_paths    << site.root_path.expand_path.to_s
+          view_paths    << site.pages_path.expand_path.to_s
+
+          # Configure helpers and helper paths
+          helpers_path  << site.helpers_path.expand_path.to_s
+          # We have to add the helpers_path to autoload_paths so that it
+          # gets completely picked up by Rails; otherwise the controller won't
+          # find the path where it can `constantize` the helpers added via
+          # Sitepress.
+          ActiveSupport::Dependencies.autoload_paths << site.helpers_path.expand_path.to_s
+          # After all the paths are set, we want to load all of the helpers into
+          # the controller.
+
+          helper :all
+        end
+      end
+
+      def sitepress(root_path:)
+        self.site = Sitepress::Site.new(root_path: root_path).tap do |site|
+          # Pass the site back into the block so that the end user can customize it.
+          yield site if block_given?
+        end
+      end
+
+      def default_root_path
+        Rails.root.join(DEFAULT_ROOT_PATH)
+      end
     end
 
     def show
@@ -26,7 +63,7 @@ module Sitepress
           type: page.asset.template_extensions.last,
           layout: page.data.fetch("layout", controller_layout),
           content_type: page.mime_type.to_s
-        end
+      end
     end
 
     def current_page
@@ -34,7 +71,7 @@ module Sitepress
     end
 
     def site
-      Sitepress.site
+      self.class.site
     end
 
     def page_not_found(e)

@@ -9,7 +9,10 @@ describe Sitepress::Compiler do
   # Write compiler output to /dev/null
   let(:stdout) { File.open(File::NULL, "w")  }
   subject { Sitepress::Compiler.new(site: site, stdout: stdout) }
-
+  before {
+    Sitepress::Server.boot
+    SiteController.site = site
+  }
   describe "#compile" do
     before do
       FileUtils.mkdir_p(target)

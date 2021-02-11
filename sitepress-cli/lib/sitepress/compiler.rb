@@ -1,5 +1,6 @@
 require "pathname"
 require "fileutils"
+require "sitepress-server"
 
 module Sitepress
   # Compile all resources from a Sitepress site into static pages.
@@ -9,8 +10,6 @@ module Sitepress
     def initialize(site:, stdout: $stdout)
       @site = site
       @stdout = stdout
-      # Sitepress.configuration.routes = false
-      Sitepress.configuration.site = @site
     end
 
     # Iterates through all pages and writes them to disk
@@ -36,7 +35,6 @@ module Sitepress
 
     private
     def render(page)
-      # ControllerCompiler.new(page).compile
       Renderers::Server.new(page).compile
     end
   end

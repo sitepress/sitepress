@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "sitepress-rails", spec.version
+  spec.add_runtime_dependency "sitepress-server", spec.version
   spec.add_runtime_dependency "thor", "~> 1.0.0"
   spec.add_runtime_dependency "rack", ">= 1.0"
 end
