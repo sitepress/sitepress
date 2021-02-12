@@ -7,7 +7,11 @@ module Sitepress
     # to return the path to the layout.
     DEFAULT_PAGE_RAILS_FORMATS = [:html].freeze
 
+    # Default location of assets for rails app integration.
     DEFAULT_ROOT_PATH = "app/content".freeze
+
+    # Default root path of resources.
+    ROOT_RESOURCE_PATH = "".freeze
 
     extend ActiveSupport::Concern
 
@@ -58,11 +62,10 @@ module Sitepress
 
     protected
     def render_page(page)
-      with_sitepress_render_cache do
-        render inline: page.body,
-          type: page.asset.template_extensions.last,
-          layout: page.data.fetch("layout", controller_layout),
-          content_type: page.mime_type.to_s
+      if page.asset.mime_type.media_type == "text"
+        render_text_resource page
+      else
+        render_binary_resource page
       end
     end
 
@@ -79,6 +82,21 @@ module Sitepress
     end
 
     private
+    def render_text_resource(resource)
+      with_sitepress_render_cache do
+        render inline: resource.body,
+          type: resource.asset.template_extensions.last,
+          layout: resource.data.fetch("layout", controller_layout),
+          content_type: resource.mime_type.to_s
+      end
+    end
+
+    def render_binary_resource(resource)
+      send_file resource.asset.path,
+        disposition: :inline,
+        type: resource.mime_type.to_s
+    end
+
     # Sitepress::PageNotFoundError is handled in the default Sitepress::SiteController
     # with an execption that Rails can use to display a 404 error.
     def get(path)
@@ -91,9 +109,10 @@ module Sitepress
       end
     end
 
-    # Default finder of the resource for the current controller context.###
+    # Default finder of the resource for the current controller context. If the :resource_path
+    # isn't present, then its probably the root path so grab that.
     def find_resource
-      get params[:resource_path]
+      get params.fetch(:resource_path, ROOT_RESOURCE_PATH)
     end
 
     # When development environments disable the cache, we still want to turn it

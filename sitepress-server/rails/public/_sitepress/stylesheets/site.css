@@ -2,7 +2,7 @@ body {
   font-family: sans-serif;
   margin: 2rem;
   padding: 0;
-  background: #5d3d29;
+  background: hsl(23,39%,26%);
   color: #fefefe;
 }
 
@@ -30,7 +30,7 @@ header {
 }
 
 footer {
-  margin-top: 1rem;
+  margin: 4rem 1rem;
   text-align: center;
 }
 footer a {
@@ -44,20 +44,41 @@ pre {
 code {
   display: block;
   color: #000;
-  background: #f9f9f9;
+  background: hsl(23,39%,90%);
   padding: 1rem;
   border-radius: 0.5rem;
 }
 
-h2 {
-  color: #5d3d29;
+h2, a {
+  color: hsl(23,39%,26%);
 }
 
 h3 {
-  color: #333;
+  color: hsl(23,39%,5%);
 }
 
 table td, table th {
   text-align: left;
   padding: 0.25rem;
 }
+
+@media (prefers-color-scheme: dark) {
+  h2, a {
+    color: hsl(23,39%,90%);
+  }
+
+  h3 {
+    color: hsl(23,39%,85%);
+  }
+
+  main {
+    color: hsl(23,39%,85%);
+    background: hsl(23,39%,10%);
+  }
+
+  code {
+    color: hsl(23,39%,85%);
+    background: hsl(23,39%,7%);
+  }
+}
+
