@@ -3,10 +3,9 @@ module Sitepress
     class Server
       attr_reader :rails_app, :page
 
-      def initialize(page, rails_app = Sitepress::Server)
+      def initialize(page, rails_app = Rails.application)
         @rails_app = rails_app
         @page = page
-        rails_app.boot
       end
 
       def compile
