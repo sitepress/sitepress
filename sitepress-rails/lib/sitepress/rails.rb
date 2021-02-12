@@ -8,11 +8,13 @@ module Sitepress
     autoload :Server,                 "sitepress/renderers/server"
   end
 
-  # Contains singletons for rails and some configuration data.
-  Configuration = Struct.new(:site, :routes, :parent_engine)
-
   # Rescued by ActionController to display page not found error.
   PageNotFoundError = Class.new(StandardError)
+
+  # Make site available via Sitepress.site from Rails app.
+  def self.site
+    configuration.site
+  end
 
   # Default configuration object for Sitepress Rails integration.
   def self.configuration

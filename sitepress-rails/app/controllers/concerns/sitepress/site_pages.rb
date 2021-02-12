@@ -7,9 +7,6 @@ module Sitepress
     # to return the path to the layout.
     DEFAULT_PAGE_RAILS_FORMATS = [:html].freeze
 
-    # Default location of assets for rails app integration.
-    DEFAULT_ROOT_PATH = "app/content".freeze
-
     # Default root path of resources.
     ROOT_RESOURCE_PATH = "".freeze
 
@@ -49,10 +46,6 @@ module Sitepress
           # Pass the site back into the block so that the end user can customize it.
           yield site if block_given?
         end
-      end
-
-      def default_root_path
-        Rails.root.join(DEFAULT_ROOT_PATH)
       end
     end
 

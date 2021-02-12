@@ -4,6 +4,6 @@ module Sitepress
     # to be capable of serving Sitepress pages.
     include Sitepress::SitePages
 
-    sitepress root_path: default_root_path
+    self.site = Sitepress.site
   end
 end
