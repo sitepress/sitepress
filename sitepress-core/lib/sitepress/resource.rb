@@ -24,10 +24,6 @@ module Sitepress
       File.join("/", *lineage, request_filename)
     end
 
-    def compilation_path
-      File.join(*lineage, compilation_filename)
-    end
-
     def data
       @data ||= asset.data
     end
@@ -37,7 +33,7 @@ module Sitepress
     end
 
     def inspect
-      "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{asset.path.to_s.inspect} compilation_path=#{compilation_path.inspect}>"
+      "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{asset.path.to_s.inspect}>"
     end
 
     def parent(**args)
@@ -58,6 +54,11 @@ module Sitepress
 
     def ==(resource)
       resource.request_path == request_path
+    end
+
+    # Used internally to construct paths from the current node up to the root node.
+    def lineage
+      @lineage ||= node.parents.reject(&:root?).reverse.map(&:name)
     end
 
     private
@@ -86,24 +87,6 @@ module Sitepress
         nodes.map{ |n| n.formats.mime_type(type) }.flatten
       else
         raise ArgumentError, "Invalid type argument #{type}. Must be either :same, :all, an extension string, or a Mime::Type"
-      end
-    end
-
-    # Used internally to construct paths from the current node up to the root node.
-    def lineage
-      @lineage ||= node.parents.reject(&:root?).reverse.map(&:name)
-    end
-
-    # Compiled assets have a slightly different filename for assets, especially the root node.
-    def compilation_filename
-      if node.root? and format.nil?
-        node.default_name
-      elsif node.root?
-        "#{node.default_name}.#{format}"
-      elsif format
-        "#{node.name}.#{format}"
-      else
-        node.name
       end
     end
 

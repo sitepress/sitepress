@@ -12,6 +12,7 @@ module Sitepress
     option :port, default: PreviewServer::DEFAULT_PORT, aliases: :p, type: :numeric
     desc "server", "Run preview server"
     def server
+      Sitepress::Server.boot
       PreviewServer.new(project: project).run port: options.fetch("port"),
         bind_address: options.fetch("bind_address")
     end
@@ -20,6 +21,7 @@ module Sitepress
     option :output_path, default: "./build"
     desc "compile", "Compile project into static pages"
     def compile
+      Sitepress::Server.boot
       project.compiler.compile target_path: options.fetch("output_path")
     end
 

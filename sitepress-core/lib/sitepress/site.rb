@@ -64,6 +64,10 @@ module Sitepress
       root_path.join("helpers")
     end
 
+    def assets_path
+      root_path.join("assets")
+    end
+
     # Quick and dirty way to manipulate resources in the site without
     # creating classes that implement the #process_resources method.
     #

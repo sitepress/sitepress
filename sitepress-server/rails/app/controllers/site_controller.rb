@@ -9,7 +9,6 @@ class SiteController < ApplicationController
   include Sitepress::SitePages
 
   layout :site_layout
-  sitepress root_path: "."
 
   private
   def site_layout

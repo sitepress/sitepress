@@ -3,8 +3,13 @@ require 'haml-rails'
 require 'markdown-rails'
 require 'sassc'
 
-Sitepress.configuration.routes = false
+# Configure Sitepress default site to the root of the current project.
+Sitepress.configure do |config|
+  config.routes = false
+  config.site = Sitepress::Site.new(root_path: ".")
+end
 
+# Configure the rails application.
 module Sitepress
   class Server < Rails::Application
     # Paths unique to Sitepress
@@ -20,16 +25,22 @@ module Sitepress
     routes.append { get "*resource_path", controller: "site", action: "show", as: :page, format: false }
 
     # TODO: Remove this requirement for test environment.
-    config.hosts << "example.org"
+    config.hosts << proc { true }
 
     def self.boot
       return self if initialized?
       initialize!
     end
+
+    # def self.test_app
+    #   app = Class.new(self) do
+    #     def self.name; "SitepressTestApp"; end
+    #   end
+    # end
   end
 end
 
-# TODO: Move this into `scss-rails` lib.
+# Configure all other integrations that don't quite work with Rails.
 module Sass
   class SassCHandler
     def call(template, source = template.source)

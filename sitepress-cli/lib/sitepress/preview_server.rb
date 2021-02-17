@@ -28,7 +28,7 @@ module Sitepress
 
     private
     def rack_app
-      Sitepress::Server.boot
+      Sitepress::Server
     end
   end
 end

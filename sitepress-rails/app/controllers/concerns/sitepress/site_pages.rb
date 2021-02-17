@@ -13,41 +13,42 @@ module Sitepress
     extend ActiveSupport::Concern
 
     included do
+      # Set the Sitepress site for the controller.
+      # self.site ||= Sitepress.site
       rescue_from Sitepress::PageNotFoundError, with: :page_not_found
+      helper Sitepress::Engine.helpers
       helper_method :current_page, :site
     end
 
-    class_methods do
-      attr_reader :site
+    # class_methods do
+    #   attr_reader :site
 
-      # Configures controller when a `site` is set.
-      def site=(site)
-        @site = site.tap do |site|
-          # Add Sitepress paths to view path so Rails can pickup the templates, etc.
-          view_paths    << site.root_path.expand_path.to_s
-          view_paths    << site.pages_path.expand_path.to_s
+    #   # Configures controller when a `site` is set.
+    #   def site=(site)
+    #     raise_path_exception rails_path: "app/views", site_path: site.root_path
+    #     raise_path_exception rails_path: "app/views", site_path: site.pages_path
+    #     raise_path_exception rails_path: "app/helpers", site_path: site.helpers_path
+    #     # TODO: What is going on with assets? If you add just app/assets, it expands
+    #     # it out into a bunch of directories.
+    #     # raise_path_exception rails_path: "app/assets", site_path: site.assets_path.join("images")
+    #     # raise_path_exception rails_path: "app/assets", site_path: site.assets_path.join("stylesheets")
+    #     @site = site
+    #   end
 
-          # Configure helpers and helper paths
-          helpers_path  << site.helpers_path.expand_path.to_s
-          # We have to add the helpers_path to autoload_paths so that it
-          # gets completely picked up by Rails; otherwise the controller won't
-          # find the path where it can `constantize` the helpers added via
-          # Sitepress.
-          ActiveSupport::Dependencies.autoload_paths << site.helpers_path.expand_path.to_s
-          # After all the paths are set, we want to load all of the helpers into
-          # the controller.
+    #   private
+    #   # TODO: Move this into an integration class and better explain to the user how they can
+    #   # fix the
+    #   def raise_path_exception(rails_path:, site_path:)
+    #     engine = Rails.application
+    #     # Eugh, Rails 5 wants to compare via strings. Rails 6 has a `#paths` option that's cleaner.
+    #     site_path = site_path.expand_path.to_s
+    #     paths = engine.paths[rails_path].to_a
 
-          helper :all
-        end
-      end
+    #     return if paths.include? site_path
 
-      def sitepress(root_path:)
-        self.site = Sitepress::Site.new(root_path: root_path).tap do |site|
-          # Pass the site back into the block so that the end user can customize it.
-          yield site if block_given?
-        end
-      end
-    end
+    #     raise "Sitepress path #{site_path.inspect} not present in #{engine.class.inspect}.paths[#{rails_path.inspect}]: #{paths.inspect}"
+    #   end
+    # end
 
     def show
       render_page current_page
@@ -67,7 +68,7 @@ module Sitepress
     end
 
     def site
-      self.class.site
+      Sitepress.site
     end
 
     def page_not_found(e)

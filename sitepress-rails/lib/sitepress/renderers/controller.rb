@@ -8,7 +8,7 @@ module Sitepress
         @page = page
       end
 
-      def compile
+      def render
         renderer.render inline: page.body,
           type: page.asset.template_extensions.last,
           layout: resolve_layout,

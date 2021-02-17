@@ -10,7 +10,7 @@ describe Sitepress::SiteController, type: :controller do
     end
   end
 
-  let(:site) { Sitepress::SiteController.site }
+  let(:site) { Sitepress.configuration.site }
 
   context "templated page" do
     render_views

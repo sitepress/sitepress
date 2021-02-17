@@ -8,7 +8,7 @@ module Sitepress
         @page = page
       end
 
-      def compile
+      def render
         code, headers, response = rails_app.routes.call env
         response.body
       end
