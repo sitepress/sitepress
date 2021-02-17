@@ -48,8 +48,16 @@ module Sitepress
           compiler = ResourceCompiler.new(resource)
           path = target_path.join(compiler.compilation_path)
           mkdir_p path.dirname
-          @stdout.puts "  #{path}"
-          File.open(path.expand_path, "w"){ |f| f.write compiler.render(resource) }
+          if resource.renderable?
+            @stdout.puts "  Rendering #{path}"
+            File.open(path.expand_path, "w"){ |f| f.write compiler.render(resource) }
+          else
+            @stdout.puts "  Copying #{path}"
+            FileUtils.cp resource.asset.path, path.expand_path
+          end
+        rescue => e
+          @stdout.puts "Error compiling #{resource.inspect}"
+          raise
         end
         @stdout.puts "Successful compilation to #{target_path.expand_path}"
       ensure
