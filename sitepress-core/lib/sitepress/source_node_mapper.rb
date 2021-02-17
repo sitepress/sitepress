@@ -6,7 +6,8 @@ module Sitepress
     # to the sitemap.
     SWAP_FILE_EXTENSIONS = [
       "~",
-      ".swp"
+      ".swp",
+      ".DS_Store" # TODO: Not a swap file, but something that should be ignored.
     ]
 
     # Partial rails prefix.
