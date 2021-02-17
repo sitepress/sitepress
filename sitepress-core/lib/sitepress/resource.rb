@@ -14,6 +14,8 @@ module Sitepress
     # Default scope for querying parent/child/sibling resources.
     DEFAULT_FILTER_SCOPE = :same
 
+    RENDERABLE_MEDIA_TYPE = "text".freeze
+
     def initialize(asset:, node:, format: nil)
       @asset = asset
       @node = node
@@ -59,6 +61,13 @@ module Sitepress
     # Used internally to construct paths from the current node up to the root node.
     def lineage
       @lineage ||= node.parents.reject(&:root?).reverse.map(&:name)
+    end
+
+    # Certain files, like binary file types, aren't something that we should try to
+    # parse. When this returns true in some cases, a reference to the file will be
+    # passed and skip all the overhead of trying to parse and render.
+    def renderable?
+      asset.mime_type.media_type == RENDERABLE_MEDIA_TYPE
     end
 
     private

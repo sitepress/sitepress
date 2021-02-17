@@ -56,10 +56,10 @@ module Sitepress
 
     protected
     def render_page(page)
-      if page.asset.mime_type.media_type == "text"
+      if page.renderable?
         render_text_resource page
       else
-        render_binary_resource page
+        send_binary_resource page
       end
     end
 
@@ -85,7 +85,7 @@ module Sitepress
       end
     end
 
-    def render_binary_resource(resource)
+    def send_binary_resource(resource)
       send_file resource.asset.path,
         disposition: :inline,
         type: resource.mime_type.to_s
