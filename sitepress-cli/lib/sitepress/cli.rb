@@ -4,17 +4,21 @@ require_relative "boot"
 module Sitepress
   # Command line interface for compiling Sitepress sites.
   class CLI < Thor
+    SERVER_DEFAULT_PORT = 8080
+    SERVER_DEFAULT_BIND_ADDRESS = "0.0.0.0".freeze
+
     include Thor::Actions
 
     source_root File.expand_path("../../../templates/default", __FILE__)
 
-    option :bind_address, default: PreviewServer::DEFAULT_BIND_ADDRESS, aliases: :a
-    option :port, default: PreviewServer::DEFAULT_PORT, aliases: :p, type: :numeric
+    option :bind_address, default: SERVER_DEFAULT_BIND_ADDRESS, aliases: :a
+    option :port, default: SERVER_DEFAULT_PORT, aliases: :p, type: :numeric
     desc "server", "Run preview server"
     def server
       Sitepress::Server.initialize!
-      PreviewServer.new.run port: options.fetch("port"),
-        bind_address: options.fetch("bind_address")
+      Rack::Server.start app: Sitepress::Server,
+        Port: options.fetch("port"),
+        Host: options.fetch("bind_address")
     end
 
     option :output_path, default: "./build"
