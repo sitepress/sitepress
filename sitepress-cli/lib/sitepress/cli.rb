@@ -6,6 +6,7 @@ module Sitepress
   class CLI < Thor
     SERVER_DEFAULT_PORT = 8080
     SERVER_DEFAULT_BIND_ADDRESS = "0.0.0.0".freeze
+    COMPILE_DEFAULT_TARGET_PATH = "./build".freeze
 
     include Thor::Actions
 
@@ -21,7 +22,7 @@ module Sitepress
         Host: options.fetch("bind_address")
     end
 
-    option :output_path, default: "./build"
+    option :output_path, default: COMPILE_DEFAULT_TARGET_PATH
     desc "compile", "Compile project into static pages"
     def compile
       Sitepress::Server.initialize!
