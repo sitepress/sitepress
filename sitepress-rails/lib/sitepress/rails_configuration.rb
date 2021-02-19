@@ -26,10 +26,6 @@ module Sitepress
       @site ||= Site.new(root_path: default_root)
     end
 
-    def compiler
-      @compiler ||= Compiler.new(root_path: default_root)
-    end
-
     private
     def default_root
       Rails.root.join(DEFAULT_SITE_ROOT)

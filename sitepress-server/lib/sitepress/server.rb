@@ -1,9 +1,10 @@
 require "action_controller/railtie"
 require "sprockets/railtie"
-require "haml-rails"
-require "markdown-rails"
-require "sassc"
 require "sitepress-rails"
+
+# Require the gems listed in Gemfile, including any gems
+# you've limited to :test, :development, or :production.
+Bundler.require(*Rails.groups)
 
 # Configure the rails application.
 module Sitepress
@@ -23,20 +24,6 @@ module Sitepress
 
     # TODO: Remove this requirement for test environment.
     config.hosts << proc { true }
-
-    def self.boot
-      # return self if initialized?
-
-      # Setup default configuration for stand-alone Sitepress server. This can be
-      # overridden via `config/site.rb`.
-      Sitepress.configure do |config|
-        config.routes = false
-        config.site = Sitepress::Site.new(root_path: ".")
-        yield config if block_given?
-      end
-
-      initialize!
-    end
   end
 end
 
