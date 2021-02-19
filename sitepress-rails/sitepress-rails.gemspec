@@ -23,4 +23,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rails", ">= 4.0"
 
   spec.add_runtime_dependency "sitepress-core", spec.version
+
+  # We don't need every single rals rependency, so grab the subset here.
+  rails_version      = ">= 5.0"
+  spec.add_dependency "railties",       rails_version
+  spec.add_dependency "actionpack",     rails_version
+  spec.add_dependency "sprockets-rails", ">= 2.0.0"
 end
