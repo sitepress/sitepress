@@ -15,3 +15,5 @@ sitepress-rails/spec/dummy/log/*.log
 sitepress-rails/tmp/
 
 sitepress-core/coverage
+
+.ruby-version
