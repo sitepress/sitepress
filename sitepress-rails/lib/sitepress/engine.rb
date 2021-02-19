@@ -9,7 +9,7 @@ module Sitepress
     ]
 
     # Load the `config/site.rb` file so users can configure Sitepress.
-    initializer :load_site_initializer, before: :set_site_paths do
+    initializer :load_site_file, before: :set_site_paths do
       site_file = paths["config/site.rb"].existent.first
       load site_file if site_file
     end
