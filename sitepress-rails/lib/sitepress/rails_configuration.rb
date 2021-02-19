@@ -23,9 +23,7 @@ module Sitepress
     end
 
     def site
-      @site ||= begin
-        Site.new(root_path: default_root)
-      end
+      @site ||= Site.new(root_path: default_root)
     end
 
     private

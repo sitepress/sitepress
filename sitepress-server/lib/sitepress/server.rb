@@ -3,12 +3,6 @@ require 'haml-rails'
 require 'markdown-rails'
 require 'sassc'
 
-# Configure Sitepress default site to the root of the current project.
-Sitepress.configure do |config|
-  config.routes = false
-  config.site = Sitepress::Site.new(root_path: ".")
-end
-
 # Configure the rails application.
 module Sitepress
   class Server < Rails::Application
@@ -26,6 +20,15 @@ module Sitepress
 
     # TODO: Remove this requirement for test environment.
     config.hosts << proc { true }
+
+    # Setup default configuration for stand-alone Sitepress server. This can be
+    # overridden via `config/site.rb`.
+    config.before_configuration do
+      Sitepress.configure do |config|
+        config.routes = false
+        config.site = Sitepress::Site.new(root_path: ".")
+      end
+    end
 
     def self.boot
       return self if initialized?
