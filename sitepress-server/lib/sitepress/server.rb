@@ -1,7 +1,9 @@
-require 'action_controller/railtie'
-require 'haml-rails'
-require 'markdown-rails'
-require 'sassc'
+require "action_controller/railtie"
+require "sprockets/railtie"
+require "haml-rails"
+require "markdown-rails"
+require "sassc"
+require "sitepress-rails"
 
 # Configure the rails application.
 module Sitepress
@@ -10,7 +12,8 @@ module Sitepress
     config.root = File.join(File.dirname(__FILE__), "../../rails")
 
     # Boilerplate required to get Rails to boot.
-    config.eager_load = true # necessary to silence warning
+    config.eager_load = false # necessary to silence warning
+    config.cache_classes = false # reload everything since this is dev env.
     config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
     config.secret_key_base = SecureRandom.uuid    # Rails won't start without this
 
@@ -21,25 +24,19 @@ module Sitepress
     # TODO: Remove this requirement for test environment.
     config.hosts << proc { true }
 
-    # Setup default configuration for stand-alone Sitepress server. This can be
-    # overridden via `config/site.rb`.
-    config.before_configuration do
+    def self.boot
+      # return self if initialized?
+
+      # Setup default configuration for stand-alone Sitepress server. This can be
+      # overridden via `config/site.rb`.
       Sitepress.configure do |config|
         config.routes = false
         config.site = Sitepress::Site.new(root_path: ".")
+        yield config if block_given?
       end
-    end
 
-    def self.boot
-      return self if initialized?
       initialize!
     end
-
-    # def self.test_app
-    #   app = Class.new(self) do
-    #     def self.name; "SitepressTestApp"; end
-    #   end
-    # end
   end
 end
 

@@ -47,7 +47,7 @@ module Sitepress
     end
 
     def clear_resources_cache
-      @_resources = nil
+      @resources = nil
     end
 
     # Root path to website project. Contains helpers, pages, and more.
@@ -107,14 +107,14 @@ module Sitepress
       @resources_pipeline ||= ResourcesPipeline.new
     end
 
-    def source_node_mapper
-      @source_node_mapper ||= SourceNodeMapper.new(path: pages_path)
-    end
-
     private
     def with_resources_cache
       clear_resources_cache unless cache_resources
-      @_resources ||= yield
+      @resources ||= yield
+    end
+
+    def source_node_mapper
+      @source_node_mapper ||= SourceNodeMapper.new(path: pages_path)
     end
   end
 end
