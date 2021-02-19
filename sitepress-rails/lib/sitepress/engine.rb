@@ -16,12 +16,10 @@ module Sitepress
 
     # Load paths from `Sitepress#site` into rails so it can render views, helpers, etc. properly.
     initializer :set_site_paths, before: :set_autoload_paths do |app|
-      [app, self].each do |engine|
-        engine.paths["app/helpers"].push site.helpers_path.expand_path
-        engine.paths["app/assets"].push site.assets_path.expand_path
-        engine.paths["app/views"].push site.root_path.expand_path
-        engine.paths["app/views"].push site.pages_path.expand_path
-      end
+      app.paths["app/helpers"].push site.helpers_path.expand_path
+      app.paths["app/assets"].push site.assets_path.expand_path
+      app.paths["app/views"].push site.root_path.expand_path
+      app.paths["app/views"].push site.pages_path.expand_path
     end
 
     # Configure Sitepress with Rails settings.
