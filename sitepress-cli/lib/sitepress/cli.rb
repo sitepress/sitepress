@@ -1,4 +1,5 @@
 require "thor"
+require_relative "boot"
 
 module Sitepress
   # Command line interface for compiling Sitepress sites.
@@ -11,7 +12,7 @@ module Sitepress
     option :port, default: PreviewServer::DEFAULT_PORT, aliases: :p, type: :numeric
     desc "server", "Run preview server"
     def server
-      Sitepress::Server.boot
+      Sitepress::Server.initialize!
       PreviewServer.new.run port: options.fetch("port"),
         bind_address: options.fetch("bind_address")
     end
@@ -19,13 +20,13 @@ module Sitepress
     option :output_path, default: "./build"
     desc "compile", "Compile project into static pages"
     def compile
-      Sitepress::Server.boot
+      Sitepress::Server.initialize!
       Compiler.new(site: Sitepress.site).compile target_path: options.fetch("output_path")
     end
 
     desc "console", "Interactive project shell"
     def console
-      Sitepress::Server.boot
+      Sitepress::Server.initialize!
       REPL.new(context: Sitepress.configuration).start
     end
 

@@ -6,13 +6,14 @@ describe Sitepress::Server do
   include Rack::Test::Methods
   let(:site) { Sitepress::Site.new(root_path: "spec/sites/sample") }
   before do
-    Sitepress::Server.boot do |config|
+    Sitepress.configure do |config|
+      config.routes = false
       config.site = site
     end
   end
 
   def app
-    Sitepress::Server
+    Sitepress::Server.initialize!
   end
 
   let(:request_path) { "/test" }
