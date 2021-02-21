@@ -13,42 +13,11 @@ module Sitepress
     extend ActiveSupport::Concern
 
     included do
-      # Set the Sitepress site for the controller.
-      # self.site ||= Sitepress.site
       rescue_from Sitepress::PageNotFoundError, with: :page_not_found
       helper Sitepress::Engine.helpers
       helper_method :current_page, :site
+      before_action :append_relative_partial_path, only: :show
     end
-
-    # class_methods do
-    #   attr_reader :site
-
-    #   # Configures controller when a `site` is set.
-    #   def site=(site)
-    #     raise_path_exception rails_path: "app/views", site_path: site.root_path
-    #     raise_path_exception rails_path: "app/views", site_path: site.pages_path
-    #     raise_path_exception rails_path: "app/helpers", site_path: site.helpers_path
-    #     # TODO: What is going on with assets? If you add just app/assets, it expands
-    #     # it out into a bunch of directories.
-    #     # raise_path_exception rails_path: "app/assets", site_path: site.assets_path.join("images")
-    #     # raise_path_exception rails_path: "app/assets", site_path: site.assets_path.join("stylesheets")
-    #     @site = site
-    #   end
-
-    #   private
-    #   # TODO: Move this into an integration class and better explain to the user how they can
-    #   # fix the
-    #   def raise_path_exception(rails_path:, site_path:)
-    #     engine = Rails.application
-    #     # Eugh, Rails 5 wants to compare via strings. Rails 6 has a `#paths` option that's cleaner.
-    #     site_path = site_path.expand_path.to_s
-    #     paths = engine.paths[rails_path].to_a
-
-    #     return if paths.include? site_path
-
-    #     raise "Sitepress path #{site_path.inspect} not present in #{engine.class.inspect}.paths[#{rails_path.inspect}]: #{paths.inspect}"
-    #   end
-    # end
 
     def show
       render_page current_page
@@ -76,6 +45,10 @@ module Sitepress
     end
 
     private
+    def append_relative_partial_path
+      append_view_path current_page.asset.path.dirname
+    end
+
     def render_text_resource(resource)
       with_sitepress_render_cache do
         render inline: resource.body,
