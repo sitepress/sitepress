@@ -1,5 +1,4 @@
 require "thor"
-require_relative "boot"
 
 module Sitepress
   # Command line interface for compiling Sitepress sites.
@@ -16,7 +15,7 @@ module Sitepress
     option :port, default: SERVER_DEFAULT_PORT, aliases: :p, type: :numeric
     desc "server", "Run preview server"
     def server
-      Sitepress::Server.initialize!
+      initialize!
       # This will use whatever server is found in the user's Gemfile.
       Rack::Server.start app: Sitepress::Server,
         Port: options.fetch("port"),
@@ -26,7 +25,7 @@ module Sitepress
     option :output_path, default: COMPILE_DEFAULT_TARGET_PATH, type: :string
     desc "compile", "Compile project into static pages"
     def compile
-      Sitepress::Server.initialize!
+      initialize!
       # Sprockets compilation
       logger.info "Sitepress compiling assets"
       sprockets_manifest(target_path: options.fetch("output_path")).compile precompile_assets
@@ -37,7 +36,7 @@ module Sitepress
 
     desc "console", "Interactive project shell"
     def console
-      Sitepress::Server.initialize!
+      initialize!
       # Start's an interactive console.
       REPL.new(context: configuration).start
     end
@@ -52,7 +51,7 @@ module Sitepress
 
     desc "version", "Show version"
     def version
-      say "Sitepress #{Sitepress::VERSION}"
+      say Sitepress::VERSION
     end
 
     private
@@ -81,6 +80,11 @@ module Sitepress
 
     def precompile_assets
       rails.config.assets.precompile
+    end
+
+    def initialize!
+      require_relative "boot"
+      Sitepress::Server.initialize!
     end
   end
 end
