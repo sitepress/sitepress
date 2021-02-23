@@ -38,25 +38,11 @@ module Sitepress
     # Do not fallback to assets pipeline if a precompiled asset is missed.
     config.assets.compile = true
 
-    # TODO: Remove this requirement for test environment.
+    # Allow any host to connect to the development server. The actual binding is
+    # controlled by server in the `sitepress-cli`; not by Rails.
     config.hosts << proc { true }
   end
 end
 
-# Configure all other integrations that don't quite work with Rails.
-module Sass
-  class SassCHandler
-    def call(template, source = template.source)
-      SassC::Engine.new(source).render.inspect + '.html_safe'
-    end
-  end
-
-  class SassHandler
-    def call(template, source = template.source)
-      SassC::Engine.new(SassC::Sass2Scss.convert(source)).render.inspect + '.html_safe'
-    end
-  end
-end
-
-ActionView::Template.register_template_handler :sass, Sass::SassHandler.new
-ActionView::Template.register_template_handler :scss, Sass::SassCHandler.new
+# Load the SassC template handler if SassC is installed as part of this stand-alone server.
+require_relative "sass_template_handler" if defined? SassC::Engine
