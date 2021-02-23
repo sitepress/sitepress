@@ -2,6 +2,9 @@ require "rails/engine"
 
 module Sitepress
   class Engine < ::Rails::Engine
+    # Set the root of the engine to the gems rails directory.
+    config.root = File.expand_path("../../rails", __dir__)
+
     # Set the path for the site configuration file.
     paths.add "config/site.rb", with: [
       File.expand_path("./config/site.rb"), # When Sitepress is launched via `sitepress server`.
