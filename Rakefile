@@ -13,14 +13,22 @@ Sitepress::Project.all.each do |project|
 
     desc "Run specs for #{project.gem_name}"
     task :spec do
+      failed_projects = []
+
       puts "Verifying #{project.gem_name}"
       Bundler.with_original_env do
         project.chdir do
           sh "bundle exec rspec" do |ok, res|
-            puts res unless ok
+            if not ok
+              failed_projects << project.gem_name
+              puts res
+            end
           end
         end
       end
+
+      # This will properly return a non-zero error code if the suite fails.
+      fail "#{failed_projects.map(&:inspect).join(", ")} suites failed" if failed_projects.any?
     end
   end
 end
