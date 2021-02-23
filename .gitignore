@@ -14,6 +14,8 @@ sitepress-rails/spec/reports/
 sitepress-rails/spec/dummy/log/*.log
 sitepress-rails/tmp/
 
+sitepress-server/rails/tmp/
+
 sitepress-core/coverage
 
 .ruby-version

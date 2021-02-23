@@ -15,12 +15,28 @@ module Sitepress
     # Boilerplate required to get Rails to boot.
     config.eager_load = false # necessary to silence warning
     config.cache_classes = false # reload everything since this is dev env.
-    config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
+
     config.secret_key_base = SecureRandom.uuid    # Rails won't start without this
 
     # Setup routes
     routes.append { root to: "site#show" }
     routes.append { get "*resource_path", controller: "site", action: "show", as: :page, format: false }
+
+    # A logger without a formatter will crash when Sprockets is enabled.
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+
+    # Debug mode disables concatenation and preprocessing of assets.
+    # This option may cause significant delays in view rendering with a large
+    # number of complex assets.
+    config.assets.debug = false
+
+    # Suppress logger output for asset requests.
+    config.assets.quiet = true
+
+    # Do not fallback to assets pipeline if a precompiled asset is missed.
+    config.assets.compile = true
 
     # TODO: Remove this requirement for test environment.
     config.hosts << proc { true }
