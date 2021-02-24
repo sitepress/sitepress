@@ -43,6 +43,10 @@ module Sitepress
 
     desc "new PATH", "Create new project at PATH"
     def new(target)
+      # Peg the generated site to roughly the released version.
+      *segments, _ = Gem::Version.new(Sitepress::VERSION).segments
+      @target_sitepress_version = segments.join(".")
+
       inside target do
         directory self.class.source_root, "."
         run "bundle install"

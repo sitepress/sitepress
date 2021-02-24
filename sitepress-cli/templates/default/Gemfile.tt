@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Stand-alone Sitepress server and compiler.
-gem "sitepress"
+gem "sitepress", "~> <%= @target_sitepress_version %>"
 
 # Server used for the Sitepress preview server.
 gem "webrick"
