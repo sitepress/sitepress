@@ -1,5 +1,16 @@
 module Sitepress
   class Project
+    # I had to order these to make it possible to test local installations;
+    # otherwise if I tried to run `rake build install`, it wouldn't be able
+    # to find the latest version if it was sooner.
+    GEMSPEC_PATHS = %w[
+      sitepress-core
+      sitepress-rails
+      sitepress-server
+      sitepress-cli
+      sitepress
+    ]
+
     def initialize(gemspec_path)
       @gemspec_path = gemspec_path
     end
@@ -28,7 +39,11 @@ module Sitepress
     end
 
     def self.all(glob = "**/*.gemspec")
-      @all ||= Dir[glob].map{ |path| new path }
+      @all ||= ordered_gemspec_paths.map{ |path| new path }
+    end
+
+    def self.ordered_gemspec_paths
+      GEMSPEC_PATHS.map{ |spec| File.join(spec, "#{spec}.gemspec") }
     end
   end
 end
