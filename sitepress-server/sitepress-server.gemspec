@@ -20,8 +20,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rack-test"
 
   spec.add_runtime_dependency "sitepress-rails", spec.version
-  spec.add_runtime_dependency "haml-rails"
-  spec.add_runtime_dependency "sass-rails"
-  spec.add_runtime_dependency "markdown-rails"
-  spec.add_runtime_dependency "webrick"
 end
