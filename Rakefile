@@ -11,6 +11,11 @@ Sitepress::Project.all.each do |project|
     # Install gem tasks.
     Bundler::GemHelper.install_tasks(dir: project.gem_dir, name: project.gem_name)
 
+    desc "Uninstall #{project.gem_name}"
+    task :uninstall do
+      sh "gem uninstall #{project.gem_name} --force --executables"
+    end
+
     desc "Run specs for #{project.gem_name}"
     task :spec do
       failed_projects = []
@@ -33,7 +38,7 @@ Sitepress::Project.all.each do |project|
   end
 end
 
-%w[build install install:local release spec].each do |task|
+%w[build install install:local release spec uninstall].each do |task|
   desc "#{task.capitalize} all gems"
   task task do
     Sitepress::Project.all.each do |project|
