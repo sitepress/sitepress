@@ -1,5 +1,7 @@
 module Sitepress
   module Renderers
+    # This would be the ideal way to render Sitepress pages, but there's a lot
+    # of hackery involved in getting it to work properly.
     class Controller
       attr_reader :controller, :page
 

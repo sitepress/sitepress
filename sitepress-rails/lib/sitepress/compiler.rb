@@ -6,6 +6,8 @@ module Sitepress
   class Compiler
     include FileUtils
 
+    RenderingError = Class.new(RuntimeError)
+
     class ResourceCompiler
       attr_reader :resource
 
