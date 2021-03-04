@@ -48,8 +48,8 @@ describe Sitepress::SiteController, type: :controller do
     it "renders body" do
       expect(response.body).to include("<h1>Hi!</h1>")
     end
-    it "does not render layout" do
-      expect(response.body).to_not include("<title>Dummy</title>")
+    it "renders default 'layouts/application' layout" do
+      expect(response.body).to include("<title>Dummy</title>")
     end
     it "responds with content type" do
       expect(response.content_type).to include("text/html")
