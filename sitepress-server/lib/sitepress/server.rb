@@ -41,6 +41,9 @@ module Sitepress
     # Allow any host to connect to the development server. The actual binding is
     # controlled by server in the `sitepress-cli`; not by Rails.
     config.hosts << proc { true } if config.respond_to? :hosts
+
+    # Stand-alone boot locations
+    paths["config/initializers"] << File.expand_path("./config/initializers")
   end
 end
 
