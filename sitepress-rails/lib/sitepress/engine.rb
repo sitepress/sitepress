@@ -20,20 +20,15 @@ module Sitepress
     # Load paths from `Sitepress#site` into rails so it can render views, helpers, etc. properly.
     initializer :set_sitepress_paths, before: :set_autoload_paths do |app|
       app.paths["app/helpers"].push site.helpers_path.expand_path
+      app.paths["app/assets"].push site.assets_path.expand_path
       app.paths["app/views"].push site.root_path.expand_path
       app.paths["app/views"].push site.pages_path.expand_path
     end
 
     # Configure sprockets paths for the site.
-    initializer :set_asset_paths, before: :append_assets_path do |app|
+    initializer :set_manifest_file_path, before: :append_assets_path do |app|
       manifest_file = sitepress_configuration.manifest_file_path.expand_path
-
-      if manifest_file.exist?
-        app.paths["app/assets"].push site.assets_path.expand_path
-        app.config.assets.precompile << manifest_file.to_s
-      else
-        Rails.logger.warn "WARNING: Sitepress could not enable Sprockets because it could not find a manifest file at #{manifest_file.to_s.inspect}."
-      end
+      app.config.assets.precompile << manifest_file.to_s if manifest_file.exist?
     end
 
     # Configure Sitepress with Rails settings.
