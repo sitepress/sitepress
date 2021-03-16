@@ -2,9 +2,6 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require "sitepress-core"
 
-require 'simplecov'
-SimpleCov.start
-
 # TODO: Move into a support file.
 RSpec::Matchers.define :have_children do |expected|
   match do |actual|

@@ -2,13 +2,11 @@
 
 source "https://rubygems.org"
 
-gem "appraisal", "~> 2.3.0"
+gem "appraisal", "~> 2.4.0"
 gem "rails", "~> 5.2.0"
 gem "rails-controller-testing"
 
 group :test do
-  gem "simplecov"
-  gem "codeclimate-test-reporter", "~> 1.0.0"
   gem "pry", require: nil
   gem "rack-test", require: nil
 end
