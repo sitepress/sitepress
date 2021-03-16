@@ -4,10 +4,10 @@ module Sitepress
   class SourceNodeMapper
     # Exclude swap files created by Textmate and vim from being added
     # to the sitemap.
-    SWAP_FILE_EXTENSIONS = [
-      "~",
-      ".swp",
-      ".DS_Store" # TODO: Not a swap file, but something that should be ignored.
+    IGNORE_FILE_PATTERNS = [
+      "*~",       # Created by many editors when things crash
+      "*.swp",    # Created by vim
+      ".DS_Store" # Created by our friends at Apple
     ]
 
     # Partial rails prefix.
@@ -37,21 +37,26 @@ module Sitepress
     def paths
       Enumerator.new do |y|
         root.each_child do |path|
-          next if is_swap_file? path
-          next if is_partial_file? path
+          next if ignore_file? path
 
-          node_name, node_format, template_handler = path.basename.to_s.split(".")
-          y << [ path, node_name, node_format&.to_sym ]
+          name, format, template_handler = path.basename.to_s.split(".")
+          format = format.to_sym if format
+
+          y << [ path, name, format ]
         end
       end
+    end
+
+    def ignore_file?(path)
+      is_partial_file?(path) or matches_ignore_file_pattern?(path)
     end
 
     def is_partial_file?(path)
       path.basename.to_s.start_with? PARTIAL_PREFIX
     end
 
-    def is_swap_file?(path)
-      SWAP_FILE_EXTENSIONS.any? { |ext| path.to_s.end_with? ext }
+    def matches_ignore_file_pattern?(path)
+      IGNORE_FILE_PATTERNS.any? { |pattern| path.fnmatch? pattern }
     end
   end
 end
