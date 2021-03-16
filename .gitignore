@@ -3,6 +3,7 @@ Gemfile.lock
 .sass-cache
 
 gemfiles/*.gemfile.lock
+gemfiles/.bundle
 
 sitepress-rails/**/*.sqlite3
 sitepress-rails/.bundle/

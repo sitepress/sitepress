@@ -1,8 +1,7 @@
-appraise "rails-5" do
-  gem "rails", "~> 5.2.0"
-  gem "rails-controller-testing"
+appraise "rails-6-0" do
+  gem "rails", "~> 6.0.0"
 end
 
-appraise "rails-6" do
-  gem "rails", "6.1.1"
+appraise "rails-6-1" do
+  gem "rails", "~> 6.1.0"
 end
