@@ -31,7 +31,7 @@ module Sitepress
       sprockets_manifest(target_path: options.fetch("output_path")).compile precompile_assets
       # Page compilation
       logger.info "Sitepress compiling pages"
-      Compiler.new(site: configuration.site, build_path: options.fetch("output_path")).compile
+      Compiler.new(site: configuration.site, root_path: options.fetch("output_path")).compile
     end
 
     desc "console", "Interactive project shell"
