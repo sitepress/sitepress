@@ -21,13 +21,11 @@ Sitepress::Project.all.each do |project|
       failed_projects = []
 
       puts "Verifying #{project.gem_name}"
-      Bundler.with_original_env do
-        project.chdir do
-          sh "bundle exec rspec" do |ok, res|
-            if not ok
-              failed_projects << project.gem_name
-              puts res
-            end
+      project.chdir do
+        sh "bundle exec rspec" do |ok, res|
+          if not ok
+            failed_projects << project.gem_name
+            puts res
           end
         end
       end
