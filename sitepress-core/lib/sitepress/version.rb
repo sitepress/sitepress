@@ -1,3 +1,3 @@
 module Sitepress
-  VERSION = "2.0.0.beta7".freeze
+  VERSION = "2.0.0.beta8".freeze
 end
