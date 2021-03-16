@@ -19,10 +19,10 @@ module Sitepress
       status "Building #{site.root_path.expand_path} to #{root_path.expand_path}"
       resources.each do |resource, path|
         if resource.renderable?
-          status "  Rendering #{path}"
+          status "Rendering #{path}"
           File.open(path.expand_path, "w"){ |f| f.write render resource }
         else
-          status "  Copying #{path}"
+          status "Copying #{path}"
           cp resource.asset.path, path.expand_path
         end
       rescue
