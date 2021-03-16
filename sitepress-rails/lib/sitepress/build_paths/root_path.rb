@@ -13,27 +13,31 @@ module Sitepress
         @resource = resource
       end
 
-      def path
+      def filename
         if format.nil?
-          path_without_format
+          filename_without_format
         elsif format == node.default_format
-          path_with_default_format
+          filename_with_default_format
         elsif format
-          path_with_format
+          filename_with_format
         end
       end
 
+      def path
+        File.join(*resource.lineage, filename)
+      end
+
       protected
-      def path_without_format
+      def filename_without_format
         node.default_name
       end
 
-      def path_with_format
+      def filename_with_format
         "#{node.default_name}.#{format}"
       end
 
-      def path_with_default_format
-        path_with_format
+      def filename_with_default_format
+        filename_with_format
       end
     end
   end

@@ -1,20 +1,20 @@
 module Sitepress
   module Renderers
-    # This would be the ideal way to render Sitepress pages, but there's a lot
+    # This would be the ideal way to render Sitepress resources, but there's a lot
     # of hackery involved in getting it to work properly.
     class Controller
-      attr_reader :controller, :page
+      attr_reader :controller, :resource
 
-      def initialize(page, controller = SiteController)
+      def initialize(resource, controller = SiteController)
         @controller = controller
-        @page = page
+        @resource = resource
       end
 
       def render
-        renderer.render inline: page.body,
-          type: page.asset.template_extensions.last,
+        renderer.render inline: resource.body,
+          type: resource.asset.template_extensions.last,
           layout: resolve_layout,
-          content_type: page.mime_type.to_s
+          content_type: resource.mime_type.to_s
       end
 
       private
@@ -31,15 +31,15 @@ module Sitepress
         end
 
         def renderer
-          controller.renderer.new("PATH_INFO" => page.request_path)
+          controller.renderer.new("PATH_INFO" => resource.request_path)
         end
 
         def resolve_layout
-          return page.data.fetch("layout") if page.data.key? "layout"
+          return resource.data.fetch("layout") if resource.data.key? "layout"
           return layout unless has_layout_conditions?
 
           clause, formats = layout_conditions.first
-          format = page.format.to_s
+          format = resource.format.to_s
 
           case clause
           when :only

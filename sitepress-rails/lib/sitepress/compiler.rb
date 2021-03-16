@@ -8,51 +8,29 @@ module Sitepress
 
     RenderingError = Class.new(RuntimeError)
 
-    class ResourceCompiler
-      attr_reader :resource
+    attr_reader :site, :build_path
 
-      def initialize(resource)
-        @resource = resource
-      end
-
-      def compilation_path
-        File.join(*resource.lineage, compilation_filename)
-      end
-
-      # Compiled assets have a slightly different filename for assets, especially the root node.
-      def compilation_filename(path_builder: BuildPaths::DirectoryIndexPath, root_path_builder: BuildPaths::RootPath)
-        path_builder = resource.node.root? ? root_path_builder : path_builder
-        path_builder.new(resource).path
-      end
-
-      def render(page)
-        Renderers::Server.new(resource).render
-      end
-    end
-
-    attr_reader :site
-
-    def initialize(site:, stdout: $stdout)
+    def initialize(site:, build_path:, stdout: $stdout)
       @site = site
       @stdout = stdout
+      @build_path = Pathname.new(build_path)
     end
 
     # Iterates through all pages and writes them to disk
-    def compile(target_path:)
-      target_path = Pathname.new(target_path)
-      mkdir_p target_path
+    def compile
+      mkdir_p build_path
       cache_resources = @site.cache_resources
       @stdout.puts "Compiling #{@site.root_path.expand_path}"
 
       begin
         @site.cache_resources = true
         @site.resources.each do |resource|
-          compiler = ResourceCompiler.new(resource)
-          path = target_path.join(compiler.compilation_path)
+          path = resource_build_path resource
           mkdir_p path.dirname
+
           if resource.renderable?
             @stdout.puts "  Rendering #{path}"
-            File.open(path.expand_path, "w"){ |f| f.write compiler.render(resource) }
+            File.open(path.expand_path, "w"){ |f| f.write resource_renderer(resource).render }
           else
             @stdout.puts "  Copying #{path}"
             FileUtils.cp resource.asset.path, path.expand_path
@@ -61,10 +39,20 @@ module Sitepress
           @stdout.puts "Error compiling #{resource.inspect}"
           raise
         end
-        @stdout.puts "Successful compilation to #{target_path.expand_path}"
+        @stdout.puts "Successful compilation to #{build_path.expand_path}"
       ensure
         @site.cache_resources = cache_resources
       end
     end
+
+    private
+      def resource_build_path(resource)
+        path_builder = resource.node.root? ? BuildPaths::RootPath : BuildPaths::DirectoryIndexPath
+        build_path.join path_builder.new(resource).path
+      end
+
+      def resource_renderer(resource)
+        Renderers::Server.new(resource)
+      end
   end
 end
