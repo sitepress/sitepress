@@ -34,6 +34,8 @@ module Sitepress
     # Configure Sitepress with Rails settings.
     initializer :configure_sitepress do |app|
       sitepress_configuration.parent_engine = app
+      # Reloads entire site between requests for development environments
+      sitepress_configuration.cache_resources = app.config.cache_classes
     end
 
     private

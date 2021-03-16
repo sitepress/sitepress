@@ -126,7 +126,7 @@ module Sitepress
     end
 
     def reload_site?
-      !Rails.configuration.cache_classes
+      !Sitepress.configuration.cache_resources
     end
   end
 end

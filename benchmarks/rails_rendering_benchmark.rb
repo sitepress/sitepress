@@ -53,7 +53,7 @@ title: The page #{path}
 
   # Test caching configurations.
   [true,false].each do |caching|
-    Rails.configuration.cache_classes = caching
+    Sitepress.configuration.cache_resources = caching
 
     benchmark "Rails #{Rails.env} environment (Sitepress.configuration.cache_resources = #{caching})" do |x|
       x.report "Sitepress.configuration.resources.get(#{path.inspect})" do
