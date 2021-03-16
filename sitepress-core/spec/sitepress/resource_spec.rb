@@ -46,7 +46,7 @@ context Sitepress::Resource do
         expect(subject.parent).to eql(root.get("/vehicles/trucks"))
       end
       it "has siblings" do
-        expect(subject.siblings).to eql %w[/vehicles/trucks/mac /vehicles/trucks/freightliner].map { |path| root.get(path) }
+        expect(subject.siblings).to match_array %w[/vehicles/trucks/mac /vehicles/trucks/freightliner].map { |path| root.get(path) }
       end
       it "has no children" do
         expect(subject.children).to be_empty
@@ -58,7 +58,7 @@ context Sitepress::Resource do
         expect(subject.parent).to eql root.get("/")
       end
       it "has siblings" do
-        expect(subject.siblings).to eql %w[/about /rules].map { |path| root.get(path) }
+        expect(subject.siblings).to match_array %w[/about /rules].map { |path| root.get(path) }
       end
       it "has no children" do
         expect(subject.children).to be_empty
@@ -72,7 +72,7 @@ context Sitepress::Resource do
         context "no filter" do
           let(:filter){ {} }
           it "has 3 parents" do
-            expect(parents_paths).to eql(["/vehicles/cars", nil, "/"])
+            expect(parents_paths).to match_array(["/vehicles/cars", nil, "/"])
           end
           it "has 1 parent" do
             expect(parent_path).to eql("/vehicles/cars")
@@ -101,10 +101,10 @@ context Sitepress::Resource do
             paths = subject.parents(type: :all).map do |nodes|
               nodes.map{ |n| n.request_path if n }
             end
-            expect(paths).to eql([%w[/vehicles/cars /vehicles/cars.xml], [], %w[/ /index.xml]])
+            expect(paths).to match_array([%w[/vehicles/cars /vehicles/cars.xml], [], %w[/ /index.xml]])
           end
           it "has parent" do
-            expect(subject.parent(type: :all).map(&:request_path)).to eql(%w[/vehicles/cars /vehicles/cars.xml])
+            expect(subject.parent(type: :all).map(&:request_path)).to match_array(%w[/vehicles/cars /vehicles/cars.xml])
           end
         end
       end

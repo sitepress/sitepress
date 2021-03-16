@@ -2,13 +2,18 @@ require_relative "benchmark_helper"
 
 require "rack/test"
 page_count = 10_000
+
 title "Rails requests for #{page_count} asset site"
 
-# Verifies that a non-200 response isn't mistaken as a valid benchmark.
-def get!(path)
-  resp = get(path)
-  fail "GET #{path.inspect} - HTTP #{resp.status} resp\n---\n#{resp.body}\n---" if resp.status != 200
-  resp
+# Verifies that a non-200 response isn't mistaken as a valid benchmark. We call
+# the request multiple times so we can measure reloading the entire site between
+# requests in a development environment.
+def get!(path, number_of_requests: 5)
+  number_of_requests.times do
+    resp = get(path)
+    fail "GET #{path.inspect} - HTTP #{resp.status} resp\n---\n#{resp.body}\n---" if resp.status != 200
+    resp
+  end
 end
 
 fake_site do |site|
@@ -48,7 +53,7 @@ title: The page #{path}
 
   # Test caching configurations.
   [true,false].each do |caching|
-    Sitepress.configuration.cache_resources = caching
+    Rails.configuration.cache_classes = caching
 
     benchmark "Rails #{Rails.env} environment (Sitepress.configuration.cache_resources = #{caching})" do |x|
       x.report "Sitepress.configuration.resources.get(#{path.inspect})" do
