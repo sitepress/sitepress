@@ -16,8 +16,11 @@ module Sitepress
     desc "server", "Run preview server"
     def server
       initialize!
+      # Enable Sitepress web error reporting so users have more friendly
+      # error messages instead of seeing a Rails exception.
+      controller.enable_sitepress_error_reporting = true
       # This will use whatever server is found in the user's Gemfile.
-      Rack::Server.start app: Sitepress::Server,
+      Rack::Server.start app: app,
         Port: options.fetch("port"),
         Host: options.fetch("bind_address")
     end
@@ -26,12 +29,12 @@ module Sitepress
     desc "compile", "Compile project into static pages"
     def compile
       initialize!
-      # Sprockets compilation
-      logger.info "Sitepress compiling assets"
-      sprockets_manifest(target_path: options.fetch("output_path")).compile precompile_assets
       # Page compilation
       logger.info "Sitepress compiling pages"
       Compiler.new(site: configuration.site, root_path: options.fetch("output_path")).compile
+      # Sprockets compilation
+      logger.info "Sitepress compiling assets"
+      sprockets_manifest(target_path: options.fetch("output_path")).compile precompile_assets
     end
 
     desc "console", "Interactive project shell"
@@ -84,7 +87,15 @@ module Sitepress
 
     def initialize!
       require_relative "boot"
-      Sitepress::Server.initialize!
+      app.initialize!
+    end
+
+    def controller
+      ::SiteController
+    end
+
+    def app
+      Sitepress::Server
     end
   end
 end
