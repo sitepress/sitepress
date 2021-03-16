@@ -1,0 +1,14 @@
+---
+title: All pages
+---
+
+<h1>This helps test to make sure we generate a site once per request by calling it a few times..</h1>
+
+<p>There are <% current_page.siblings.size %> pages in this site. Here's each page:</p>
+<ul>
+  <% site.resources.each do |resource| %>
+   <li><%= resource.request_path %></li>
+  <% end %>
+</ul>
+
+<p>I'm a sitepress page</p>

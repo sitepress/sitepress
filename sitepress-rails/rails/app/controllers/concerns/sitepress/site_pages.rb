@@ -17,6 +17,7 @@ module Sitepress
       helper Sitepress::Engine.helpers
       helper_method :current_page, :site
       before_action :append_relative_partial_path, only: :show
+      after_action :reload_site, only: :show
     end
 
     def show
@@ -50,12 +51,10 @@ module Sitepress
     end
 
     def render_text_resource(resource)
-      with_sitepress_render_cache do
-        render inline: resource.body,
-          type: resource.asset.template_extensions.last,
-          layout: resource.data.fetch("layout", controller_layout),
-          content_type: resource.mime_type.to_s
-      end
+      render inline: resource.body,
+        type: resource.asset.template_extensions.last,
+        layout: resource.data.fetch("layout", controller_layout),
+        content_type: resource.mime_type.to_s
     end
 
     def send_binary_resource(resource)
@@ -80,19 +79,6 @@ module Sitepress
     # isn't present, then its probably the root path so grab that.
     def find_resource
       get params.fetch(:resource_path, ROOT_RESOURCE_PATH)
-    end
-
-    # When development environments disable the cache, we still want to turn it
-    # on during rendering so that view doesn't rebuild the site on each call.
-    def with_sitepress_render_cache(&block)
-      cache_resources = site.cache_resources
-      begin
-        site.cache_resources = true
-        yield
-      ensure
-        site.cache_resources = cache_resources
-        site.clear_resources_cache unless site.cache_resources
-      end
     end
 
     # Returns the current layout for the inline Sitepress renderer. This is
@@ -133,6 +119,14 @@ module Sitepress
       else
         supported_extensions.map?(&:to_sym)
       end
+    end
+
+    def reload_site
+      site.reload! if reload_site?
+    end
+
+    def reload_site?
+      !Rails.configuration.cache_classes
     end
   end
 end

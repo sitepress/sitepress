@@ -36,16 +36,11 @@ module Sitepress
       def resources
         Enumerator.new do |y|
           mkdir_p root_path
-          cache_resources = site.cache_resources
-          begin
-            site.cache_resources = true
-            site.resources.each do |resource|
-              path = build_path resource
-              mkdir_p path.dirname
-              y << [resource, path]
-            end
-          ensure
-            site.cache_resources = cache_resources
+
+          site.resources.each do |resource|
+            path = build_path resource
+            mkdir_p path.dirname
+            y << [resource, path]
           end
         end
       end

@@ -19,6 +19,8 @@ module Sitepress
       # Enable Sitepress web error reporting so users have more friendly
       # error messages instead of seeing a Rails exception.
       controller.enable_sitepress_error_reporting = true
+      # Enable reloading the site between requests so we can see changes.
+      controller.enable_site_reloading = true
       # This will use whatever server is found in the user's Gemfile.
       Rack::Server.start app: app,
         Port: options.fetch("port"),

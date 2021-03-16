@@ -34,7 +34,6 @@ module Sitepress
     # Configure Sitepress with Rails settings.
     initializer :configure_sitepress do |app|
       sitepress_configuration.parent_engine = app
-      sitepress_configuration.cache_resources = app.config.cache_classes
     end
 
     private

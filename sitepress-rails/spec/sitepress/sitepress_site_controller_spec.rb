@@ -79,27 +79,8 @@ describe Sitepress::SiteController, type: :controller do
     end
   end
 
-  context "render cache" do
-    context "cache_resources=true" do
-      before { site.cache_resources = true }
-      it "enables cache" do
-        expect(site.cache_resources).to be true
-        expect(site).to receive(:cache_resources=).with(true)
-        expect(site).to receive(:cache_resources=).with(true)
-        get_resource "/time"
-        expect(site.cache_resources).to be true
-      end
-    end
-    context "cache_resources=false" do
-      before { site.cache_resources = false }
-      it "enables cache" do
-        expect(site.cache_resources).to be false
-        expect(site).to receive(:cache_resources=).with(true)
-        expect(site).to receive(:cache_resources=).with(false)
-        get_resource "/time"
-        expect(site.cache_resources).to be false
-      end
-    end
-
+  it "builds site once" do
+    allow(site).to receive(:root).once.and_return(site.root)
+    get_resource "/all_pages"
   end
 end

@@ -14,26 +14,18 @@ module Sitepress
     attr_reader :root_path
     attr_writer :resources_pipeline
 
-    # Cache resources for production runs of Sitepress. Development
-    # modes don't cache to optimize for files reloading.
-    attr_accessor :cache_resources
-    alias :cache_resources? :cache_resources
-
     # TODO: Get rid of these so that folks have ot call site.resources.get ...
     extend Forwardable
     def_delegators :resources, :get, :glob
 
     def initialize(root_path: DEFAULT_ROOT_PATH)
       self.root_path = root_path
-      # When Site#resources is called, the results should be cached in production
-      # environments for performance reasons, but not in development environments.
-      self.cache_resources = false
     end
 
     # A tree representation of the resourecs wthin the site. The root is a node that's
     # processed by the `resources_pipeline`.
     def root
-      Node.new.tap do |node|
+      @root ||= Node.new.tap do |node|
         source_node_mapper.mount node
         resources_pipeline.process node
       end
@@ -41,13 +33,12 @@ module Sitepress
 
     # Returns a list of all the resources within #root.
     def resources
-      with_resources_cache do
-        ResourceCollection.new(node: root, root_path: pages_path)
-      end
+      @resources ||= ResourceCollection.new(node: root, root_path: pages_path)
     end
 
-    def clear_resources_cache
-      @resources = nil
+    def reload!
+      @resources = @root = nil
+      self
     end
 
     # Root path to website project. Contains helpers, pages, and more.
@@ -108,10 +99,6 @@ module Sitepress
     end
 
     private
-    def with_resources_cache
-      clear_resources_cache unless cache_resources
-      @resources ||= yield
-    end
 
     def source_node_mapper
       @source_node_mapper ||= SourceNodeMapper.new(path: pages_path)

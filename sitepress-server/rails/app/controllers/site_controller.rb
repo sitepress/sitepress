@@ -6,6 +6,11 @@ class SiteController < ApplicationController
   # while the compile and other environments would likely have this disabled.
   class_attribute :enable_sitepress_error_reporting, default: false
 
+  # When in a development environment, we'll want to reload the site between
+  # requests so we can see the latest changes; otherwise, load the site once
+  # and we're done.
+  class_attribute :enable_site_reloading, default: false
+
   # This `rescue_from` order is important; it must come before the
   # `include Sitepress::SitePages` statement; otherwise exceptions
   # won't be properly handled.
@@ -37,5 +42,9 @@ class SiteController < ApplicationController
 
   def has_error_reporting_enabled?
     self.class.enable_sitepress_error_reporting
+  end
+
+  def reload_site?
+    self.class.enable_site_reloading
   end
 end
