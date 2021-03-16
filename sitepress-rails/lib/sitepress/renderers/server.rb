@@ -17,7 +17,7 @@ module Sitepress
         code, headers, response = rails_app.routes.call env
         response.body
       rescue => e
-        raise Compiler::RenderingError.new "Error rendering #{resource.request_path.inspect} at #{resource.asset.path.expand_path.to_s.inspect}:\n#{e.message}"
+        raise RenderingError.new "Error rendering #{resource.request_path.inspect} at #{resource.asset.path.expand_path.to_s.inspect}:\n#{e.message}"
       end
 
       private

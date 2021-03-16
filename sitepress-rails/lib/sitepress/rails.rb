@@ -3,11 +3,11 @@ require "sitepress-core"
 module Sitepress
   autoload :Compiler,                 "sitepress/compiler"
   autoload :RailsConfiguration,       "sitepress/rails_configuration"
-  autoload :RouteConstraint,          "sitepress/route_constraint"
   module Renderers
     autoload :Controller,             "sitepress/renderers/controller"
     autoload :Server,                 "sitepress/renderers/server"
   end
+  autoload :RouteConstraint,          "sitepress/route_constraint"
   module BuildPaths
     autoload :RootPath,               "sitepress/build_paths/root_path"
     autoload :IndexPath,              "sitepress/build_paths/index_path"
@@ -16,6 +16,9 @@ module Sitepress
 
   # Rescued by ActionController to display page not found error.
   PageNotFoundError = Class.new(StandardError)
+
+  # Raised when any of the Render subclasses can't render a page.
+  RenderingError = Class.new(RuntimeError)
 
   # Make site available via Sitepress.site from Rails app.
   def self.site
