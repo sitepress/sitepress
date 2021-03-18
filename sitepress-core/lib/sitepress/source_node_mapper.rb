@@ -5,9 +5,10 @@ module Sitepress
     # Exclude swap files created by Textmate and vim from being added
     # to the sitemap.
     IGNORE_FILE_PATTERNS = [
-      "*~",       # Created by many editors when things crash
-      "*.swp",    # Created by vim
-      ".DS_Store" # Created by our friends at Apple
+      "*~",         # Created by many editors when things crash
+      "*.swp",      # Created by vim
+      ".DS_Store",  # Created by our friends at Apple
+      "*.orig"      # Created when there's a git conflict
     ]
 
     # Partial rails prefix.
