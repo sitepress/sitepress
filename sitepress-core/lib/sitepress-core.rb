@@ -11,6 +11,7 @@ module Sitepress
   autoload :Formats,              "sitepress/formats"
   autoload :Frontmatter,          "sitepress/frontmatter"
   autoload :Node,                 "sitepress/node"
+  autoload :NotionMatter,         "sitepress/notion_matter"
   autoload :Path,                 "sitepress/path"
   autoload :Resource,             "sitepress/resource"
   autoload :ResourceCollection,   "sitepress/resource_collection"
