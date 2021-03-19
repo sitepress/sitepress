@@ -23,11 +23,14 @@ module Sitepress
 
     # Mounts the source files from the path to the given node.
     def mount(node)
-      paths.each do |path, name, format|
+      paths.each do |path|
         if path.directory?
+          name = path.basename.to_s
           SourceNodeMapper.new(path: path).mount node.add_child(name)
         else
           asset = Asset.new(path: path)
+          format = asset.format_extension
+          name = asset.basename
           node.add_child(name).formats.add(format: format, asset: asset)
         end
       end
@@ -39,11 +42,7 @@ module Sitepress
       Enumerator.new do |y|
         root.each_child do |path|
           next if ignore_file? path
-
-          name, format, template_handler = path.basename.to_s.split(".")
-          format = format.to_sym if format
-
-          y << [ path, name, format ]
+          y << path
         end
       end
     end
