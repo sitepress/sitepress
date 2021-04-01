@@ -17,7 +17,7 @@ module Sitepress
       helper Sitepress::Engine.helpers
       helper_method :current_page, :site
       before_action :append_relative_partial_path, only: :show
-      after_action :reload_site, only: :show
+      around_action :ensure_site_reload, only: :show
     end
 
     def show
@@ -119,6 +119,12 @@ module Sitepress
       else
         supported_extensions.map?(&:to_sym)
       end
+    end
+
+    def ensure_site_reload
+      yield
+    ensure
+      reload_site
     end
 
     def reload_site
