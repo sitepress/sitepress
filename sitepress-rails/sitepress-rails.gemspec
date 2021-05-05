@@ -8,6 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Sitepress::VERSION
   spec.authors       = ["Brad Gessler"]
   spec.email         = ["bradgessler@gmail.com"]
+  spec.licenses      = ["MIT"]
 
   spec.summary       = %q{Sitepress rails integration.}
   spec.homepage      = "https://github.com/sitepress/sitepress"
