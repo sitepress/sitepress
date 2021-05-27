@@ -16,4 +16,8 @@ describe "Sitepress.configuration" do
     app.initialize!
     expect(subject.routes).to be true
   end
+  it "sets Sitepress::Path.template_extensions" do
+    app.initialize!
+    expect(Sitepress::Path.handler_extensions).to eql([:raw, :erb, :html, :builder, :ruby])
+  end
 end

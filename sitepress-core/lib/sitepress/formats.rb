@@ -1,3 +1,5 @@
+require "forwardable"
+
 module Sitepress
   # Manages collections of resources that share the same Node. Given the files `/a.html` and `/a.gif`,
   # both of these assets would be stored in the `Node#name = "a"` under `Node#formats` with
