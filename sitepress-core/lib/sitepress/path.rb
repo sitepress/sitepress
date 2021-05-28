@@ -52,6 +52,10 @@ module Sitepress
       File.exists? path
     end
 
+    def expand_path
+      File.expand_path path
+    end
+
     def format
       (handler_is_format? ? handler : @format)&.to_sym
     end
