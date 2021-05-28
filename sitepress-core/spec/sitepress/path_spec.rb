@@ -108,6 +108,21 @@ context Sitepress::Path do
         expect(path.node_name).to eql("")
       end
     end
+    context "Path where format and extension are the same" do
+      let(:string) { "/a/b/c.html.md" }
+      it "parses node names" do
+        expect(path.node_names).to eql(%w[a b c])
+      end
+      it "parses format" do
+        expect(path.format).to eql(:html)
+      end
+      it "parses handler" do
+        expect(path.handler).to eql(:md)
+      end
+      it "parses node_name" do
+        expect(path.node_name).to eql("c")
+      end
+    end
   end
   describe ".handler_extensions" do
     it "has defaults" do

@@ -25,13 +25,11 @@ module Sitepress
     def mount(node)
       paths.each do |path|
         if path.directory?
-          name = path.basename.to_s
+          name = File.basename path
           SourceNodeMapper.new(path: path).mount node.add_child(name)
         else
           asset = Asset.new(path: path)
-          format = asset.format_extension
-          name = asset.basename
-          node.add_child(name).formats.add(format: format, asset: asset)
+          node.add_child(asset.node_name).formats.add(format: asset.format, asset: asset)
         end
       end
     end

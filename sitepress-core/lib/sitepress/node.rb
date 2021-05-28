@@ -80,7 +80,7 @@ module Sitepress
     end
 
     def inspect
-      "<#{self.class}: name=#{name.inspect} formats=#{formats.map(&:request_path)} children=#{children.map(&:name).inspect}>"
+      "<#{self.class}: name=#{name.inspect}, formats=#{formats.extensions.inspect}, children=#{children.map(&:name).inspect}, resource_request_paths=#{formats.map(&:request_path)}>"
     end
 
     def dig(*args)

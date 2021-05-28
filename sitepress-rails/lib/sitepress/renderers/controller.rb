@@ -12,7 +12,7 @@ module Sitepress
 
       def render
         renderer.render inline: resource.body,
-          type: resource.asset.template_extensions.last,
+          type: resource.handler,
           layout: resolve_layout,
           content_type: resource.mime_type.to_s
       end

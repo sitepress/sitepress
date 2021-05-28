@@ -1,4 +1,5 @@
 require "pathname"
+require "mime-types"
 
 module Sitepress
   class Path
@@ -7,7 +8,13 @@ module Sitepress
     # ERB or HAML.
     HANDLER_EXTENSIONS = %i[haml erb md markdown]
 
-    attr_reader :handler, :format, :path, :node_name
+    # The root node name is a blank string.
+    ROOT_NODE_NAME = "".freeze
+
+    # The name of the root path
+    ROOT_PATH = "/".freeze
+
+    attr_reader :handler, :format, :path, :node_name, :dirname, :basename
 
     # When Rails boots, it sets the handler extensions so that paths
     # can be properly parsed.
@@ -23,23 +30,58 @@ module Sitepress
       @path = path.to_s
       @path_seperator = Regexp.new(path_seperator)
       @handler_extensions = handler_extensions
-      parse_basename
+      parse
     end
 
     def node_names
       @node_names ||= node_name_ancestors.push(node_name)
     end
 
+    # Necessary for operations like `File.read path` where `path` is an instance
+    # of this object.
+    def to_str
+      @path
+    end
+    alias :to_s :to_str
+
+    def ==(path)
+      to_s == path.to_s
+    end
+
+    def exists?
+      File.exists? path
+    end
+
+    def format
+      (handler_is_format? ? handler : @format)&.to_sym
+    end
+
     private
+      # TODO: I don't want to look this up everytime I try to figure out the
+      # extension. I'll have to create an extension registry .
+
+      # Rails has handlers, like `:html` and `:raw` that are both
+      # handlers and formats. If we don't account for this, then the object
+      # would return a `nil` for a file named `blah.html`.
+      def handler_is_format?
+        return false if @handler.nil?
+        @format.nil? and MIME::Types.type_for(@handler.to_s).any?
+      end
+
+      def parse
+        @dirname, @basename = File.split(path)
+        parse_basename
+      end
+
       # Given a filename, this will work out the extensions, formats, and node_name.
       def parse_basename
-        basename = File.basename(path)
-        filename, extname = split_filename(basename)
+        base = basename
+        filename, extname = split_filename(base)
 
         # This is a root path, so we have to treat it a little differently
         # so that the node mapper and node names work properly.
-        if filename == "/" and extname.nil?
-          @node_name = ""
+        if filename == ROOT_PATH and extname.nil?
+          @node_name = ROOT_NODE_NAME
         elsif extname
           extname = extname.to_sym
 
@@ -47,15 +89,15 @@ module Sitepress
           if @handler_extensions.include? extname
             # Yup, its a handler. Set those variables accordingly.
             @handler = extname
-            basename = filename
+            base = filename
           end
 
           # Now let's get the format (e.g. :html, :xml, :json) for the path and
           # the key, which is just the basename without the format extension.
-          @node_name, format = split_filename(basename)
-          @format = format.to_sym if format
+          @node_name, format = split_filename(base)
+          @format = format
         else
-          @node_name = basename = filename
+          @node_name = filename
         end
       end
 

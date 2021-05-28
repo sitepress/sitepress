@@ -52,7 +52,7 @@ module Sitepress
 
     def render_text_resource(resource)
       render inline: resource.body,
-        type: resource.asset.template_extensions.last,
+        type: resource.handler,
         layout: resource.data.fetch("layout", controller_layout),
         content_type: resource.mime_type.to_s
     end

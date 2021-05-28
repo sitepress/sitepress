@@ -6,7 +6,7 @@ module Sitepress
   # and may be altered by the resource proxy.
   class Resource
     extend Forwardable
-    def_delegators :asset, :mime_type
+    def_delegators :asset, :mime_type, :handler
 
     attr_writer :body, :data
     attr_reader :node, :asset, :format
