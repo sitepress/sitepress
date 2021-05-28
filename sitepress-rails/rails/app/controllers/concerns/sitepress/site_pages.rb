@@ -78,7 +78,7 @@ module Sitepress
     # Default finder of the resource for the current controller context. If the :resource_path
     # isn't present, then its probably the root path so grab that.
     def find_resource
-      get params.fetch(:resource_path, ROOT_RESOURCE_PATH)
+      get request.path
     end
 
     # Returns the current layout for the inline Sitepress renderer. This is
