@@ -8,10 +8,17 @@ module Sitepress
 
     attr_reader :site, :root_path
 
-    def initialize(site:, root_path:, stdout: $stdout)
+    # If a resource can't render, it will raise an exception and stop the compiler. Sometimes
+    # its useful to turn off errors so you can get through a full compilation and see how many
+    # errors you encounter along the way. To do that, you'd set `raise_exception_on_error` to
+    # `false` and the compile will get through all the resources.
+    attr_accessor :raise_exception_on_error
+
+    def initialize(site:, root_path:, stdout: $stdout, raise_exception_on_error: true)
       @site = site
       @stdout = stdout
       @root_path = Pathname.new(root_path)
+      @raise_exception_on_error = raise_exception_on_error
     end
 
     # Iterates through all pages and writes them to disk
@@ -27,7 +34,7 @@ module Sitepress
         end
       rescue
         status "Error building #{resource.inspect}"
-        raise
+        raise if raise_exception_on_error
       end
       status "Successful build to #{root_path.expand_path}"
     end
