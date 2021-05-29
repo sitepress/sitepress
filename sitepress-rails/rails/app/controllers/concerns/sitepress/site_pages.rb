@@ -25,12 +25,36 @@ module Sitepress
     end
 
     protected
+
+    def process_rendition(rendition)
+      # Do nothing unless the user extends this method.
+    end
+
     def render_page(page)
       if page.renderable?
         render_text_resource page
       else
         send_binary_resource page
       end
+    end
+
+    def render_text_resource(resource)
+      rendition = Rendition.new(resource)
+      rendition.controller_layout = controller_layout
+
+      pre_render rendition
+      process_rendition rendition
+      post_render rendition
+    end
+
+    def pre_render(rendition)
+      rendition.output = render_to_string inline: rendition.source,
+        type: rendition.handler,
+        layout: rendition.layout
+    end
+
+    def post_render(rendition)
+      render inline: rendition.output, content_type: rendition.mime_type
     end
 
     def current_page
@@ -48,13 +72,6 @@ module Sitepress
     private
     def append_relative_partial_path
       append_view_path current_page.asset.path.dirname
-    end
-
-    def render_text_resource(resource)
-      render inline: resource.body,
-        type: resource.handler,
-        layout: resource.data.fetch("layout", controller_layout),
-        content_type: resource.mime_type.to_s
     end
 
     def send_binary_resource(resource)
