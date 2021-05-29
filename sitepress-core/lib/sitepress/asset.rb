@@ -35,6 +35,12 @@ module Sitepress
       @mime_type ||= inferred_mime_type || DEFAULT_MIME_TYPE
     end
 
+    # Used by the Rails controller to short circuit additional processing if the
+    # asset is not renderable (e.g. is it erb or haml?)
+    def renderable?
+      !!handler
+    end
+
     private
       def frontmatter
         Frontmatter.new File.read path

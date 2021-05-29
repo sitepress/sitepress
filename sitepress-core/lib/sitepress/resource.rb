@@ -14,8 +14,6 @@ module Sitepress
     # Default scope for querying parent/child/sibling resources.
     DEFAULT_FILTER_SCOPE = :same
 
-    RENDERABLE_MEDIA_TYPE = "text".freeze
-
     def initialize(asset:, node:, format: nil)
       @asset = asset
       @node = node
@@ -67,7 +65,7 @@ module Sitepress
     # parse. When this returns true in some cases, a reference to the file will be
     # passed and skip all the overhead of trying to parse and render.
     def renderable?
-      asset.mime_type.media_type == RENDERABLE_MEDIA_TYPE
+      asset.renderable?
     end
 
     private
