@@ -99,7 +99,7 @@ context Sitepress::Resource do
         context ":all resources filter" do
           it "has 1 parent with 2 resources, 1 empty parent, and 1 root parent" do
             paths = subject.parents(type: :all).map do |nodes|
-              nodes.map{ |n| n.request_path if n }
+              nodes.map{ |n| n.request_path if n }.sort
             end
             expect(paths).to match_array([%w[/vehicles/cars /vehicles/cars.xml], [], %w[/ /index.xml]])
           end
