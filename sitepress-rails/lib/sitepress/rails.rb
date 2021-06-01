@@ -16,7 +16,7 @@ module Sitepress
   end
 
   # Rescued by ActionController to display page not found error.
-  PageNotFoundError = Class.new(StandardError)
+  ResourceNotFound = Class.new(StandardError)
 
   # Raised when any of the Render subclasses can't render a page.
   RenderingError = Class.new(RuntimeError)
