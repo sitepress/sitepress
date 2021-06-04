@@ -3,12 +3,10 @@ require "yaml"
 module Sitepress
   module Parsers
     # Parses metadata from the header of the page.
-    class Notion
+    class Notion < Base
       DELIMITER = /\n\n/.freeze
       TITLE_KEY = "Title".freeze
       KEY_DELIMITER = ":".freeze
-
-      attr_reader :body
 
       def initialize(content)
         scanner = StringScanner.new(content)
