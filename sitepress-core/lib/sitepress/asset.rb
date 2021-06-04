@@ -43,7 +43,7 @@ module Sitepress
 
     private
       def frontmatter
-        Frontmatter.new File.read path
+        Parsers::Frontmatter.new File.read path
       end
 
       # Returns the mime type of the file extension. If a type can't

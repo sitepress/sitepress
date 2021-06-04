@@ -2,7 +2,7 @@ require "yaml"
 
 module Sitepress
   # Parses metadata from the header of the page.
-  class NotionMatter
+  class Notion
     DELIMITER = /\n\n/.freeze
     TITLE_KEY = "Title".freeze
     KEY_DELIMITER = ":".freeze

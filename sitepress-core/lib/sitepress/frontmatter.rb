@@ -5,7 +5,7 @@ module Sitepress
 
   # TODO: Redo this to use File readline and pos to
   # perform faster
-  class Frontmatter
+  class Parsers::Frontmatter
     DELIMITER = "---".freeze
     NEWLINE = /\r\n?|\n/.freeze
     PATTERN = /\A(#{DELIMITER}#{NEWLINE}(.+?)#{NEWLINE}#{DELIMITER}#{NEWLINE}*)?(.+)\Z/m

@@ -1,7 +1,7 @@
 require "spec_helper"
 
-context Sitepress::NotionMatter do
-  subject { Sitepress::NotionMatter.new File.read path }
+context Sitepress::Parsers::Notion do
+  subject { Sitepress::Parsers::Notion.new File.read path }
   let(:path) { "spec/sites/notion/page-with-metadata.md" }
 
   context "con metadata" do
@@ -20,7 +20,7 @@ context Sitepress::NotionMatter do
       expect(subject.body).to include("3. Eat cheese")
     end
   end
-  context "sin metadata" do # That's Spanish for pages that don't have Frontmatter.
+  context "sin metadata" do # That's Spanish for pages that don't have Parsers::Frontmatter.
     let(:path) { "spec/sites/notion/page-without-metadata.md" }
     it "parses data" do
       expect(subject.data).to eql({

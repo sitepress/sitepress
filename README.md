@@ -70,11 +70,11 @@ Sitepress is designed to be embedded in rails and other Ruby web frameworks.
 
 # Features
 
-Sitepress implements a subset of the best features from the [Middleman](http://www.middlemanapp.com/) static site generator including the Site and Frontmatter.
+Sitepress implements a subset of the best features from the [Middleman](http://www.middlemanapp.com/) static site generator including the Site and Parsers::Frontmatter.
 
-## Frontmatter
+## Parsers::Frontmatter
 
-Frontmatter is a way to attach metadata to content pages. Its a powerful way to enable a team of writers and engineers work together on content. The engineers focus on reading values from frontmatter while the writers can change values.
+Parsers::Frontmatter is a way to attach metadata to content pages. Its a powerful way to enable a team of writers and engineers work together on content. The engineers focus on reading values from frontmatter while the writers can change values.
 
 ```haml
 ---
@@ -105,7 +105,7 @@ Then you can request a resource by request path:
 
 ```irb
 > resource = site.get("/test")
-=> #<Sitepress::Resource:0x007fcd2488a128 @request_path="/test", @content_type="text/html", @file_path=#<Pathname:spec/pages/test.html.haml>, @frontmatter=#<Sitepress::Frontmatter:0x007fcd24889e80 @data="title: Name\nmeta:\n  keywords: One", @body="\n!!!\n%html\n  %head\n    %title=current_page.data[\"title\"]\n  %body\n    %h1 Hi\n    %p This is just some content\n    %h2 There\n">>
+=> #<Sitepress::Resource:0x007fcd2488a128 @request_path="/test", @content_type="text/html", @file_path=#<Pathname:spec/pages/test.html.haml>, @frontmatter=#<Sitepress::Parsers::Frontmatter:0x007fcd24889e80 @data="title: Name\nmeta:\n  keywords: One", @body="\n!!!\n%html\n  %head\n    %title=current_page.data[\"title\"]\n  %body\n    %h1 Hi\n    %p This is just some content\n    %h2 There\n">>
 ```
 
 And access the frontmatter data (if available) and body of the template.

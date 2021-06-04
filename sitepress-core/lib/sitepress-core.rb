@@ -9,10 +9,9 @@ module Sitepress
 
   autoload :Asset,                "sitepress/asset"
   autoload :Formats,              "sitepress/formats"
-  autoload :Frontmatter,          "sitepress/frontmatter"
   autoload :Node,                 "sitepress/node"
-  autoload :NotionMatter,         "sitepress/notion_matter"
   autoload :Path,                 "sitepress/path"
+  autoload :Parsers,              "sitepress/parsers"
   autoload :Resource,             "sitepress/resource"
   autoload :ResourceCollection,   "sitepress/resource_collection"
   autoload :ResourcesPipeline,    "sitepress/resources_pipeline"
