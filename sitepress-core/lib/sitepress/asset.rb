@@ -4,7 +4,7 @@ require "pathname"
 
 module Sitepress
   # Represents a file on a web server that may be parsed to extract
-  # frontmatter or be renderable via a template. Multiple resources
+  # metadata or be renderable via a template. Multiple resources
   # may point to the same asset. Properties of an asset should be mutable.
   # The Resource object is immutable and may be modified by the Resources proxy.
   class Asset
@@ -16,14 +16,15 @@ module Sitepress
     attr_reader :path
 
     extend Forwardable
-    def_delegators :frontmatter, :data, :body
+    def_delegators :parser, :data, :body
     def_delegators :path, :handler, :node_name, :format, :exists?
 
-    def initialize(path: , mime_type: nil)
+    def initialize(path:, mime_type: nil, parser: Parsers::Frontmatter)
       # The MIME::Types gem returns an array when types are looked up.
       # This grabs the first one, which is likely the intent on these lookups.
       @mime_type = Array(mime_type).first
       @path = Path.new path
+      @parser_klass = parser
     end
 
     # Treat resources with the same request path as equal.
@@ -41,9 +42,15 @@ module Sitepress
       !!handler
     end
 
+    # Set the parser equal to a thing.
+    def parser=(parser_klass)
+      @parser = nil
+      @parser_klass = parser_klass
+    end
+
     private
-      def frontmatter
-        Parsers::Frontmatter.new File.read path
+      def parser
+        @parser ||= @parser_klass.new File.read path
       end
 
       # Returns the mime type of the file extension. If a type can't

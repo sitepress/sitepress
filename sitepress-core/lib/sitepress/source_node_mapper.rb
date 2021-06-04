@@ -26,7 +26,7 @@ module Sitepress
       paths.each do |path|
         if path.directory?
           name = File.basename path
-          SourceNodeMapper.new(path: path).mount node.add_child(name)
+          self.class.new(path: path).mount node.add_child(name)
         else
           asset = Asset.new(path: path)
           node.add_child(asset.node_name).formats.add(format: asset.format, asset: asset)
