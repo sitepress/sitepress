@@ -21,7 +21,7 @@ module Sitepress
     end
 
     def remove(extension)
-      @formats.delete(symbolize(extension))
+      @formats.delete symbolize(extension)
     end
 
     def get(extension)

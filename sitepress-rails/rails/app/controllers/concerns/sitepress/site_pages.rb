@@ -1,3 +1,5 @@
+require "cgi"
+
 module Sitepress
   # Serves up Sitepress site pages in a rails application. This is mixed into the
   # Sitepress::SiteController, but may be included into other controllers for static
@@ -121,7 +123,12 @@ module Sitepress
     # Default finder of the resource for the current controller context. If the :resource_path
     # isn't present, then its probably the root path so grab that.
     def find_resource
-      get request.path
+      get resource_request_path
+    end
+
+    # Returns the path of the resource in a way thats properly escape.
+    def resource_request_path
+      CGI.unescape request.path
     end
 
     # Returns the current layout for the inline Sitepress renderer. This is
