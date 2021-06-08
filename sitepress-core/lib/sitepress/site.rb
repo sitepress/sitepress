@@ -26,7 +26,7 @@ module Sitepress
     # processed by the `resources_pipeline`.
     def root
       @root ||= Node.new.tap do |node|
-        source_node_mapper.mount node
+        AssetNodeMapper.new(path: pages_path, node: node).map
         resources_pipeline.process node
       end
     end
@@ -96,12 +96,6 @@ module Sitepress
     # Node returned by #root.
     def resources_pipeline
       @resources_pipeline ||= ResourcesPipeline.new
-    end
-
-    private
-
-    def source_node_mapper
-      @source_node_mapper ||= SourceNodeMapper.new(path: pages_path)
     end
   end
 end
