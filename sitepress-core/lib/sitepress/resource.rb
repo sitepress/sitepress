@@ -5,19 +5,20 @@ module Sitepress
   # resources that point to the same asset. Resources are immutable
   # and may be altered by the resource proxy.
   class Resource
-    extend Forwardable
-    def_delegators :asset, :mime_type, :handler
-
     attr_writer :body, :data
-    attr_reader :node, :asset, :format
+    attr_reader :node, :asset
+
+    attr_accessor :format, :mime_type, :handler
 
     # Default scope for querying parent/child/sibling resources.
     DEFAULT_FILTER_SCOPE = :same
 
-    def initialize(asset:, node:, format: nil)
+    def initialize(asset:, node:, format: nil, mime_type: nil, handler: nil)
       @asset = asset
       @node = node
-      @format = format
+      @format = format || asset.format
+      @mime_type = mime_type || asset.mime_type
+      @handler = handler || asset.handler
     end
 
     def request_path
