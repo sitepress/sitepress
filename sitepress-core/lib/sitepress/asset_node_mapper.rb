@@ -19,7 +19,7 @@ module Sitepress
         if path.directory?
           process_directory path
         else
-          process_asset Asset.new(path: path)
+          process_asset path
         end
       end
     end
@@ -27,11 +27,12 @@ module Sitepress
     protected
 
     def process_directory(path)
-      name = File.basename path
-      node_mapper path: path, node: node.add_child(name)
+      node_name = File.basename path
+      node_mapper path: path, node: node.add_child(node_name)
     end
 
-    def process_asset(asset)
+    def process_asset(path)
+      asset = Asset.new(path: path)
       node.add_child(asset.node_name).formats.add(format: asset.format, asset: asset)
     end
 
