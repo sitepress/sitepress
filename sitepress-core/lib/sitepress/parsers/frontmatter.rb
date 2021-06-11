@@ -11,12 +11,10 @@ module Sitepress
       NEWLINE = /\r\n?|\n/.freeze
       PATTERN = /\A(#{DELIMITER}#{NEWLINE}(.+?)#{NEWLINE}#{DELIMITER}#{NEWLINE}*)?(.+)\Z/m
 
-      def initialize(content)
-        _, @data, @body = content.match(PATTERN).captures
-      end
-
-      def data
-        @data ? YAML.load(@data) : {}
+      def parse(source)
+        _, raw_data, body = source.match(PATTERN).captures
+        data = raw_data ? YAML.load(raw_data) : {}
+        ParserResult.new(data: data, body: body)
       end
     end
   end

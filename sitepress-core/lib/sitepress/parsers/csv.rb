@@ -1,11 +1,12 @@
-require "yaml"
+require "csv"
 
 module Sitepress
   module Parsers
     # Parses nothing. The body is returned and the data is blank.
-    class Base
+    class CSV
       def parse(source)
-        ParserResult.new(data: {}, body: source)
+        data = ::CSV.parse(source)
+        ParserResult.new(data: data, body: source)
       end
     end
   end

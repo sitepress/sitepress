@@ -14,6 +14,7 @@ module Sitepress
   autoload :Node,                 "sitepress/node"
   autoload :Path,                 "sitepress/path"
   autoload :Parsers,              "sitepress/parsers"
+  autoload :ParserResult,         "sitepress/parser_result"
   autoload :Resource,             "sitepress/resource"
   autoload :ResourceCollection,   "sitepress/resource_collection"
   autoload :ResourcesPipeline,    "sitepress/resources_pipeline"
