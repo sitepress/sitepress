@@ -6,6 +6,7 @@ module Sitepress
   # from page templates.
   module Parsers
     autoload :Base,         "sitepress/parsers/base"
+    autoload :CSV,          "sitepress/parsers/csv"
     autoload :Frontmatter,  "sitepress/parsers/frontmatter"
     autoload :Notion,       "sitepress/parsers/notion"
   end

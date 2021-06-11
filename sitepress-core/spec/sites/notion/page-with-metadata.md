@@ -2,7 +2,7 @@
 
 Appetite: Super hungry!
 Description: Do something amazing: like super amazing.
-Sponsors: Brad
+Project Sponsors: Brad
 Stage: Implementing
 Status: 💚 On Track
 Related: ../The%20lanes%209ba797dad4c84b86be53f474f50c286b/Land%202fa21cb06ece46d687f51805661e0cfa.md

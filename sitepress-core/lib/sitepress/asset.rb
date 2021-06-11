@@ -13,18 +13,21 @@ module Sitepress
     # the resource and figure out what to do with it.
     DEFAULT_MIME_TYPE = MIME::Types["application/octet-stream"].first
 
-    attr_reader :path
+    # Parse with Frontmatter if no parser is given.
+    DEFAULT_PARSER = Parsers::Frontmatter.new
 
     extend Forwardable
-    def_delegators :parser, :data, :body
+    def_delegators :parse_result, :data, :body
     def_delegators :path, :handler, :node_name, :format, :exists?
+    attr_reader :path
+    attr_accessor :parser
 
-    def initialize(path:, mime_type: nil, parser: Parsers::Frontmatter)
+    def initialize(path:, mime_type: nil, parser: DEFAULT_PARSER)
       # The MIME::Types gem returns an array when types are looked up.
       # This grabs the first one, which is likely the intent on these lookups.
       @mime_type = Array(mime_type).first
       @path = Path.new path
-      @parser_klass = parser
+      @parser = parser
     end
 
     # Treat resources with the same request path as equal.
@@ -42,15 +45,13 @@ module Sitepress
       !!handler
     end
 
-    # Set the parser equal to a thing.
-    def parser=(parser_klass)
-      @parser = nil
-      @parser_klass = parser_klass
+    def source
+      File.read path
     end
 
     private
-      def parser
-        @parser ||= @parser_klass.new File.read path
+      def parse_result
+        @parse_result ||= parser.parse source
       end
 
       # Returns the mime type of the file extension. If a type can't

@@ -41,7 +41,7 @@ module Sitepress
 
       resource = Resource.new(asset: asset, node: @node, format: format)
       if @formats.has_key? format
-        raise Sitepress::ExistingRequestPathError, "Resource at #{resource.request_path} already set with format #{format.inspect}"
+        raise Sitepress::ExistingRequestPathError, "#{asset.inspect} could not be added to path #{resource.request_path} with format #{format.inspect} because it has already been assigned asset #{resource.asset.inspect}"
       else
         @formats[format] = resource
       end
