@@ -36,8 +36,13 @@ module Sitepress
       sitepress_configuration.parent_engine = app
       # Reloads entire site between requests for development environments
       sitepress_configuration.cache_resources = app.config.cache_classes
-      # Set the templates extensions (e.g. erb, haml) so that Sitepress can better parse paths.
-      Sitepress::Path.handler_extensions = ActionView::Template::Handlers.extensions
+
+      # If this isn't within the `ActiveSupport.on_load(:action_view)` block, it won't load templates
+      # like haml that register the template handler in the same type of block.
+      ActiveSupport.on_load(:action_view) do
+        # Set the templates extensions (e.g. erb, haml) so that Sitepress can better parse paths.
+        Sitepress::Path.handler_extensions = ActionView::Template::Handlers.extensions
+      end
     end
 
     private
