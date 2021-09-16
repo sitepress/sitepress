@@ -18,11 +18,18 @@ module Sitepress
     end
 
     # Load paths from `Sitepress#site` into rails so it can render views, helpers, etc. properly.
-    initializer :set_sitepress_paths, before: :set_autoload_paths do |app|
+    initializer :set_sitepress_paths, after: :set_autoload_paths do |app|
       app.paths["app/helpers"].push site.helpers_path.expand_path
       app.paths["app/assets"].push site.assets_path.expand_path
-      app.paths["app/views"].push site.root_path.expand_path
-      app.paths["app/views"].push site.pages_path.expand_path
+
+      # Setup view paths on the controller. Not loading in this block will fail for
+      # reasons unknown to me since its not really that well documented in the Rails
+      # source code.
+      ActiveSupport.on_load(:action_controller) do
+        site = Sitepress.configuration.site
+        append_view_path site.root_path.expand_path
+        append_view_path site.pages_path.expand_path
+      end
     end
 
     # Configure sprockets paths for the site.
