@@ -116,6 +116,7 @@ module Sitepress
       if resource.nil?
         raise Sitepress::ResourceNotFound, "No such page: #{path}"
       else
+        Rails.logger.info "Sitepress resolved asset #{resource.asset.path}"
         resource
       end
     end
