@@ -1,4 +1,5 @@
 require "rails/engine"
+require "sitepress/routing_mapper"
 
 module Sitepress
   class Engine < ::Rails::Engine
