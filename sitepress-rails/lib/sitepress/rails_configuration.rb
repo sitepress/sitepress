@@ -6,13 +6,10 @@ module Sitepress
     # Store in ./app/content by default.
     DEFAULT_SITE_ROOT = "app/content".freeze
 
-    attr_accessor :routes, :cache_resources
+    attr_accessor :cache_resources
     attr_writer :site, :parent_engine
 
     def initialize
-      # Injects routes into parent apps routes when set to true. Set to false
-      # to inject routes manually.
-      self.routes = true
       # Caches sites between requests. Set to `false` for development environments.
       self.cache_resources = true
     end

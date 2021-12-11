@@ -7,7 +7,6 @@ describe Sitepress::Server do
   let(:site) { Sitepress::Site.new(root_path: "spec/sites/sample") }
   before do
     Sitepress.configure do |config|
-      config.routes = false
       config.site = site
     end
   end

@@ -7,7 +7,8 @@ module ActionDispatch::Routing
     DEFAULT_ACTION = "show".freeze
     ROUTE_GLOB_KEY = "/*resource_path".freeze
 
-    def sitepress_pages(site: Sitepress.site, controller: DEFAULT_CONTROLLER, action: DEFAULT_ACTION, root: true)
+    # Hook up all the Sitepress pages
+    def sitepress_pages(site: Sitepress.site, controller: DEFAULT_CONTROLLER, action: DEFAULT_ACTION, root: false)
       constraint = Sitepress::RouteConstraint.new(site: site)
 
       get ROUTE_GLOB_KEY,
@@ -17,7 +18,16 @@ module ActionDispatch::Routing
         format: false,
         constraints: constraint
 
-      root controller: controller, action: action if root
+      sitepress_root site: site, controller: controller, action: action if root
+    end
+
+    # Hook sitepress root up to the index of rails.
+    def sitepress_root(site: Sitepress.site, controller: DEFAULT_CONTROLLER, action: DEFAULT_ACTION)
+      if has_named_route? :root
+        Rails.logger.warn "Sitepress tried to configured the 'root' route, but it was already defined. Check the 'routes.rb' file for a 'root' route or call 'sitepress_pages(root: false)'."
+      else
+        root controller: controller, action: action
+      end
     end
   end
 end
