@@ -6,7 +6,5 @@ require "sitepress/server"  # Load all the stuff needed setup the configuration 
 # Setup defaults for stand-alone Sitepress server in the current path. This
 # can, and should, be over-ridden by the end-user in the `config/site.rb` file.
 Sitepress.configure do |config|
-  config.routes = false
   config.site = Sitepress::Site.new root_path: "."
 end
-
