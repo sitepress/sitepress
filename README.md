@@ -34,7 +34,7 @@ Then start the Sitepress development server:
 
     $ sitepress server
 
-You should then see the site at http://localhost:3000/. Time to start building something beautiful!
+You should then see the site at http://localhost:8080/. Time to start building something beautiful!
 
 # Features
 
