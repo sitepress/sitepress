@@ -8,65 +8,33 @@ Sitepress is a file-backed website content manager that can be embedded in popul
 
 ### Rails Installation
 
-Follow the instructions in the [Sitepress Rails](./sitepress-rails) gem.
+It all starts by running the following from the root of your rails project:
+
+```ruby
+bundle add sitepress-rails
+```
+
+Then follow the instructions in the [Sitepress Rails](./sitepress-rails) gem.
 
 ### Standalone Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'sitepress'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
+Install the Sitepress gem on your system:
 
     $ gem install sitepress
 
-## Usage
+Then create a new site:
 
-Given a the file `hi.html.haml`:
+    $ sitepress new my-site
 
-```haml
----
-title: Name
-meta:
-  keywords: One
----
+Sitepress will create a new site and download and install the gems it needs. Once that's done run:
 
-!!!
-%html
-  %head
-    %title=current_page.data["title"]
-  %body
-    %h1 Hi
-    %p This is just some content
-    %h2 There
-```
+    $ cd my-site
 
-Sitepress can parse out the frontmatter and body to render inside your framework of choice, like Rails:
+Then start the Sitepress development server:
 
-```ruby
-class SitepressController < ApplicationController
-  def show
-    sitepress.render "/hi"
-  end
-end
-```
+    $ sitepress server
 
-so when you call `current_page.data` from your templates, you get something like this:
-
-```irb
-> current_page.data
-=> {"title"=>"Name", "meta"=>{"keywords"=>"One"}, "toc"=>["Hi", "There"]}
-> current_page.data.dig("meta", "keywords")
-=> "One"
-```
-
-Sitepress is designed to be embedded in rails and other Ruby web frameworks.
+You should then see the site at http://localhost:3000/. Time to start building something beautiful!
 
 # Features
 
