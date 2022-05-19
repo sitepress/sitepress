@@ -24,6 +24,7 @@ module Sitepress
       app.paths["app/assets"].push site.assets_path.expand_path
       app.paths["app/views"].push site.root_path.expand_path
       app.paths["app/views"].push site.pages_path.expand_path
+      app.paths["app/models"].push site.models_path.expand_path
     end
 
     # Configure sprockets paths for the site.

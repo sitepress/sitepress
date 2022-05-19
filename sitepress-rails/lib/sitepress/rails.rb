@@ -2,6 +2,7 @@ require "sitepress-core"
 
 module Sitepress
   autoload :Compiler,                 "sitepress/compiler"
+  autoload :Model,                    "sitepress/model"
   autoload :RailsConfiguration,       "sitepress/rails_configuration"
   module Renderers
     autoload :Controller,             "sitepress/renderers/controller"
