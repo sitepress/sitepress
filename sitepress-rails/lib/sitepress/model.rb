@@ -22,7 +22,7 @@ module Sitepress
       def attr_data(*keys, default: nil)
         keys.each do |key|
           define_method key do
-            data.fetch key, default
+            self.data.fetch key.to_s, default
           end
         end
       end
