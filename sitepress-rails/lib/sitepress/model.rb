@@ -13,6 +13,11 @@ module Sitepress
       @page = page
     end
 
+    # Treat as equal if the resource and model class are the same.
+    def ==(model)
+      self.page == model.page and self.class == model.class
+    end
+
     class << self
       def collection(name = Models::Collection::DEFAULT_NAME, **kwargs)
         define_singleton_method name do
