@@ -19,10 +19,17 @@ module Sitepress
     end
 
     class << self
-      def collection(name = Models::Collection::DEFAULT_NAME, **kwargs)
+      # Defines a class method that may be called later to return a
+      # collection of objects.
+      def collection(name = Models::Collection::DEFAULT_NAME, glob:, **kwargs)
         define_singleton_method name do
-          Models::Collection.new model: self, site: site, **kwargs
+          self.glob glob, **kwargs
         end
+      end
+
+      # Adhoc querying of models via `Model.glob("foo/bar").all`
+      def glob(glob, **kwargs)
+        Models::Collection.new model: self, site: site, glob: glob, **kwargs
       end
 
       # Wraps a page in a class if given a string that represents the path or
