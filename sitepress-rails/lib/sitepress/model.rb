@@ -1,4 +1,5 @@
 module Sitepress
+  # Wraps a page in a class, which makes it much easier to decorate and validate.
   class Model
     attr_reader :page
 
@@ -13,9 +14,9 @@ module Sitepress
     end
 
     class << self
-      def all(glob: self.path)
-        Enumerator.new do |y|
-          site.glob(glob).each { |page| y << new(page) }
+      def collection(name = Models::Collection::DEFAULT_NAME, **kwargs)
+        define_singleton_method name do
+          Models::Collection.new model: self, site: site, **kwargs
         end
       end
 
@@ -24,14 +25,6 @@ module Sitepress
           define_method key do
             self.data.fetch key.to_s, default
           end
-        end
-      end
-
-      def path(path=nil)
-        if path
-          @path = path
-        else
-          @path
         end
       end
 
