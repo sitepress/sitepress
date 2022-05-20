@@ -19,8 +19,17 @@ module Sitepress
     autoload :DirectoryIndexPath,     "sitepress/build_paths/directory_index_path"
   end
 
+  # Base class for errors if Sitepress can't find a resource, model, etc.
+  NotFoundError = Class.new(StandardError)
+
   # Rescued by ActionController to display page not found error.
-  ResourceNotFound = Class.new(StandardError)
+  ResourceNotFoundError = Class.new(NotFoundError)
+  # Accidentally left out `Error` in the constant name, so I'm setting
+  # that up here for backwards compatability.
+  ResourceNotFound = ResourceNotFoundError
+
+  # Raised if a model isn't found.
+  ModelNotFoundError = Class.new(NotFoundError)
 
   # Raised when any of the Render subclasses can't render a page.
   RenderingError = Class.new(RuntimeError)
