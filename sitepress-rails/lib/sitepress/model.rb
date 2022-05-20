@@ -20,6 +20,22 @@ module Sitepress
         end
       end
 
+      # Wraps a page in a class if given a string that represents the path or
+      # a page object itself.
+      def get(page)
+        case page
+        when Model
+          page
+        when String
+          new site.get page
+        when Sitepress::Resource
+          new page
+        else
+          raise ModelNotFoundError, "#{self.inspect} could not find #{page.inspect}"
+        end
+      end
+      alias :find :get
+
       def attr_data(*keys, default: nil)
         keys.each do |key|
           define_method key do
