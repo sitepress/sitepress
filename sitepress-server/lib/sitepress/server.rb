@@ -9,6 +9,16 @@ Bundler.require(*Rails.groups)
 # Configure the rails application.
 module Sitepress
   class Server < Rails::Application
+    # Control whether or not to display friendly error reporting messages
+    # in Sitepress. The development server turns this on an handles exception,
+    # while the compile and other environments would likely have this disabled.
+    config.enable_sitepress_error_reporting = false
+
+    # When in a development environment, we'll want to reload the site between
+    # requests so we can see the latest changes; otherwise, load the site once
+    # and we're done.
+    config.enable_site_reloading = false
+
     # Paths unique to Sitepress
     config.root = File.join(File.dirname(__FILE__), "../../rails")
 
@@ -18,8 +28,11 @@ module Sitepress
 
     config.secret_key_base = SecureRandom.uuid    # Rails won't start without this
 
-    # Setup routes
-    routes.append { sitepress_pages root: true, controller: "site" }
+    # Setup routes. The `constraints` key is set to `nil` so the `SiteController` can
+    # treat a page not being found as an exception, which it then handles. If the constraint
+    # was set to the default, Sitepress would hand off routing back to rails if something isn't
+    # found and fail silently.
+    routes.append { sitepress_pages root: true, controller: "site", constraints: nil }
 
     # A logger without a formatter will crash when Sprockets is enabled.
     logger           = ActiveSupport::Logger.new(STDOUT)
