@@ -71,7 +71,7 @@ module Sitepress
     # Send the inline rendered, post-processed string into the Rails rendering method that actually sends
     # the output to the end-user as a web response.
     def post_render(rendition)
-      render inline: rendition.output, content_type: rendition.mime_type
+      render body: rendition.output, content_type: rendition.mime_type
     end
 
     # A reference to the current resource that's being requested.
