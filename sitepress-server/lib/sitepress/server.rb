@@ -19,7 +19,7 @@ module Sitepress
     config.secret_key_base = SecureRandom.uuid    # Rails won't start without this
 
     # Setup routes
-    routes.append { sitepress_pages root: true }
+    routes.append { sitepress_pages root: true, controller: "site" }
 
     # A logger without a formatter will crash when Sprockets is enabled.
     logger           = ActiveSupport::Logger.new(STDOUT)
