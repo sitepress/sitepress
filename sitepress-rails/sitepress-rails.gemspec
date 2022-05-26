@@ -19,14 +19,15 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.test_files = Dir["spec/**/*"]
 
+  rails_version      = ">= 6.0"
+
   spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency "pry"
-  spec.add_development_dependency "rails", ">= 4.0"
+  spec.add_development_dependency "rails", rails_version
 
   spec.add_runtime_dependency "sitepress-core", spec.version
 
   # We don't need every single rals rependency, so grab the subset here.
-  rails_version      = ">= 6.0"
   spec.add_dependency "railties",       rails_version
   spec.add_dependency "actionpack",     rails_version
   spec.add_dependency "sprockets-rails", ">= 2.0.0"
