@@ -6,6 +6,21 @@ require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require "rspec/rails"
 require "pry"
 
+Rails.application.configure do
+  # Why set to true? Because according to Rails:
+  #
+  #  .config.eager_load is set to nil. Please update your config/environments/*.rb files accordingly:
+  #
+  #    * development - set it to false
+  #    * test - set it to false (unless you use a tool that preloads your test environment)
+  #   * production - set it to true
+  #
+  # The view initializer for haml runs in a `ActiveSupport.on_load(:action_view)`, which requires
+  # `eager_load = true` to test.
+  config.eager_load = true
+end
+
+# Suppress error output during testing.
 Rails.backtrace_cleaner.remove_silencers!
 
 # Load support files
