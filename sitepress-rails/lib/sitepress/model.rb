@@ -19,6 +19,10 @@ module Sitepress
     end
 
     class << self
+      delegate \
+        :first,
+          to: :all
+
       # Defines a class method that may be called later to return a
       # collection of objects.
       def collection(name = Models::Collection::DEFAULT_NAME, glob:, **kwargs)
@@ -48,7 +52,7 @@ module Sitepress
       end
       alias :find :get
 
-      def attr_data(*keys, default: nil)
+      def data(*keys, default: nil)
         keys.each do |key|
           define_method key do
             self.data.fetch key.to_s, default

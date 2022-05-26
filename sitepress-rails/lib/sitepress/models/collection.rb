@@ -1,6 +1,6 @@
 module Sitepress
   module Models
-    # Everything needed to iterate over a set of pages from a glob and wrap
+    # Everything needed to iterate over a set of resources from a glob and wrap
     # them in a model so they are returned as a sensible enumerable.
     class Collection
       include Enumerable
@@ -8,7 +8,7 @@ module Sitepress
       # Page models will have `PageModel.all` method defined by default.
       DEFAULT_NAME = :all
 
-      # Iterate over all pages in the site by default.
+      # Iterate over all resources in the site by default.
       DEFAULT_GLOB = "**/*.*".freeze
 
       attr_reader :model, :glob, :site
@@ -19,14 +19,14 @@ module Sitepress
         @site = site
       end
 
-      def pages
+      def resources
         site.glob glob
       end
 
-      # Wraps each page in a model object.
+      # Wraps each resource in a model object.
       def each
-        pages.each do |page|
-          yield model.new page
+        resources.each do |resource|
+          yield model.new resource
         end
       end
     end
