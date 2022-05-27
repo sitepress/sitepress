@@ -1,0 +1,10 @@
+Description:
+    Installs Sitepress in a Rails appliation
+
+Example:
+    bin/rails generate sitepress:install
+
+    This will create:
+        app/content/models/page_model.rb
+        app/content/helpers/page_helpers.rb
+        app/content/pages/index.html.erb
