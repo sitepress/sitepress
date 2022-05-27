@@ -6,7 +6,8 @@ module Sitepress
       directory ".", "app/content"
     end
 
-    def add_nopassword_routes
+    def add_sitepress_routes
+      route "sitepress_root"
       route "sitepress_pages"
     end
   end
