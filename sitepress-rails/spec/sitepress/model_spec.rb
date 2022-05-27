@@ -3,7 +3,6 @@ require "tmpdir"
 require "fileutils"
 
 describe Sitepress::Model do
-  let(:site) { Sitepress.site }
   let(:model) { PageModel }
 
   describe "#all" do
