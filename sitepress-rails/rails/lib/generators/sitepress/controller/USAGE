@@ -1,0 +1,8 @@
+Description:
+    Installs a controller that can be used to manipulate Sitepress responses.
+
+Example:
+    bin/rails generate sitepress:controller SiteController
+
+    This will create:
+        app/controllers/site_controller.rb
