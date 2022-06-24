@@ -33,6 +33,10 @@ module Sitepress
       @body ||= asset.body
     end
 
+    def save
+      File.write("---\n#{data.to_yaml}\n---\n\n#{body}", asset.path)
+    end
+
     def inspect
       "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{asset.path.to_s.inspect}>"
     end
