@@ -19,14 +19,25 @@ module Sitepress
     # and we're done.
     config.enable_site_reloading = false
 
-    # Paths unique to Sitepress
+    # Default to a development environment type of configuration, which would reload the site.
+    # This gets reset later depending on a preference in the `before_initialize` callback.
+    config.eager_load = true
+    config.cache_classes = true
+
+    config.before_initialize do
+      # Eager load classes, content, etc. to boost performance when site reloading is disabled.
+      config.eager_load = !config.enable_site_reloading
+
+      # Cache classes for speed in production environments when site reloading is disabled.
+      config.cache_classes = !config.enable_site_reloading
+    end
+
+    # Path that points the the Sitepress UI rails app; which displays routes, error messages.
+    # etc. to the user if `enable_site_error_reporting` is enabled.
     config.root = File.join(File.dirname(__FILE__), "../../rails")
 
-    # Boilerplate required to get Rails to boot.
-    config.eager_load = config.enable_site_reloading # necessary to silence warning
-    config.cache_classes = config.enable_site_reloading # reload everything since this is dev env.
-
-    config.secret_key_base = SecureRandom.uuid    # Rails won't start without this
+    # Rails won't start without this.
+    config.secret_key_base = SecureRandom.uuid
 
     # Setup routes. The `constraints` key is set to `nil` so the `SiteController` can
     # treat a page not being found as an exception, which it then handles. If the constraint
