@@ -3,26 +3,43 @@ require "thor"
 module Sitepress
   # Command line interface for compiling Sitepress sites.
   class CLI < Thor
-    SERVER_DEFAULT_PORT = 8080
-    SERVER_DEFAULT_BIND_ADDRESS = "0.0.0.0".freeze
-    COMPILE_DEFAULT_TARGET_PATH = "./build".freeze
+    # Default port address for server port.
+    SERVER_PORT = 8080
+
+    # Default address is public to all IPs.
+    SERVER_BIND_ADDRESS = "0.0.0.0".freeze
+
+    # Default build path for compiler.
+    COMPILE_TARGET_PATH = "./build".freeze
+
+    # Display detailed error messages to the developer. Useful for development environments
+    # where the error should be displayed to the developer so they can debug errors.
+    SERVER_SITE_ERROR_REPORTING = true
+
+    # Reload the site between requests, useful for development environments when
+    # the site has to be rebuilt between requests. Disable in production environments
+    # to run the site faster.
+    SERVER_SITE_RELOADING = true
 
     include Thor::Actions
 
     source_root File.expand_path("../../../templates/default", __FILE__)
 
-    option :bind_address, default: SERVER_DEFAULT_BIND_ADDRESS, aliases: :a
-    option :port, default: SERVER_DEFAULT_PORT, aliases: :p, type: :numeric
+    option :bind_address, default: SERVER_BIND_ADDRESS, aliases: :a
+    option :port, default: SERVER_PORT, aliases: :p, type: :numeric
+    option :site_reloading, default: SERVER_SITE_RELOADING, aliases: :r, type: :boolean
+    option :site_error_reporting, default: SERVER_SITE_ERROR_REPORTING, aliases: :e, type: :boolean
     desc "server", "Run preview server"
     def server
-      initialize!
+      # Now boot everything for the Rack server to pickup.
+      initialize! do |app|
+        # Enable Sitepress web error reporting so users have more friendly
+        # error messages instead of seeing a Rails exception.
+        app.config.enable_site_error_reporting = options.fetch("site_error_reporting")
 
-      # Enable Sitepress web error reporting so users have more friendly
-      # error messages instead of seeing a Rails exception.
-      app.config.enable_sitepress_error_reporting = true
-
-      # Enable reloading the site between requests so we can see changes.
-      app.config.enable_site_reloading = true
+        # Enable reloading the site between requests so we can see changes.
+        app.config.enable_site_reloading = options.fetch("site_reloading")
+      end
 
       # This will use whatever server is found in the user's Gemfile.
       Rack::Server.start app: app,
@@ -30,7 +47,7 @@ module Sitepress
         Host: options.fetch("bind_address")
     end
 
-    option :output_path, default: COMPILE_DEFAULT_TARGET_PATH, type: :string
+    option :output_path, default: COMPILE_TARGET_PATH, type: :string
     desc "compile", "Compile project into static pages"
     def compile
       initialize!
@@ -90,9 +107,9 @@ module Sitepress
       rails.config.assets.precompile
     end
 
-    def initialize!
+    def initialize!(&block)
       require_relative "boot"
-      app.initialize!
+      app.tap(&block).initialize!
     end
 
     def app

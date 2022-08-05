@@ -35,7 +35,7 @@ class SiteController < ApplicationController
   end
 
   def has_error_reporting_enabled?
-    Sitepress::Server.config.enable_sitepress_error_reporting
+    Sitepress::Server.config.enable_site_error_reporting
   end
 
   def reload_site?

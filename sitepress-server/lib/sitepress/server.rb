@@ -12,7 +12,7 @@ module Sitepress
     # Control whether or not to display friendly error reporting messages
     # in Sitepress. The development server turns this on an handles exception,
     # while the compile and other environments would likely have this disabled.
-    config.enable_sitepress_error_reporting = false
+    config.enable_site_error_reporting = false
 
     # When in a development environment, we'll want to reload the site between
     # requests so we can see the latest changes; otherwise, load the site once
@@ -23,8 +23,8 @@ module Sitepress
     config.root = File.join(File.dirname(__FILE__), "../../rails")
 
     # Boilerplate required to get Rails to boot.
-    config.eager_load = false # necessary to silence warning
-    config.cache_classes = false # reload everything since this is dev env.
+    config.eager_load = config.enable_site_reloading # necessary to silence warning
+    config.cache_classes = config.enable_site_reloading # reload everything since this is dev env.
 
     config.secret_key_base = SecureRandom.uuid    # Rails won't start without this
 
