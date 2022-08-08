@@ -24,7 +24,8 @@ module Sitepress
           to: :all
 
       # Defines a class method that may be called later to return a
-      # collection of objects.
+      # collection of objects. The default glob, for example, is named `:all`,
+      # which defines `MyModel.all` on the class.
       def collection(name = Models::Collection::DEFAULT_NAME, glob:, **kwargs)
         define_singleton_method name do
           self.glob glob, **kwargs

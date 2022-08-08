@@ -1,6 +1,5 @@
 require "mime/types"
 require "forwardable"
-require "pathname"
 
 module Sitepress
   # Represents a file on a web server that may be parsed to extract
@@ -13,13 +12,17 @@ module Sitepress
     # the resource and figure out what to do with it.
     DEFAULT_MIME_TYPE = MIME::Types["application/octet-stream"].first
 
+    # Parsers can be swapped out to deal with different types of resources, like Notion
+    # documents, JSON, exif data on images, etc.
+    DEFAULT_PARSER = Parsers::Frontmatter
+
     attr_reader :path
 
     extend Forwardable
     def_delegators :parser, :data, :body
     def_delegators :path, :handler, :node_name, :format, :exists?
 
-    def initialize(path:, mime_type: nil, parser: Parsers::Frontmatter)
+    def initialize(path:, mime_type: nil, parser: DEFAULT_PARSER)
       # The MIME::Types gem returns an array when types are looked up.
       # This grabs the first one, which is likely the intent on these lookups.
       @mime_type = Array(mime_type).first
