@@ -109,7 +109,8 @@ module Sitepress
 
     def initialize!(&block)
       require_relative "boot"
-      app.tap(&block).initialize!
+      app.tap(&block) if block_given?
+      app.initialize!
     end
 
     def app
