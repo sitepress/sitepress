@@ -9,9 +9,12 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Brad Gessler"]
   spec.email         = ["bradgessler@gmail.com"]
   spec.licenses      = ["MIT"]
-
   spec.summary       = %q{Sitepress rack app for stand-alone of embedded usage.}
-  spec.homepage      = "https://github.com/sitepress/sitepress"
+  spec.homepage      = "https://sitepress.cc/"
+
+  spec.metadata["homepage_uri"]     = spec.homepage
+  spec.metadata["source_code_uri"]  = "https://github.com/sitepress/sitepress"
+  spec.metadata["changelog_uri"]    = "https://github.com/sitepress/sitepress/tags"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
