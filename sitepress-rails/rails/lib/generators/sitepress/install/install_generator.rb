@@ -10,5 +10,10 @@ module Sitepress
       route "sitepress_root"
       route "sitepress_pages"
     end
+
+    def append_sitepress_path_to_tailwind_config
+      inject_into_file 'config/tailwind.config.js', ",\n    './app/content/**/*.{erb,haml,html,slim,rb}'",
+        after: "    './app/views/**/*.{erb,haml,html,slim}'"
+    end
   end
 end
