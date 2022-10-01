@@ -18,6 +18,12 @@ module Sitepress
       load site_file if site_file
     end
 
+    # Set the path for the site configuration file.
+    paths.add "app/markdown", with: [
+      File.expand_path("./markdown"),     # When Sitepress is launched via `sitepress server`.
+      "app/markdown"                      # When Sitepress is launched embedded in Rails project.
+    ], autoload: true
+
     # Load paths from `Sitepress#site` into rails so it can render views, helpers, etc. properly.
     initializer :set_sitepress_paths, before: :set_autoload_paths do |app|
       app.paths["app/helpers"].push site.helpers_path.expand_path
