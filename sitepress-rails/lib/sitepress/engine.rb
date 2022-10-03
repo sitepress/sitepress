@@ -54,6 +54,7 @@ module Sitepress
     end
 
     private
+
     def sitepress_configuration
       Sitepress.configuration
     end
