@@ -1,5 +1,6 @@
 require "mime/types"
 require "forwardable"
+require "fileutils"
 
 module Sitepress
   # Represents a file on a web server that may be parsed to extract
@@ -19,7 +20,7 @@ module Sitepress
     attr_reader :path
 
     extend Forwardable
-    def_delegators :parser, :data, :body
+    def_delegators :parser, :render
     def_delegators :path, :handler, :node_name, :format, :exists?
 
     def initialize(path:, mime_type: nil, parser: DEFAULT_PARSER)
@@ -28,6 +29,14 @@ module Sitepress
       @mime_type = Array(mime_type).first
       @path = Path.new path
       @parser_klass = parser
+    end
+
+    def data
+      @data ||= exists? ? parser.data : {}
+    end
+
+    def body
+      @body ||= exists? ? parser.body : nil
     end
 
     # Treat resources with the same request path as equal.
@@ -39,8 +48,9 @@ module Sitepress
       @mime_type ||= inferred_mime_type || DEFAULT_MIME_TYPE
     end
 
-    # Used by the Rails controller to short circuit additional processing if the
-    # asset is not renderable (e.g. is it erb or haml?)
+    # Certain files, like binary file types, aren't something that we should try to
+    # parse. When this returns true in some cases, a reference to the file will be
+    # passed and skip all the overhead of trying to parse and render.
     def renderable?
       !!handler
     end
@@ -49,6 +59,22 @@ module Sitepress
     def parser=(parser_klass)
       @parser = nil
       @parser_klass = parser_klass
+    end
+
+    def updated_at
+      File.mtime path
+    end
+
+    def created_at
+      File.ctime path
+    end
+
+    def destroy
+      FIleUtils.rm path
+    end
+
+    def save
+      File.write path, parser.render
     end
 
     private

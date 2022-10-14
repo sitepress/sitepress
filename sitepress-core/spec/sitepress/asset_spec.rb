@@ -13,6 +13,12 @@ context Sitepress::Asset do
   it "parses body" do
     expect(subject.body).to include("This is just some content")
   end
+  it "renders file" do
+    expect(subject.render).to eql(File.read subject.path)
+  end
+  it "saves file" do
+    expect(subject.save)
+  end
   context "#exists?" do
     it "is true" do
       expect(subject.exists?).to be true

@@ -5,6 +5,9 @@ module Sitepress
   # resources that point to the same asset. Resources are immutable
   # and may be altered by the resource proxy.
   class Resource
+    extend Forwardable
+    def_delegators :asset, :renderable?
+
     attr_writer :body, :data
     attr_reader :node, :asset
 
@@ -62,12 +65,6 @@ module Sitepress
       @lineage ||= node.parents.reject(&:root?).reverse.map(&:name)
     end
 
-    # Certain files, like binary file types, aren't something that we should try to
-    # parse. When this returns true in some cases, a reference to the file will be
-    # passed and skip all the overhead of trying to parse and render.
-    def renderable?
-      asset.renderable?
-    end
 
     private
     # Filters parent/child/sibling resources by a type. The default behavior is to only return

@@ -33,6 +33,16 @@ module Sitepress
         end
       end
 
+      def render
+        [
+          YAML.safe_dump(data),
+          DELIMITER,
+          $/,
+          $/,
+          body
+        ].join
+      end
+
       class << self
         attr_writer :permitted_classes
 
