@@ -15,8 +15,8 @@ module Sitepress
     DEFAULT_NODE_MAPPER = AssetNodeMapper
 
     attr_reader :root_path
-    attr_writer :resources_pipeline
     attr_accessor :node_mapper
+    attr_writer :resources_pipeline
 
     # TODO: Get rid of these so that folks have ot call site.resources.get ...
     extend Forwardable
@@ -53,19 +53,38 @@ module Sitepress
 
     # Location of website pages.
     def pages_path
-      root_path.join("pages")
+      @pages_path ||= root_path.join("pages")
     end
 
+    def pages_path=(path)
+      @pages_path = Pathname.new(path)
+    end
+
+    # Location of helper files.
     def helpers_path
-      root_path.join("helpers")
+      @helpers_path ||= root_path.join("helpers")
     end
 
+    def helpers_path=(path)
+      @helpers_path = Pathname.new(path)
+    end
+
+    # Location of rails assets
     def assets_path
-      root_path.join("assets")
+      @assets_path ||= root_path.join("assets")
     end
 
+    def assets_path=(path)
+      @assets_path = Pathname.new(path)
+    end
+
+    # Location of pages models.
     def models_path
-      root_path.join("models")
+      @models_path ||= root_path.join("models")
+    end
+
+    def models_path=(path)
+      @models_path = Pathname.new(path)
     end
 
     # Quick and dirty way to manipulate resources in the site without
