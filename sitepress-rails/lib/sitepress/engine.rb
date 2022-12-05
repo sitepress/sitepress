@@ -31,6 +31,9 @@ module Sitepress
       app.paths["app/views"].push site.root_path.expand_path
       app.paths["app/views"].push site.pages_path.expand_path
       app.paths["app/models"].push site.models_path.expand_path
+
+      # Set for view_components to load at ./components
+      app.config.autoload_paths << File.expand_path("./components")
     end
 
     # Configure sprockets paths for the site.

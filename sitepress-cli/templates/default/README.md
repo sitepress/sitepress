@@ -60,6 +60,8 @@ Like Rails, Sitepress organizes files in certain directories:
 
 * `config` - All configuration files and initializers belong in this directory. The `config/site.rb` file has settings that can be changed for the Sitepress site. Changes made to this file require the `sitepress server` to be restarted.
 
+* `components` - Location of view component files.
+
 ## Compiling & publishing the website
 
 Once you're satisfied with your website and you're ready to compile it into static HTML files, run `sitepress compile` and the website will be built to `./build`.
