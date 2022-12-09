@@ -36,6 +36,19 @@ module Sitepress
       @body ||= asset.body
     end
 
+    def copy_to(destination)
+      destination.add_child(node.name).formats.add asset: asset, format: format
+    end
+
+    def move_to(destination)
+      copy_to destination
+      delete
+    end
+
+    def delete
+      node.formats.remove format
+    end
+
     def inspect
       "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{asset.path.to_s.inspect}>"
     end
