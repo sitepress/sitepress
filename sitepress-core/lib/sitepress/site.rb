@@ -94,8 +94,8 @@ module Sitepress
     # certain path:
     #
     # ```ruby
-    # Sitepress.site.manipulate do |resource, root|
-    #   if resource.request_path.start_with? "/videos/"
+    # Sitepress.site.manipulate do |root|
+    #   root.get("videos").each do |resource|
     #     resource.data["layout"] = "video"
     #   end
     # end
@@ -105,7 +105,11 @@ module Sitepress
     # in the site:
     #
     # ```ruby
-    # Sitepress.site.manipulate do |resource, root|
+    # Sitepress.site.manipulate do |root|
+    #   root.get("blog").each do |post|
+    #     post.move_to root
+    #   end
+    #
     #   if resource.request_path == "/index"
     #     # Remove the HTML format of index from the current resource level
     #     # so we can level it up.

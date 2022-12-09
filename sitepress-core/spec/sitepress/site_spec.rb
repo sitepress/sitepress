@@ -2,7 +2,7 @@ require "spec_helper"
 
 context Sitepress::Site do
   subject { Sitepress::Site.new(root_path: "spec/sites/sample") }
-  let(:resource_count) { 5 }
+  let(:resource_count) { 6 }
   it "has 5 resources" do
     expect(subject.resources.to_a.size).to eql(resource_count)
   end
@@ -45,6 +45,17 @@ context Sitepress::Site do
     it "adds ProcManipulator to_pipeline" do
       subject.manipulate { |resource, resources| }
       expect(subject.resources_pipeline.last).to be_instance_of(Sitepress::Extensions::ProcManipulator)
+    end
+    it "manipulates resources" do
+      subject.manipulate do |root|
+        root.get("blog/my-awesome-post").move_to root
+      end
+      expect(subject.get("my-awesome-post").asset.path.to_s).to eql("spec/sites/sample/pages/blog/my-awesome-post.html.md")
+    end
+  end
+  describe "#delete" do
+    it "removes node" do
+      expect{subject.get("blog/my-awesome-post").delete}.to change{subject.resources.size}.by(-1)
     end
   end
   describe "#get" do
