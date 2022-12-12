@@ -9,7 +9,8 @@ module Sitepress
       # get too huge and we let users control it by setting
       # `Sitepress::Parsers::Frontmatter.permitted_classes = [Whatever, SuperDanger]`
       PERMITTED_CLASSES = [
-        Date # Lots of blogs parse date front matter, so let this fly.
+        Date, # Lots of blogs parse date front matter, so let this fly.
+        Time
       ]
 
       DELIMITER = "---".freeze
