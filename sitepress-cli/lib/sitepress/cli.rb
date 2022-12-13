@@ -48,15 +48,30 @@ module Sitepress
     end
 
     option :output_path, default: COMPILE_TARGET_PATH, type: :string
+    option :fail_on_error, default: false, type: :boolean
     desc "compile", "Compile project into static pages"
     def compile
       initialize!
-      # Page compilation
-      logger.info "Sitepress compiling pages"
-      Compiler.new(site: configuration.site, root_path: options.fetch("output_path")).compile
-      # Sprockets compilation
+
       logger.info "Sitepress compiling assets"
       sprockets_manifest(target_path: options.fetch("output_path")).compile precompile_assets
+
+      logger.info "Sitepress compiling pages"
+      compiler = Compiler.new(
+        site: configuration.site,
+        root_path: options.fetch("output_path"),
+        fail_on_error: options.fetch("fail_on_error")
+      )
+
+      begin
+        compiler.compile
+      ensure
+        logger.info ""
+        logger.info "Sitepress Compilation Summary"
+        logger.info "  Build path: #{compiler.root_path.expand_path}"
+        logger.info "  Succeeded:  #{compiler.succeeded.count}"
+        logger.info "  Failed:     #{compiler.failed.count}"
+      end
     end
 
     desc "console", "Interactive project shell"
