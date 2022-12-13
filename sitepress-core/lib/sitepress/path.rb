@@ -60,6 +60,10 @@ module Sitepress
       (handler_is_format? ? handler : @format)&.to_sym
     end
 
+    def relative_path_from(target)
+      Pathname.new(@path).relative_path_from(target).to_s
+    end
+
     private
       # TODO: I don't want to look this up everytime I try to figure out the
       # extension. I'll have to create an extension registry .
