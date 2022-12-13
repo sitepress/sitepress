@@ -3,6 +3,11 @@ require "spec_helper"
 context Sitepress::Path do
   describe "parser" do
     let(:path) { Sitepress::Path.new(string) }
+    describe "#relative_path_from" do
+      let(:string) { "/a/b/c/d.html" }
+      subject { path.relative_path_from("/a/b") }
+      it { is_expected.to eql "c/d.html" }
+    end
     context "Static HTML file with no handler" do
       let(:string) { "/a/b/c.html" }
       it "parses node names" do
