@@ -1,47 +1,79 @@
 module Sitepress
-  class Data
-    def initialize(data)
-      @data = data
-    end
-
-    def fetch(key, *args, &block)
-      wrap_value { @data.fetch(key.to_s, *args, &block) }
-    end
-
-    def [](key)
-      wrap_value { @data[key.to_s] }
-    end
-
-    def method_missing(name, *args, **kwargs, &block)
-      if respond_to? name
-        self.send name, *args, **kwargs, &block
+  module Data
+    def self.manage(value)
+      case value
+      when Hash
+        Record.new value
+      when Array
+        Collection.new value
       else
-        key, modifier, _ = name.to_s.partition("!")
-        wrap_value do
+        value
+      end
+    end
+
+    # Wraps an array and returns managed elements
+    class Collection
+      include Enumerable
+
+      def initialize(array)
+        @array = array
+      end
+
+      def each
+        @array.each do |element|
+          Data.manage(element)
+        end
+      end
+
+      def [](index)
+        Data.manage @array[index]
+      end
+    end
+
+    # Wraps a hash and returns managed elements
+    class Record
+      include Enumerable
+
+      def initialize(hash)
+        @hash = hash
+      end
+
+      def fetch(key, *args, &block)
+        Data.manage(@hash.fetch(key.to_s, *args, &block))
+      end
+
+      def [](key)
+        Data.manage(@hash[key.to_s])
+      end
+
+      def []=(key, value)
+        Data.manage(@hash[key.to_s] = value)
+      end
+
+      def each(&)
+        @hash.each do |key, value|
+          yield key, Data.manage(value)
+        end
+      end
+
+      def method_missing(name, *args, **kwargs, &block)
+        if respond_to? name
+          self.send name, *args, **kwargs, &block
+        else
+          key, modifier, _ = name.to_s.partition("!")
+
           case modifier
           when ""
-            @data[key]
+            self[key]
           when "!"
-            @data.fetch(key)
+            self.fetch(key, *args, &block)
           end
         end
       end
-    end
 
-    def dig(*args, **kwargs, &block)
-      wrap_value { @data.dig(*args, **kwargs, &block) }
-    end
-
-    private
-      def wrap_value(&block)
-        case value = block.call
-        when Hash
-          self.class.new value
-        when Array
-          value.map { |v| wrap_value { v } }
-        else
-          value
-        end
+      def dig(*args, **kwargs, &block)
+        Data.manage @hash.dig(*args, **kwargs, &block)
       end
+    end
   end
 end
