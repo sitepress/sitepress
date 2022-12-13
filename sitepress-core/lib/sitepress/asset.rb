@@ -20,7 +20,7 @@ module Sitepress
     attr_reader :path
 
     extend Forwardable
-    def_delegators :parser, :render
+    def_delegators :renderer, :render
     def_delegators :path, :handler, :node_name, :format, :exists?
 
     def initialize(path:, mime_type: nil, parser: DEFAULT_PARSER)
@@ -74,7 +74,11 @@ module Sitepress
     end
 
     def save
-      File.write path, parser.render
+      File.write path, render
+    end
+
+    def renderer
+      @parser_klass::Renderer.new(data: data, body: body)
     end
 
     private
