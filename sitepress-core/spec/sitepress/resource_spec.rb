@@ -24,6 +24,11 @@ context Sitepress::Resource do
       expect(subject.request_path).to eql("/test")
     end
   end
+  describe "#url" do
+    it "infers url from Asset#to_request_path" do
+      expect(subject.url).to eql("/test")
+    end
+  end
   describe "resource node relationships" do
     let(:site) { Sitepress::Site.new(root_path: "spec/sites/tree") }
     let(:root) { site.root }

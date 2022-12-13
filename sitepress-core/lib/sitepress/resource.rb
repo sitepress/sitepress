@@ -28,6 +28,11 @@ module Sitepress
       File.join("/", *lineage, request_filename)
     end
 
+    # Eugh, I really don't like this because it's not a full URL. To get a full URL though this thing
+    # needs to be put into `url_for(request_path)` in Rails to get the hostname. I don't want to inject
+    # that dependency into this thing, so here it is.
+    alias :url :request_path
+
     def data
       @data ||= Data.manage(asset.data)
     end
