@@ -50,7 +50,7 @@ module Sitepress
         Data.manage(@hash[key.to_s] = value)
       end
 
-      def each(&)
+      def each
         @hash.each do |key, value|
           yield key, Data.manage(value)
         end
