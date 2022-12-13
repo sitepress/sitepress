@@ -29,7 +29,7 @@ module Sitepress
     end
 
     def data
-      @data ||= asset.data
+      @data ||= Data.manage(asset.data)
     end
 
     def body
