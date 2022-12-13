@@ -5,11 +5,39 @@ module Sitepress
   module Parsers
     # Parses metadata from the header of the page.
     class Frontmatter < Base
+      class Renderer
+        attr_reader :body, :data
+
+        def initialize(body:, data:)
+          @body = body
+          @data = data
+        end
+
+        def dump_yaml(data)
+          if YAML.respond_to? :safe_dump
+            YAML.safe_dump data, permitted_classes: Frontmatter.permitted_classes
+          else
+            # Live dangerously, lol
+            YAML.dump data
+          end
+        end
+
+        def render
+          [
+            dump_yaml(data),
+            Frontmatter::DELIMITER,
+            $/,
+            $/,
+            body
+          ].join
+        end
+      end
+
       # Default classes that we'll allow YAML to parse. Ideally this doesn't
       # get too huge and we let users control it by setting
       # `Sitepress::Parsers::Frontmatter.permitted_classes = [Whatever, SuperDanger]`
       PERMITTED_CLASSES = [
-        Date, # Lots of blogs parse date front matter, so let this fly.
+        Date,
         Time
       ]
 
@@ -32,16 +60,6 @@ module Sitepress
           # Live dangerously, lol
           YAML.load data
         end
-      end
-
-      def render
-        [
-          YAML.safe_dump(data),
-          DELIMITER,
-          $/,
-          $/,
-          body
-        ].join
       end
 
       class << self
