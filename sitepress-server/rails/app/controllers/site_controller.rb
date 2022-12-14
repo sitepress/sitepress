@@ -28,7 +28,7 @@ class SiteController < ApplicationController
   def render_exception(template:, exception:)
     raise exception unless has_error_reporting_enabled?
 
-    @title = "Error in resource #{current_page.asset.path}".html_safe
+    @title = "Error in resource #{current_page.asset.path}"
     @exception = exception
     render template, layout: "sitepress", status: :internal_server_error
   end
