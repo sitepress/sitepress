@@ -14,19 +14,14 @@ module Sitepress
     # Wraps an array and returns managed elements
     class Collection
       include Enumerable
+      extend Forwardable
+
+      def_delegators :@array, :each, :[]
 
       def initialize(array)
-        @array = array
-      end
-
-      def each
-        @array.each do |element|
+        @array = array.map do |element|
           Data.manage(element)
         end
-      end
-
-      def [](index)
-        Data.manage @array[index]
       end
     end
 
