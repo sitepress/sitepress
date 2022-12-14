@@ -89,6 +89,11 @@ context Sitepress::Data do
       ]
     end
     describe "Enumerable" do
+      it "iterates values" do
+        values = []
+        data.each { |v| values << v }
+        expect(values.count).to eq(4)
+      end
       it "returns values" do
         expect(data[0]).to eql("dogs")
         expect(data[1]).to eql(:cats)
