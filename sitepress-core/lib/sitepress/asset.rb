@@ -32,11 +32,11 @@ module Sitepress
     end
 
     def data
-      @data ||= exists? ? parser.data : {}
+      @data ||= exists? ? parse_error { parser.data } : {}
     end
 
     def body
-      @body ||= exists? ? parser.body : nil
+      @body ||= exists? ? parse_error { parser.body } : nil
     end
 
     # Treat resources with the same request path as equal.
@@ -82,6 +82,12 @@ module Sitepress
     end
 
     private
+      def parse_error(&parse)
+        parse.call
+      rescue => e
+        raise ParseError.new("Error parsing asset #{self.inspect}: #{e}")
+      end
+
       def parser
         @parser ||= @parser_klass.new File.read path
       end
