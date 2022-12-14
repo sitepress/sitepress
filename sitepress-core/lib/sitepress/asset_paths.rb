@@ -6,13 +6,13 @@ module Sitepress
   class AssetPaths
     include Enumerable
 
-    # Exclude swap files created by Textmate and vim from being added
-    # to the sitemap.
-    IGNORE_FILE_PATTERNS = [
-      "*~",         # Created by many editors when things crash
-      "*.swp",      # Created by vim
-      ".DS_Store",  # Created by our friends at Apple
-      "*.orig"      # Created when there's a git conflict
+    # Exclude swap files created by Textmate and vim from being added to the sitemap.
+    IGNORE_PATTERNS = [
+      "**/*~",        # Created by many editors when things crash
+      "**/*.swp",     # Created by vim
+      "**/.DS_Store", # Created by our friends at Apple
+      "**/*.orig",    # Created when there's a git conflict
+      "**/.git*"      # This is a problem when a git repo is nested in a project's `./pages` folder.
     ]
 
     # Template files that start with `_user.html.erb` are partials that we want
@@ -43,7 +43,7 @@ module Sitepress
     end
 
     def matches_ignore_file_pattern?(path)
-      IGNORE_FILE_PATTERNS.any? { |pattern| path.basename.fnmatch? pattern }
+      IGNORE_PATTERNS.any? { |pattern| path.fnmatch? pattern }
     end
   end
 end
