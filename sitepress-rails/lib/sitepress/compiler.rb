@@ -14,7 +14,7 @@ module Sitepress
     # `false` and the compile will get through all the resources.
     attr_accessor :fail_on_error
 
-    def initialize(site:, root_path:, stdout: $stdout, fail_on_error: true)
+    def initialize(site:, root_path:, stdout: $stdout, fail_on_error: false)
       @site = site
       @stdout = stdout
       @root_path = Pathname.new(root_path)
