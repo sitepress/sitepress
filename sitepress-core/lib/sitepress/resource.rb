@@ -80,9 +80,8 @@ module Sitepress
 
     # Used internally to construct paths from the current node up to the root node.
     def lineage
-      @lineage ||= node.parents.reject(&:root?).reverse.map(&:name)
+      node.parents.reject(&:root?).reverse.map(&:name)
     end
-
 
     private
     # Filters parent/child/sibling resources by a type. The default behavior is to only return
