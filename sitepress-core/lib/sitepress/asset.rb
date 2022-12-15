@@ -84,7 +84,7 @@ module Sitepress
     private
       def parse_error(&parse)
         parse.call
-      rescue => e
+      rescue StandardError => e
         raise ParseError.new("Error parsing asset #{self.inspect}: #{e}")
       end
 
