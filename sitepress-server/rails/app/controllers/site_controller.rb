@@ -6,7 +6,7 @@ class SiteController < ApplicationController
   # This `rescue_from` order is important; it must come before the
   # `include Sitepress::SitePages` statement; otherwise exceptions
   # won't be properly handled.
-  rescue_from StandardError, with: :standard_error
+  rescue_from Exception, with: :standard_error
   rescue_from ActionView::Template::Error, with: :action_view_template_error
   rescue_from Sitepress::ResourceNotFoundError, with: :page_not_found
 
