@@ -1,0 +1,29 @@
+<h2><%= @exception.class %>: <%= @exception.message %> in <%= current_page.asset.path %></h2>
+<h3>Source</h3>
+
+<code>
+  <pre><%= current_page.asset.path %></pre>
+</code>
+
+<h3>Backtrace</h3>
+<code>
+  <pre><%= @exception.backtrace.join("\n") %></pre>
+</code>
+
+<h3>Resources</h3>
+<table>
+  <thead>
+    <th>Request path</th>
+    <th>Asset path</th>
+    <th>Media type</th>
+  </thead>
+  <tbody>
+    <% site.resources.each do |resource| %>
+      <tr>
+        <td><%= link_to resource.request_path, resource.request_path %></td>
+        <td><%= resource.asset.path %></td>
+        <td><%= resource.asset.mime_type %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

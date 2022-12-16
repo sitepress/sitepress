@@ -6,7 +6,8 @@ class SiteController < ApplicationController
   # This `rescue_from` order is important; it must come before the
   # `include Sitepress::SitePages` statement; otherwise exceptions
   # won't be properly handled.
-  rescue_from Exception, with: :sitepress_error
+  rescue_from StandardError, with: :standard_error
+  rescue_from ActionView::Template::Error, with: :action_view_template_error
   rescue_from Sitepress::ResourceNotFoundError, with: :page_not_found
 
   layout :site_layout
@@ -16,12 +17,20 @@ class SiteController < ApplicationController
     DEFAULT_SITE_LAYOUT if template_exists? DEFAULT_SITE_LAYOUT
   end
 
-  def sitepress_error(exception)
+  def standard_error(exception)
+    render_exception(template: "standard_error", exception: exception)
+  end
+
+  def action_view_template_error(exception)
+    render_exception(template: "action_template_error", exception: exception)
+  end
+
+  def render_exception(template:, exception:)
     raise exception unless has_error_reporting_enabled?
 
     @title = "Error in resource #{current_page.asset.path}".html_safe
     @exception = exception
-    render "error", layout: "sitepress", status: :internal_server_error
+    render template, layout: "sitepress", status: :internal_server_error
   end
 
   def page_not_found(exception)
