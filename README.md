@@ -49,9 +49,9 @@ You should then see the site at http://localhost:8080/. Time to start building s
 
 Sitepress implements a subset of the best features from the [Middleman](http://www.middlemanapp.com/) static site generator including the Site and Parsers::Frontmatter.
 
-## Parsers::Frontmatter
+## Frontmatter
 
-Parsers::Frontmatter is a way to attach metadata to content pages. Its a powerful way to enable a team of writers and engineers work together on content. The engineers focus on reading values from frontmatter while the writers can change values.
+Frontmatter is a way to attach metadata to content pages. Its a powerful way to enable a team of writers and engineers work together on content. The engineers focus on reading values from frontmatter while the writers can change values.
 
 ```haml
 ---
