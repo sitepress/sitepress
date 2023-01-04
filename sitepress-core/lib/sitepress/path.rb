@@ -49,7 +49,7 @@ module Sitepress
     end
 
     def exists?
-      File.exists? path
+      File.exist? path
     end
 
     def expand_path
