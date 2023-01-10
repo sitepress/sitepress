@@ -46,8 +46,9 @@ module Sitepress
     end
 
     def move_to(destination)
-      copy_to destination
+      resource = copy_to destination
       delete
+      resource
     end
 
     def delete
