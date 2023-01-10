@@ -45,6 +45,8 @@ module Sitepress
       else
         @formats[format] = resource
       end
+
+      resource
     end
 
     def inspect
