@@ -67,10 +67,15 @@ module Sitepress
         compiler.compile
       ensure
         logger.info ""
-        logger.info "Sitepress Compilation Summary"
+        logger.info "Compilation Summary"
         logger.info "  Build path: #{compiler.root_path.expand_path}"
         logger.info "  Succeeded:  #{compiler.succeeded.count}"
         logger.info "  Failed:     #{compiler.failed.count}"
+        logger.info ""
+        logger.info "Failed Resources"
+        compiler.failed.each do |resource|
+          logger.info "  #{resource.request_path}  #{resource.asset.path}"
+        end
       end
     end
 
