@@ -71,10 +71,13 @@ module Sitepress
         logger.info "  Build path: #{compiler.root_path.expand_path}"
         logger.info "  Succeeded:  #{compiler.succeeded.count}"
         logger.info "  Failed:     #{compiler.failed.count}"
-        logger.info ""
-        logger.info "Failed Resources"
-        compiler.failed.each do |resource|
-          logger.info "  #{resource.request_path}  #{resource.asset.path}"
+        if compiler.failed.any?
+          logger.info ""
+          logger.info "Failed Resources"
+          compiler.failed.each do |resource|
+            logger.info "  #{resource.request_path}  #{resource.asset.path}"
+          end
+          abort # We want a non-zero exit code so we can fail CI pipelines, etc.
         end
       end
     end
