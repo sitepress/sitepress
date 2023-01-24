@@ -30,7 +30,7 @@ class SiteController < ApplicationController
 
     @title = "Error in resource #{current_page.asset.path}"
     @exception = exception
-    render template, layout: "sitepress", status: :internal_server_error
+    render template, layout: "sitepress", status: :internal_server_error, formats: :html
   end
 
   def page_not_found(exception)
