@@ -48,6 +48,14 @@ context Sitepress::Data do
         expect(subject.title!{ "default" }).to eql("Hello")
       end
     end
+    describe "key presence" do
+      it "returns true if data is present" do
+        expect(subject.title?).to be true
+      end
+      it "returns true if data is not present" do
+        expect(subject.nothing_exists?).to be false
+      end
+    end
     describe "Enumerable" do
       let(:key) { element.first }
       let(:value) { element.last }
