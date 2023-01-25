@@ -30,7 +30,7 @@ module Sitepress
       include Enumerable
       extend Forwardable
 
-      def_delegators :@hash, :keys
+      def_delegators :@hash, :keys, :values, :key?, :to_h, :to_a
 
       def initialize(hash)
         @hash = hash
@@ -48,10 +48,6 @@ module Sitepress
         Data.manage(@hash[key.to_s] = value)
       end
 
-      def values
-        Data.manage(@hash.values)
-      end
-
       def each
         @hash.each do |key, value|
           yield key, Data.manage(value)
@@ -62,13 +58,15 @@ module Sitepress
         if respond_to? name
           self.send name, *args, **kwargs, &block
         else
-          key, modifier, _ = name.to_s.partition("!")
+          key, modifier, _ = name.to_s.partition(/[!?]/)
 
           case modifier
           when ""
             self[key]
           when "!"
             self.fetch(key, *args, &block)
+          when "?"
+            !!self[key]
           end
         end
       end
