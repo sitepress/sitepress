@@ -30,7 +30,7 @@ module Sitepress
       include Enumerable
       extend Forwardable
 
-      def_delegators :@hash, :keys, :values, :key?, :to_h, :to_a
+      def_delegators :@hash, :keys, :values, :key?
 
       def initialize(hash)
         @hash = hash
