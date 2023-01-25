@@ -28,6 +28,9 @@ module Sitepress
     # Wraps a hash and returns managed elements
     class Record
       include Enumerable
+      extend Forwardable
+
+      def_delegators :@hash, :keys
 
       def initialize(hash)
         @hash = hash
@@ -43,6 +46,10 @@ module Sitepress
 
       def []=(key, value)
         Data.manage(@hash[key.to_s] = value)
+      end
+
+      def values
+        Data.manage(@hash.values)
       end
 
       def each
