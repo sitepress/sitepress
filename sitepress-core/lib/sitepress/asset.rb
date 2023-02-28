@@ -18,6 +18,7 @@ module Sitepress
     DEFAULT_PARSER = Parsers::Frontmatter
 
     attr_reader :path
+    attr_writer :data
 
     extend Forwardable
     def_delegators :renderer, :render
