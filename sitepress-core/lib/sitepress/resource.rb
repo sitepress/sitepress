@@ -8,7 +8,7 @@ module Sitepress
     extend Forwardable
     def_delegators :asset, :renderable?
 
-    attr_writer :body, :data
+    attr_writer :body
     attr_reader :node, :asset
 
     attr_accessor :format, :mime_type, :handler
