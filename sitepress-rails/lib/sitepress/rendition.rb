@@ -3,9 +3,9 @@ module Sitepress
   # lets us keep the functions in the controller more functional, which makes them
   # easier to override by the end users.
   class Rendition
-    attr_accessor :resource, :output, :controller_layout
+    attr_accessor :resource, :output, :layout
 
-    def initialize(resource)
+    def initialize(resource, layout: nil)
       @resource = resource
     end
 
@@ -22,7 +22,7 @@ module Sitepress
     end
 
     def layout
-      resource.data.fetch("layout", controller_layout)
+      resource.data.fetch("layout", @layout)
     end
   end
 end
