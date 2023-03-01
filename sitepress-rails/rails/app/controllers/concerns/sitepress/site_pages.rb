@@ -17,7 +17,7 @@ module Sitepress
     included do
       rescue_from Sitepress::ResourceNotFound, with: :resource_not_found
       helper Sitepress::Engine.helpers
-      helper_method :current_page, :site
+      helper_method :current_page, :site, :page_rendition
       before_action :append_relative_partial_path, only: :show
       around_action :ensure_site_reload, only: :show
     end
@@ -41,16 +41,25 @@ module Sitepress
       end
     end
 
+    # Renders the markup within a resource that can be rendered.
+    def page_rendition(resource, layout: nil)
+      Rendition.new(resource).tap do |rendition|
+        rendition.layout = layout
+        pre_render rendition
+      end
+    end
+
     # If a resource has a handler (e.g. erb, haml, etc.) we use the Rails renderer to
     # process templates, layouts, partials, etc. To keep the whole rendering process
     # contained in a way that the end user can override, we coupled the resource, source
     # and output within a `Rendition` object so that it may be processed via hooks.
     def render_resource_with_handler(resource)
-      rendition = Rendition.new(resource)
-      rendition.controller_layout = controller_layout
+      rendition = page_rendition(resource, layout: controller_layout)
 
-      pre_render rendition
+      # Fire a callback in the controller in case anybody needs it.
       process_rendition rendition
+
+      # Now we finally render the output of the processed rendition to the client.
       post_render rendition
     end
 
