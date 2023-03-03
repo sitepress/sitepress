@@ -24,7 +24,7 @@ module Sitepress
 
         def render
           [
-            dump_yaml(data),
+            dump_yaml(Data.unmanage(data)),
             Frontmatter::DELIMITER,
             $/,
             $/,

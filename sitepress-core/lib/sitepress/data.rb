@@ -11,6 +11,15 @@ module Sitepress
       end
     end
 
+    def self.unmanage(data)
+      case data
+      when Record, Collection
+        data.unmanage
+      else
+        data
+      end
+    end
+
     # Wraps an array and returns managed elements
     class Collection
       include Enumerable
@@ -19,9 +28,11 @@ module Sitepress
       def_delegators :@array, :each, :[]
 
       def initialize(array)
-        @array = array.map do |element|
-          Data.manage(element)
-        end
+        @array = array.map { |element| Data.manage(element) }
+      end
+
+      def unmanage
+        @array.map { |value| Data.unmanage(value) }
       end
     end
 
@@ -52,6 +63,10 @@ module Sitepress
         @hash.each do |key, value|
           yield key, Data.manage(value)
         end
+      end
+
+      def unmanage
+        @hash.transform_values { |value| Data.unmanage(value) }
       end
 
       def method_missing(name, *args, **kwargs, &block)
