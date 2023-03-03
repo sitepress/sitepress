@@ -18,7 +18,7 @@ module Sitepress
     DEFAULT_PARSER = Parsers::Frontmatter
 
     attr_reader :path
-    attr_writer :data, :body
+    attr_writer :body
 
     extend Forwardable
     def_delegators :renderer, :render
@@ -34,6 +34,15 @@ module Sitepress
 
     def data
       @data ||= exists? ? parse_error { parser.data } : {}
+    end
+
+    def managed_data
+      @managed_data ||= Data.manage(data)
+    end
+
+    def data=(data)
+      @managed_data = nil
+      @data = data
     end
 
     def body
