@@ -33,16 +33,11 @@ module Sitepress
     end
 
     def data
-      @data ||= exists? ? parse_error { parser.data } : {}
-    end
-
-    def managed_data
-      @managed_data ||= Data.manage(data)
+      @data ||= Data.manage(exists? ? parse_error { parser.data } : {})
     end
 
     def data=(data)
-      @managed_data = nil
-      @data = data
+      @data = Data.manage(data)
     end
 
     def body
@@ -65,7 +60,7 @@ module Sitepress
       !!handler
     end
 
-    # Set the parser equal to a thing.
+    # Mmm.... that's the smell of cache busting, which means the hiearchy of this is wrong.
     def parser=(parser_klass)
       @parser = nil
       @parser_klass = parser_klass

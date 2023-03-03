@@ -6,7 +6,7 @@ module Sitepress
   # and may be altered by the resource proxy.
   class Resource
     extend Forwardable
-    def_delegators :asset, :renderable?
+    def_delegators :asset, :body, :data, :renderable?
 
     attr_reader :node, :asset
 
@@ -31,14 +31,6 @@ module Sitepress
     # needs to be put into `url_for(request_path)` in Rails to get the hostname. I don't want to inject
     # that dependency into this thing, so here it is.
     alias :url :request_path
-
-    def data
-      asset.managed_data
-    end
-
-    def body
-      asset.body
-    end
 
     def copy_to(destination)
       destination.add_child(node.name).formats.add asset: asset, format: format
