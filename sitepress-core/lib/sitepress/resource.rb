@@ -8,7 +8,6 @@ module Sitepress
     extend Forwardable
     def_delegators :asset, :renderable?
 
-    attr_writer :body
     attr_reader :node, :asset
 
     attr_accessor :format, :mime_type, :handler
@@ -34,11 +33,11 @@ module Sitepress
     alias :url :request_path
 
     def data
-      @data ||= Data.manage(asset.data)
+      asset.managed_data
     end
 
     def body
-      @body ||= asset.body
+      asset.body
     end
 
     def copy_to(destination)
