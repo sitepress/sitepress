@@ -14,5 +14,5 @@ gem "sass-rails"
 gem "markdown-rails"
 
 # View component libraries.
-gem "phlex"
+gem "phlex-rails"
 gem "view_component"
