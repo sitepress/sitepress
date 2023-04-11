@@ -7,7 +7,7 @@ module Sitepress
     SERVER_PORT = 8080
 
     # Default address is public to all IPs.
-    SERVER_BIND_ADDRESS = "0.0.0.0".freeze
+    SERVER_BIND_ADDRESS = "127.0.0.1".freeze
 
     # Default build path for compiler.
     COMPILE_TARGET_PATH = "./build".freeze
