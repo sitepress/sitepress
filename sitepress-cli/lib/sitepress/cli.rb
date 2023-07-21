@@ -57,11 +57,10 @@ module Sitepress
       sprockets_manifest(target_path: options.fetch("output_path")).compile precompile_assets
 
       logger.info "Sitepress compiling pages"
-      compiler = Compiler.new(
+      compiler = Compiler::Files.new \
         site: configuration.site,
         root_path: options.fetch("output_path"),
         fail_on_error: options.fetch("fail_on_error")
-      )
 
       begin
         compiler.compile
