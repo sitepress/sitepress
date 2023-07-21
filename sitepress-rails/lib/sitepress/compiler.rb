@@ -40,8 +40,8 @@ module Sitepress
         after_compile
       end
 
-      def each(&)
-        site.resources.each(&)
+      def each(&block)
+        site.resources.each(&block)
       end
 
       protected
