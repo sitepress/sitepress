@@ -75,6 +75,14 @@ module Sitepress
       node.parents.reject(&:root?).reverse.map(&:name)
     end
 
+    class << self
+      attr_accessor :path_suffix_hack_that_you_should_not_use
+
+      def path_suffix_hack_that_you_should_not_use
+        @path_suffix_hack_that_you_should_not_use ||= ""
+      end
+    end
+
     private
     # Filters parent/child/sibling resources by a type. The default behavior is to only return
     # resources of the same type. For example given the pages `/a.html`, `/a.gif`, `/a/b.html`,
@@ -111,9 +119,9 @@ module Sitepress
       elsif node.root? and format
         "#{node.default_name}.#{format}"
       elsif node.root?
-        node.default_name
+        "#{node.default_name}#{self.class.path_suffix_hack_that_you_should_not_use}"
       elsif format.nil? or node.default_format == format
-        node.name
+        "#{node.name}#{self.class.path_suffix_hack_that_you_should_not_use}"
       else
         "#{node.name}.#{format}"
       end
