@@ -32,17 +32,16 @@ module Sitepress
     # that dependency into this thing, so here it is.
     alias :url :request_path
 
-    def copy_to(destination)
+    def node=(destination)
+      # Remove myself from the current node's formats table
+      remove
+      # Add myself to the new node's formats table
       destination.add_child(node.name).formats.add asset: asset, format: format
+      # Now update my current @node reference to the new node
+      @node = destination
     end
 
-    def move_to(destination)
-      resource = copy_to destination
-      delete
-      resource
-    end
-
-    def delete
+    def remove
       node.formats.remove format
     end
 

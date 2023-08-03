@@ -48,14 +48,14 @@ context Sitepress::Site do
     end
     it "manipulates resources" do
       subject.manipulate do |root|
-        root.get("blog/my-awesome-post").move_to root
+        root.get("blog/my-awesome-post").node = root
       end
       expect(subject.get("my-awesome-post").asset.path.to_s).to eql("spec/sites/sample/pages/blog/my-awesome-post.html.md")
     end
   end
   describe "#delete" do
     it "removes node" do
-      expect{subject.get("blog/my-awesome-post").delete}.to change{subject.resources.size}.by(-1)
+      expect{subject.get("blog/my-awesome-post").remove}.to change{subject.resources.size}.by(-1)
     end
   end
   describe "#get" do
