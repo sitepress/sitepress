@@ -1,6 +1,9 @@
 require "sitepress/version"
 
 module Sitepress
+  # Errors raised by Sitepress
+  Error = Class.new(StandardError)
+
   # Raised by Resources if a path is added that's not a valid path.
   InvalidRequestPathError = Class.new(RuntimeError)
 

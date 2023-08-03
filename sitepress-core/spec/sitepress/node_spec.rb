@@ -31,33 +31,41 @@ context Sitepress::Node do
       /app/is/bad/really.html
       /app/boo.html
       /app/boo/radly.html] }
+
   subject { root.get(path)&.node }
+
   it "is_root" do
     expect(root).to be_root
   end
+
   it "is_leaf" do
     expect(root.get("/app/boo/radly.html").node).to be_leaf
   end
+
   context "/default.html" do
     let(:path) { "/default.html" }
     it { is_expected.to be_root }
   end
+
   context "/default" do
     let(:path) { "/default" }
     it { is_expected.to be_nil }
   end
+
   context "/app/is/bad.html" do
     let(:path) { "/app/is/bad.html" }
     it { should have_parents(%w[/app/is.html /app.html /default.html]) }
     it { should have_siblings(%w[/app/is/good.html /app/is/bad.html]) }
     it { should have_children(%w[/app/is/bad/really.html]) }
   end
+
   context "/app.html" do
     let(:path) { "/app.html" }
     it { should have_parents(%w[/default.html]) }
     it { should have_siblings(%w[/app.html]) }
     it { should have_children(%w[/app/is.html /app/boo.html]) }
   end
+
   context "/a/b/c.html" do
     let(:routes) { %w[
         /index.html
@@ -80,6 +88,7 @@ context Sitepress::Node do
         end
       end
     end
+
     context "/index.html" do
       let(:path) { "/index.html" }
       it "has resource" do
@@ -89,6 +98,7 @@ context Sitepress::Node do
       it { should have_siblings(%w[/index.html /a.html]) }
       it { should have_children([]) }
     end
+
     context "/a/b.html" do
       let(:path) { "/a/b.html" }
       it "has resource" do
@@ -102,24 +112,64 @@ context Sitepress::Node do
       it { should have_parents(["/a.html"]) }
       it { should have_siblings(%w[/a/1.html /a/b.html]) }
       it { should have_children(%w[/a/b/c.html]) }
-      context "remove c.html" do
-        before { subject.get("c.html").node.remove }
-        it { should have_children([]) }
-      end
-      context "remove /a/b.html" do
-        before { subject.remove }
-        it { should have_parents(["/a.html"]) }
-        it { should have_siblings(%w[/a/1.html]) }
-        it { should have_children(%w[/a/b/c.html]) }
-        it "does not have resource" do
-          subject.formats.clear
+      describe "#remove" do
+        context "remove c.html" do
+          before { subject.get("c.html").node.remove }
+          it { should have_children([]) }
+          it "removes route" do
+            expect(root.flatten.map(&:request_path)).to match_array(routes - ["/a/b/c.html"])
+          end
         end
-        it "removes route" do
-          expect(root.flatten.map(&:request_path)).to match_array(routes - ["/a/b.html"])
+        context "remove /a/b.html" do
+          before { subject.remove }
+          it { should have_parents([]) }
+          it { should have_siblings([]) }
+          it { should have_children(%w[/c.html]) }
+          it "removes route" do
+            expect(root.flatten.map(&:request_path)).to match_array(routes - ["/a/b.html", "/a/b/c.html"])
+          end
+        end
+      end
+    end
+
+    describe "#parent=" do
+      context "/a/b" do
+        let(:path) { "/a/b.html" }
+        context "set to /a/b/c" do
+          let(:c) { root.dig("a", "b", "c") }
+          it "can't change parent to a child" do
+            expect{subject.parent = c}.to raise_error Sitepress::Error, "Parent node can't be changed to one of its children"
+          end
+        end
+        context "set to /a" do
+          # Parent is already "a", so make sure nothing changes.
+          let(:a) { root.dig("a") }
+          before { subject.parent = a }
+          it { should have_parents(["/a.html"]) }
+          it { should have_siblings(%w[/a/1.html /a/b.html]) }
+          it { should have_children(%w[/a/b/c.html]) }
+        end
+        context "set nil" do
+          before { subject.parent = nil }
+          it { should be_root }
+          it { should have_parents([]) }
+          it { should have_siblings([]) }
+          it { should have_children(%w[/c.html]) }
+        end
+        context "set nil and back to original" do
+          before do
+            original = subject.parent
+            subject.parent = nil
+            subject.parent = original
+          end
+          it { should have_parents(["/a.html"]) }
+          it { should have_siblings(%w[/a/1.html /a/b.html]) }
+          it { should have_children(%w[/a/b/c.html]) }
         end
       end
     end
   end
+
   context "/a/b/c" do
     let(:routes) { %w[
         /a
@@ -158,14 +208,11 @@ context Sitepress::Node do
     end
     context "remove /a/b" do
       before { subject.remove }
-      it { should have_parents(["/a"]) }
-      it { should have_siblings(%w[/a/1]) }
-      it { should have_children(%w[/a/b/c]) }
-      it "does not have resource" do
-        subject.formats.clear
-      end
+      it { should have_parents([]) }
+      it { should have_siblings([]) }
+      it { should have_children(%w[/c]) }
       it "removes route" do
-        expect(root.flatten.map(&:request_path)).to match_array(routes - %w[/a/b /a/b.xml])
+        expect(root.flatten.map(&:request_path)).to match_array(routes - %w[/a/b /a/b.xml /a/b /a/b/c])
       end
     end
     context "/a/b/index.html" do

@@ -14,6 +14,7 @@ module Sitepress
 
     def initialize(parent: nil, name: nil, default_format: DEFAULT_EXTENSION, default_name: DEFAULT_NAME)
       @parent = parent
+      @registry = Hash.new { |hash, key| hash[key] = build_child(key) }
       @name = name.freeze
       @default_format = default_format
       @default_name = default_name
@@ -26,7 +27,7 @@ module Sitepress
 
     # Returns the immediate children nodes.
     def children
-      child_nodes.values
+      @registry.values
     end
 
     # Returns sibling nodes and self.
@@ -50,7 +51,32 @@ module Sitepress
     end
 
     def leaf?
-      child_nodes.empty?
+      @registry.empty?
+    end
+
+    def parent=(parent)
+      return if parent == @parent
+
+      if parent.nil?
+        remove
+        return
+      end
+
+      child = self
+
+      # Make sure we don't change the parent of this node to one if its children; otherwise
+      # we'd have to jump into a time machine and do some really weird stuff with Doc Whatever-his-name-is.
+      if child.children.include? parent
+        raise Sitepress::Error, "Parent node can't be changed to one of its children"
+      end
+
+      # Check if the name of this node exists as a child on the new parent.
+      if parent.child_key? child.name
+        raise Sitepress::Error, "Node exists with the name #{child.name.inspect} in #{parent.inspect}. Remove existing node."
+      else
+        @parent = parent
+        parent.overwrite_child child
+      end
     end
 
     def flatten(resources: [])
@@ -62,8 +88,8 @@ module Sitepress
     end
 
     def remove
-      formats.clear
-      parent.remove_child(name) if leaf?
+      @parent.remove_child name
+      @parent = nil
     end
 
     def get(path)
@@ -74,7 +100,7 @@ module Sitepress
 
     def add_child(name)
       return self if name == default_name
-      child_nodes[name].tap do |node|
+      @registry[name].tap do |node|
         yield node if block_given?
       end
     end
@@ -87,8 +113,8 @@ module Sitepress
       head, *tail = args
       if (head.nil? or head.empty? or head == default_name) and tail.empty?
         self
-      elsif child_nodes.has_key?(head)
-        child_nodes[head].dig(*tail)
+      elsif @registry.has_key?(head)
+        @registry[head].dig(*tail)
       else
         nil
       end
@@ -96,16 +122,20 @@ module Sitepress
 
     protected
     def remove_child(name)
-      child_nodes.delete(name)
+      @registry.delete(name)
+    end
+
+    def overwrite_child(node)
+      @registry[node.name] = node
+    end
+
+    def child_key?(name)
+      @registry.key? name
     end
 
     private
     def build_child(name)
       Node.new(parent: self, name: name, default_format: default_format, default_name: default_name)
-    end
-
-    def child_nodes
-      @child_nodes ||= Hash.new { |hash, key| hash[key] = build_child(key) }
     end
   end
 end
