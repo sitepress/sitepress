@@ -7,12 +7,11 @@ module Sitepress
   class Node
     attr_reader :parent, :name, :default_format, :default_name
 
-    # Default extension
-    DEFAULT_EXTENSION = :html
+    DEFAULT_FORMAT = :html
 
     DEFAULT_NAME = "index".freeze
 
-    def initialize(parent: nil, name: nil, default_format: DEFAULT_EXTENSION, default_name: DEFAULT_NAME)
+    def initialize(parent: nil, name: nil, default_format: DEFAULT_FORMAT, default_name: DEFAULT_NAME)
       @parent = parent
       @registry = Hash.new { |hash, key| hash[key] = build_child(key) }
       @name = name.freeze
