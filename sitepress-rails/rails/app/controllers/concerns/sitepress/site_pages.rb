@@ -171,7 +171,7 @@ module Sitepress
     # and the current page's node formats. If nothing intersects, HTML is returned
     # as a default.
     def current_resource_rails_formats
-      node_formats = current_resource.node.resources.formats
+      node_formats = current_resource.node.formats
       supported_formats = node_formats & Mime::EXTENSION_LOOKUP.keys
 
       if supported_formats.empty?
