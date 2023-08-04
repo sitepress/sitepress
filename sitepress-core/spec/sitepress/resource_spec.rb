@@ -29,6 +29,28 @@ context Sitepress::Resource do
       expect(subject.url).to eql("/test")
     end
   end
+  describe "#node=" do
+    let(:site) { Sitepress::Site.new(root_path: "spec/sites/tree") }
+    let(:node) { site.root.dig("vehicles", "cars", "compacts", "smart") }
+    let(:resource) { node.resources.get(:html) }
+    let(:destination) { site.root.dig("vehicles", "trucks") }
+    before { resource.node = destination }
+    it "sets node to destination" do
+      expect(resource.node).to eql destination
+    end
+    it "removes resource from node" do
+      expect(node.resources).to_not include resource
+    end
+    it "adds resource to node" do
+      expect(destination.resources).to include resource
+    end
+    it "has new request path" do
+      expect(resource.request_path).to eql("/vehicles/trucks")
+    end
+    it "raises error if moved to a resource with the same format" do
+      expect{ resource.node = site.root.dig("vehicles", "cars", "camry") }.to raise_error(Sitepress::Error)
+    end
+  end
   describe "resource node relationships" do
     let(:site) { Sitepress::Site.new(root_path: "spec/sites/tree") }
     let(:root) { site.root }
