@@ -16,7 +16,7 @@ module Sitepress
 
     def initialize(parent: nil, name: nil, default_format: DEFAULT_FORMAT, default_name: DEFAULT_NAME)
       @parent = parent
-      @registry = Hash.new { |hash, key| hash[key] = build_child(key) }
+      @registry = Hash.new { |hash, key| hash[key] = build_child(name: key) }
       @name = name.freeze
       @resources = Resources.new(node: self)
       @default_format = default_format
@@ -133,8 +133,8 @@ module Sitepress
     end
 
     private
-    def build_child(name)
-      Node.new(parent: self, name: name, default_format: default_format, default_name: default_name)
+    def build_child(**kwargs)
+      Node.new(parent: self, default_format: default_format, default_name: default_name, **kwargs)
     end
   end
 end
