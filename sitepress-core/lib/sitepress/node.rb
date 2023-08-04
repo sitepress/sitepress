@@ -5,6 +5,9 @@ module Sitepress
   # a leaf node. The actual `buz.html` asset is then stored on the leaf node as a resource. This tree structure
   # makes it possible to reason through path relationships from code to build out elements in a website like tree navigation.
   class Node
+    extend Forwardable
+    def_delegators :resources, :formats
+
     attr_reader :parent, :name, :default_format, :default_name, :resources
 
     DEFAULT_FORMAT = :html
@@ -102,7 +105,7 @@ module Sitepress
     end
 
     def inspect
-      "<#{self.class}: name=#{name.inspect}, formats=#{resources.formats.inspect}, children=#{children.map(&:name).inspect}, resource_request_paths=#{resources.map(&:request_path)}>"
+      "<#{self.class}: name=#{name.inspect}, formats=#{formats.inspect}, children=#{children.map(&:name).inspect}, resource_request_paths=#{resources.map(&:request_path)}>"
     end
 
     def dig(*args)
