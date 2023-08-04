@@ -33,11 +33,11 @@ module Sitepress
     alias :url :request_path
 
     def node=(destination)
-      # Remove myself from the current node's formats table
+      if destination.resources.formats.include? format
+        raise Sitepress::Error, "#{destination.inspect} already has a resource with a #{format} format"
+      end
       remove
-      # Add myself to the new node's formats table
-      destination.add_child(node.name).resources.add_asset asset, format: format
-      # Now update my current @node reference to the new node
+      destination.resources.add self
       @node = destination
     end
 
