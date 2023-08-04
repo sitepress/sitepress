@@ -3,8 +3,8 @@ require "forwardable"
 module Sitepress
   # Manages collections of resources that share the same Node. Given the files `/a.html` and `/a.gif`,
   # both of these assets would be stored in the `Node#name = "a"` under `Node#formats` with
-  # the extensions `.gif`, and `.html`.
-  class Formats
+  # the formats `.gif`, and `.html`.
+  class Resources
     include Enumerable
 
     extend Forwardable
@@ -28,7 +28,7 @@ module Sitepress
       @registry[symbolize(extension || default_format)]
     end
 
-    def extensions
+    def formats
       @registry.keys
     end
 
@@ -36,19 +36,17 @@ module Sitepress
       find { |f| f.mime_type == mime_type }
     end
 
-    # TODO: Move this over to `node` so we don't have to inject that dependency
-    # into this class.
-    def add(asset:, format: nil)
-      format = symbolize(format || default_format)
-
-      resource = Resource.new(asset: asset, node: @node, format: format)
-      if @registry.has_key? format
-        raise Sitepress::ExistingRequestPathError, "Resource at #{resource.request_path} already set with format #{format.inspect}"
+    def add(resource)
+      if @registry.has_key? resource.format
+        raise Sitepress::ExistingRequestPathError, "Resource at #{resource.request_path} already set with format #{resource.format.inspect}"
       else
-        @registry[format] = resource
+        @registry[resource.format] = resource
       end
+    end
 
-      resource
+    def add_asset(asset, format: nil)
+      format = symbolize(format || default_format)
+      add Resource.new(asset: asset, node: @node, format: format)
     end
 
     def inspect

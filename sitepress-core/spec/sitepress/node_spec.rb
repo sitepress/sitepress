@@ -4,20 +4,20 @@ context Sitepress::Node do
   let(:asset) { Sitepress::Asset.new(path: "/") }
   let(:root) do
     Sitepress::Node.new default_format: nil, default_name: "default" do |root|
-      root.formats.add(format: :html, asset: asset)
+      root.resources.add_asset(asset, format: :html)
       root.add_child("app") do |app|
-        app.formats.add(format: :html, asset: asset)
+        app.resources.add_asset(asset, format: :html)
         app.add_child("is") do |is|
-          is.formats.add(format: :html, asset: asset)
-          is.add_child("good").formats.add(format: :html, asset: asset)
+          is.resources.add_asset(asset, format: :html)
+          is.add_child("good").resources.add_asset(asset, format: :html)
           is.add_child("bad") do |bad|
-            bad.formats.add(format: :html, asset: asset)
-            bad.add_child("really").formats.add(format: :html, asset: asset)
+            bad.resources.add_asset(asset, format: :html)
+            bad.add_child("really").resources.add_asset(asset, format: :html)
           end
         end
         app.add_child("boo") do |boo|
-          boo.formats.add(format: :html, asset: asset)
-          boo.add_child("radly").formats.add(format: :html, asset: asset)
+          boo.resources.add_asset(asset, format: :html)
+          boo.add_child("radly").resources.add_asset(asset, format: :html)
         end
       end
     end
@@ -76,14 +76,14 @@ context Sitepress::Node do
     let(:root) do
       Sitepress::Node.new default_format: nil, default_name: nil do |root|
         root.add_child("index") do |index|
-          index.formats.add(format: :html, asset: asset)
+          index.resources.add_asset(asset, format: :html)
         end
         root.add_child("a") do |a|
-          a.formats.add(format: :html, asset: asset)
-          a.add_child("1").formats.add(format: :html, asset: asset)
+          a.resources.add_asset(asset, format: :html)
+          a.add_child("1").resources.add_asset(asset, format: :html)
           a.add_child("b") do |b|
-            b.formats.add(format: :html, asset: asset)
-            b.add_child("c").formats.add(format: :html, asset: asset)
+            b.resources.add_asset(asset, format: :html)
+            b.add_child("c").resources.add_asset(asset, format: :html)
           end
         end
       end
@@ -92,7 +92,7 @@ context Sitepress::Node do
     context "/index.html" do
       let(:path) { "/index.html" }
       it "has resource" do
-        expect(subject.formats.map(&:request_path)).to eql(["/index.html"])
+        expect(subject.resources.map(&:request_path)).to eql(["/index.html"])
       end
       it { should have_parents([]) }
       it { should have_siblings(%w[/index.html /a.html]) }
@@ -102,7 +102,7 @@ context Sitepress::Node do
     context "/a/b.html" do
       let(:path) { "/a/b.html" }
       it "has resource" do
-        expect(subject.formats.map(&:request_path)).to eql(["/a/b.html"])
+        expect(subject.resources.map(&:request_path)).to eql(["/a/b.html"])
       end
       context "enumerable" do
         it "iterates through resources" do
@@ -180,19 +180,19 @@ context Sitepress::Node do
     let(:root) do
       Sitepress::Node.new do |root|
         root.add_child("a") do |a|
-          a.formats.add(asset: asset)
-          a.add_child("1").formats.add(asset: asset)
+          a.resources.add_asset(asset)
+          a.add_child("1").resources.add_asset(asset)
           a.add_child("b") do |b|
-            b.formats.add(format: :xml, asset: asset)
-            b.formats.add(format: :html, asset: asset)
-            b.add_child("c").formats.add(asset: asset)
+            b.resources.add_asset(asset, format: :xml)
+            b.resources.add_asset(asset, format: :html)
+            b.add_child("c").resources.add_asset(asset)
           end
         end
       end
     end
     let(:path) { "/a/b" }
     it "has resource" do
-      expect(subject.formats.map(&:request_path)).to eql(%w[/a/b.xml /a/b])
+      expect(subject.resources.map(&:request_path)).to eql(%w[/a/b.xml /a/b])
     end
     context "enumerable" do
       it "iterates through resources" do
@@ -222,10 +222,10 @@ context Sitepress::Node do
     end
     context "/a/b" do
       it "raises Sitepress::ExistingRequestPathError if adding default format" do
-        expect{subject.formats.add(asset: asset)}.to raise_error(Sitepress::ExistingRequestPathError)
+        expect{subject.resources.add_asset(asset)}.to raise_error(Sitepress::ExistingRequestPathError)
       end
       it "raises Sitepress::ExistingRequestPathError if adding duplicate format" do
-        expect{subject.formats.add(asset: asset, format: :html)}.to raise_error(Sitepress::ExistingRequestPathError)
+        expect{subject.resources.add_asset(asset, format: :html)}.to raise_error(Sitepress::ExistingRequestPathError)
       end
     end
     context "/a/b.html" do

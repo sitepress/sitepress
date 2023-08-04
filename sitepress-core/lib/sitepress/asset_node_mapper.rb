@@ -33,7 +33,7 @@ module Sitepress
 
     def process_asset(path)
       asset = Asset.new(path: path)
-      node.add_child(asset.node_name).formats.add(format: asset.format, asset: asset)
+      node.add_child(asset.node_name).resources.add_asset(asset, format: asset.format)
     end
 
     private

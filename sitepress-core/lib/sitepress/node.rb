@@ -5,7 +5,7 @@ module Sitepress
   # a leaf node. The actual `buz.html` asset is then stored on the leaf node as a resource. This tree structure
   # makes it possible to reason through path relationships from code to build out elements in a website like tree navigation.
   class Node
-    attr_reader :parent, :name, :default_format, :default_name
+    attr_reader :parent, :name, :default_format, :default_name, :resources
 
     DEFAULT_FORMAT = :html
 
@@ -15,13 +15,10 @@ module Sitepress
       @parent = parent
       @registry = Hash.new { |hash, key| hash[key] = build_child(key) }
       @name = name.freeze
+      @resources = Resources.new(node: self)
       @default_format = default_format
       @default_name = default_name
       yield self if block_given?
-    end
-
-    def formats
-      @formats ||= Formats.new(node: self)
     end
 
     # Returns the immediate children nodes.
@@ -79,9 +76,9 @@ module Sitepress
     end
 
     def flatten(resources: [])
-      formats.each{ |resource| resources << resource }
+      @resources.each { |resource| resources << resource }
       children.each do |child|
-        child.flatten.each{ |resource| resources << resource }
+        child.flatten.each { |resource| resources << resource }
       end
       resources
     end
@@ -94,7 +91,7 @@ module Sitepress
     def get(path)
       path = Path.new(path)
       node = dig(*path.node_names)
-      node.formats.get(path.format) if node
+      node.resources.get(path.format) if node
     end
 
     def add_child(name)
@@ -105,7 +102,7 @@ module Sitepress
     end
 
     def inspect
-      "<#{self.class}: name=#{name.inspect}, formats=#{formats.extensions.inspect}, children=#{children.map(&:name).inspect}, resource_request_paths=#{formats.map(&:request_path)}>"
+      "<#{self.class}: name=#{name.inspect}, formats=#{resources.formats.inspect}, children=#{children.map(&:name).inspect}, resource_request_paths=#{resources.map(&:request_path)}>"
     end
 
     def dig(*args)
