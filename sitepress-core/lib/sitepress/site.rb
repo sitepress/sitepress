@@ -35,7 +35,7 @@ module Sitepress
 
     # Returns a list of all the resources within #root.
     def resources
-      @resources ||= ResourceCollection.new(node: root, root_path: pages_path)
+      @resources ||= ResourceIndexer.new(node: root, root_path: pages_path)
     end
 
     def reload!

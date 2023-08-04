@@ -1,7 +1,7 @@
 module Sitepress
-  # Represents a collection of resources. Provides interfaces to query
-  # resource via globbing, paths, etc.
-  class ResourceCollection
+  # Flattens a tree of Sitepress::Node and Sitepress:Resource classes into a collection of
+  # resources that can be quickly globbed, queried, or accessed.
+  class ResourceIndexer
     extend Forwardable
     def_delegators :resources, :each, :size, :index, :[], :last, :length, :fetch, :count, :at
 

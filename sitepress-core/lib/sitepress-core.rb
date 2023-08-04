@@ -19,7 +19,7 @@ module Sitepress
   autoload :Parsers,              "sitepress/parsers"
   autoload :Resource,             "sitepress/resource"
   autoload :Resources,            "sitepress/resources"
-  autoload :ResourceCollection,   "sitepress/resource_collection"
+  autoload :ResourceIndexer,      "sitepress/resource_indexer"
   autoload :ResourcesPipeline,    "sitepress/resources_pipeline"
   autoload :Site,                 "sitepress/site"
 end
