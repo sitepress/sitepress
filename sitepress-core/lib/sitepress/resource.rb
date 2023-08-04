@@ -36,13 +36,13 @@ module Sitepress
       # Remove myself from the current node's formats table
       remove
       # Add myself to the new node's formats table
-      destination.add_child(node.name).formats.add asset: asset, format: format
+      destination.add_child(node.name).resources.add_asset asset, format: format
       # Now update my current @node reference to the new node
       @node = destination
     end
 
     def remove
-      node.formats.remove format
+      node.resources.remove format
     end
 
     def inspect
@@ -99,13 +99,13 @@ module Sitepress
 
       case type
       when :all
-        nodes.map{ |node| node.formats }
+        nodes.map{ |node| node.resources }
       when :same
-        nodes.map{ |n| n.formats.get(format) }.flatten
+        nodes.map{ |n| n.resources.get(format) }.flatten
       when String, Symbol, NilClass
-        nodes.map{ |n| n.formats.get(type) }.flatten
+        nodes.map{ |n| n.resources.get(type) }.flatten
       when MIME::Type
-        nodes.map{ |n| n.formats.mime_type(type) }.flatten
+        nodes.map{ |n| n.resources.mime_type(type) }.flatten
       else
         raise ArgumentError, "Invalid type argument #{type}. Must be either :same, :all, an extension string, or a Mime::Type"
       end
