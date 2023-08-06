@@ -48,7 +48,7 @@ context Sitepress::Site do
     end
     it "manipulates resources" do
       subject.manipulate do |root|
-        root.get("blog/my-awesome-post").node = root.add_child("my-awesome-post")
+        root.get("blog/my-awesome-post").node = root.child("my-awesome-post")
       end
       expect(subject.get("my-awesome-post").asset.path.to_s).to eql("spec/sites/sample/pages/blog/my-awesome-post.html.md")
     end

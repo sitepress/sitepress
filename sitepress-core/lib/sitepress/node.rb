@@ -97,11 +97,15 @@ module Sitepress
       node.resources.get(path.format) if node
     end
 
-    def add_child(name)
+    def child(name)
       return self if name == default_name
       @registry[name].tap do |node|
         yield node if block_given?
       end
+    end
+
+    def child?(name)
+      @registry.key? name
     end
 
     def inspect

@@ -5,9 +5,6 @@ require "forwardable"
 module Sitepress
   # A collection of pages from a directory.
   class Site
-    # Default file pattern to pick up in site
-    DEFAULT_GLOB = "**/**".freeze
-
     # Default root_path for site.
     DEFAULT_ROOT_PATH = Pathname.new(".").freeze
 

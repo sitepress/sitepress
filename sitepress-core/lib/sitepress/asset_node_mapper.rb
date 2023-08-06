@@ -28,12 +28,12 @@ module Sitepress
 
     def process_directory(path)
       node_name = File.basename path
-      node_mapper path: path, node: node.add_child(node_name)
+      node_mapper path: path, node: node.child(node_name)
     end
 
     def process_asset(path)
       asset = Asset.new(path: path)
-      node.add_child(asset.node_name).resources.add_asset(asset, format: asset.format)
+      node.child(asset.node_name).resources.add_asset(asset, format: asset.format)
     end
 
     private
