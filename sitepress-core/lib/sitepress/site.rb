@@ -11,11 +11,7 @@ module Sitepress
     # Default root_path for site.
     DEFAULT_ROOT_PATH = Pathname.new(".").freeze
 
-    # Maps Rail-ish template files & structures into the site's node tree.
-    DEFAULT_NODE_MAPPER = AssetNodeMapper
-
     attr_reader :root_path
-    attr_accessor :node_mapper
     attr_writer :resources_pipeline
 
     # TODO: Get rid of these so that folks have ot call site.resources.get ...
@@ -24,16 +20,20 @@ module Sitepress
 
     def initialize(root_path: DEFAULT_ROOT_PATH)
       self.root_path = root_path
-      self.node_mapper = DEFAULT_NODE_MAPPER
     end
 
     # A tree representation of the resourecs wthin the site. The root is a node that's
     # processed by the `resources_pipeline`.
     def root
-      @root ||= Node.new.tap do |node|
-        node_mapper.new(path: pages_path, node: node).map
-        resources_pipeline.process node
+      @root ||= Node.new.tap do |root|
+        asset_node_mapper(root).map
+        resources_pipeline.process root
       end
+    end
+
+    # Maps a path of directories and files into the root node.
+    def asset_node_mapper(root_node)
+      AssetNodeMapper.new(path: pages_path, node: root_node)
     end
 
     # Returns a list of all the resources within #root.
