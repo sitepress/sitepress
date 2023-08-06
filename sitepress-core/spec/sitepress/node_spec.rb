@@ -5,19 +5,19 @@ context Sitepress::Node do
   let(:root) do
     Sitepress::Node.new default_format: nil, default_name: "default" do |root|
       root.resources.add_asset(asset, format: :html)
-      root.add_child("app") do |app|
+      root.child("app") do |app|
         app.resources.add_asset(asset, format: :html)
-        app.add_child("is") do |is|
+        app.child("is") do |is|
           is.resources.add_asset(asset, format: :html)
-          is.add_child("good").resources.add_asset(asset, format: :html)
-          is.add_child("bad") do |bad|
+          is.child("good").resources.add_asset(asset, format: :html)
+          is.child("bad") do |bad|
             bad.resources.add_asset(asset, format: :html)
-            bad.add_child("really").resources.add_asset(asset, format: :html)
+            bad.child("really").resources.add_asset(asset, format: :html)
           end
         end
-        app.add_child("boo") do |boo|
+        app.child("boo") do |boo|
           boo.resources.add_asset(asset, format: :html)
-          boo.add_child("radly").resources.add_asset(asset, format: :html)
+          boo.child("radly").resources.add_asset(asset, format: :html)
         end
       end
     end
@@ -75,15 +75,15 @@ context Sitepress::Node do
         /a/b/c.html] }
     let(:root) do
       Sitepress::Node.new default_format: nil, default_name: nil do |root|
-        root.add_child("index") do |index|
+        root.child("index") do |index|
           index.resources.add_asset(asset, format: :html)
         end
-        root.add_child("a") do |a|
+        root.child("a") do |a|
           a.resources.add_asset(asset, format: :html)
-          a.add_child("1").resources.add_asset(asset, format: :html)
-          a.add_child("b") do |b|
+          a.child("1").resources.add_asset(asset, format: :html)
+          a.child("b") do |b|
             b.resources.add_asset(asset, format: :html)
-            b.add_child("c").resources.add_asset(asset, format: :html)
+            b.child("c").resources.add_asset(asset, format: :html)
           end
         end
       end
@@ -179,13 +179,13 @@ context Sitepress::Node do
         /a/b/c] }
     let(:root) do
       Sitepress::Node.new do |root|
-        root.add_child("a") do |a|
+        root.child("a") do |a|
           a.resources.add_asset(asset)
-          a.add_child("1").resources.add_asset(asset)
-          a.add_child("b") do |b|
+          a.child("1").resources.add_asset(asset)
+          a.child("b") do |b|
             b.resources.add_asset(asset, format: :xml)
             b.resources.add_asset(asset, format: :html)
-            b.add_child("c").resources.add_asset(asset)
+            b.child("c").resources.add_asset(asset)
           end
         end
       end
@@ -217,7 +217,7 @@ context Sitepress::Node do
     end
     context "/a/b/index.html" do
       it "is the same as /a/b.html" do
-        expect(subject.add_child("index")).to eql subject
+        expect(subject.child("index")).to eql subject
       end
     end
     context "/a/b" do
