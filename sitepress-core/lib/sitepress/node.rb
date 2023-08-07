@@ -70,7 +70,7 @@ module Sitepress
       end
 
       # Check if the name of this node exists as a child on the new parent.
-      if parent.child_key? child.name
+      if parent.child? child.name
         raise Sitepress::Error, "Node exists with the name #{child.name.inspect} in #{parent.inspect}. Remove existing node."
       else
         @parent = parent
@@ -123,10 +123,6 @@ module Sitepress
 
     def overwrite_child(node)
       @children[node.name] = node
-    end
-
-    def child_key?(name)
-      @children.key? name
     end
 
     private
