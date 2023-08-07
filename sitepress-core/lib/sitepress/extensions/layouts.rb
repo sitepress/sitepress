@@ -14,7 +14,7 @@ module Sitepress
       end
 
       def process_resources(node)
-        node.flatten.each do |resource|
+        node.resources.flatten.each do |resource|
           @rules.each do |rule|
             if rule.processor.call(resource)
               resource.data["layout"] ||= rule.layout

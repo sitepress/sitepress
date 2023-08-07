@@ -44,6 +44,14 @@ module Sitepress
       end
     end
 
+    def flatten(resources: [])
+      each { |resource| resources << resource }
+      @node.children.each do |child|
+        child.resources.flatten.each { |resource| resources << resource }
+      end
+      resources
+    end
+
     def add_asset(asset, format: nil)
       format = symbolize(format || default_format)
       add Resource.new(asset: asset, node: @node, format: format)

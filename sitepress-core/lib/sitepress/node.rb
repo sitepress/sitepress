@@ -78,14 +78,6 @@ module Sitepress
       end
     end
 
-    def flatten(resources: [])
-      @resources.each { |resource| resources << resource }
-      children.each do |child|
-        child.flatten.each { |resource| resources << resource }
-      end
-      resources
-    end
-
     def remove
       @parent.remove_child name
       @parent = nil
