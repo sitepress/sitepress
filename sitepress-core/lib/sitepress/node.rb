@@ -17,7 +17,7 @@ module Sitepress
     def initialize(parent: nil, name: nil, default_format: DEFAULT_FORMAT, default_name: DEFAULT_NAME)
       @name = name.freeze
       @parent = parent
-      @children = Hash.new { |hash, key| hash[key] = build_child(name: key) }
+      @children = Hash.new
       @resources = Resources.new(node: self)
       @default_format = default_format
       @default_name = default_name
@@ -91,8 +91,9 @@ module Sitepress
 
     def child(name)
       return self if name == default_name
-      @children[name].tap do |node|
-        yield node if block_given?
+
+      @children.fetch(name){ @children[name] = build_child(name: name) }.tap do |child|
+        yield child if block_given?
       end
     end
 
@@ -108,7 +109,7 @@ module Sitepress
       head, *tail = args
       if (head.nil? or head.empty? or head == default_name) and tail.empty?
         self
-      elsif @children.has_key?(head)
+      elsif child?(head)
         @children[head].dig(*tail)
       else
         nil
