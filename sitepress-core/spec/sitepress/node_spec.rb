@@ -53,7 +53,7 @@ context Sitepress::Node do
   end
 
   it "flattens routes" do
-    expect(root.flatten.map(&:request_path)).to match_array(routes)
+    expect(root.resources.flatten.map(&:request_path)).to match_array(routes)
   end
 
   context "/default.html" do
@@ -127,7 +127,7 @@ context Sitepress::Node do
       end
       context "enumerable" do
         it "iterates through resources" do
-          expect(root.flatten.map(&:request_path)).to match_array(routes)
+          expect(root.resources.flatten.map(&:request_path)).to match_array(routes)
         end
       end
       it { should have_parents(["/a.html"]) }
@@ -138,7 +138,7 @@ context Sitepress::Node do
           before { subject.get("c.html").node.remove }
           it { should have_children([]) }
           it "removes route" do
-            expect(root.flatten.map(&:request_path)).to match_array(routes - ["/a/b/c.html"])
+            expect(root.resources.flatten.map(&:request_path)).to match_array(routes - ["/a/b/c.html"])
           end
         end
         context "remove /a/b.html" do
@@ -147,7 +147,7 @@ context Sitepress::Node do
           it { should have_siblings([]) }
           it { should have_children(%w[/c.html]) }
           it "removes route" do
-            expect(root.flatten.map(&:request_path)).to match_array(routes - ["/a/b.html", "/a/b/c.html"])
+            expect(root.resources.flatten.map(&:request_path)).to match_array(routes - ["/a/b.html", "/a/b/c.html"])
           end
         end
       end
@@ -217,7 +217,7 @@ context Sitepress::Node do
     end
     context "enumerable" do
       it "iterates through resources" do
-        expect(root.flatten.map(&:request_path)).to match_array(routes)
+        expect(root.resources.flatten.map(&:request_path)).to match_array(routes)
       end
     end
     it { should have_parents(["/a"]) }
@@ -233,7 +233,7 @@ context Sitepress::Node do
       it { should have_siblings([]) }
       it { should have_children(%w[/c]) }
       it "removes route" do
-        expect(root.flatten.map(&:request_path)).to match_array(routes - %w[/a/b /a/b.xml /a/b /a/b/c])
+        expect(root.resources.flatten.map(&:request_path)).to match_array(routes - %w[/a/b /a/b.xml /a/b /a/b/c])
       end
     end
     context "/a/b/index.html" do

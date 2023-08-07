@@ -27,7 +27,7 @@ module Sitepress
 
     private
     def resources
-      @node.flatten
+      @node.resources.flatten
     end
   end
 end
