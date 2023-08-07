@@ -15,9 +15,9 @@ module Sitepress
     DEFAULT_NAME = "index".freeze
 
     def initialize(parent: nil, name: nil, default_format: DEFAULT_FORMAT, default_name: DEFAULT_NAME)
-      @parent = parent
-      @registry = Hash.new { |hash, key| hash[key] = build_child(name: key) }
       @name = name.freeze
+      @parent = parent
+      @children = Hash.new { |hash, key| hash[key] = build_child(name: key) }
       @resources = Resources.new(node: self)
       @default_format = default_format
       @default_name = default_name
@@ -26,7 +26,7 @@ module Sitepress
 
     # Returns the immediate children nodes.
     def children
-      @registry.values
+      @children.values
     end
 
     # Returns sibling nodes and self.
@@ -50,7 +50,7 @@ module Sitepress
     end
 
     def leaf?
-      @registry.empty?
+      @children.empty?
     end
 
     def parent=(parent)
@@ -91,13 +91,13 @@ module Sitepress
 
     def child(name)
       return self if name == default_name
-      @registry[name].tap do |node|
+      @children[name].tap do |node|
         yield node if block_given?
       end
     end
 
     def child?(name)
-      @registry.key? name
+      @children.key? name
     end
 
     def inspect
@@ -108,8 +108,8 @@ module Sitepress
       head, *tail = args
       if (head.nil? or head.empty? or head == default_name) and tail.empty?
         self
-      elsif @registry.has_key?(head)
-        @registry[head].dig(*tail)
+      elsif @children.has_key?(head)
+        @children[head].dig(*tail)
       else
         nil
       end
@@ -117,15 +117,15 @@ module Sitepress
 
     protected
     def remove_child(name)
-      @registry.delete(name)
+      @children.delete(name)
     end
 
     def overwrite_child(node)
-      @registry[node.name] = node
+      @children[node.name] = node
     end
 
     def child_key?(name)
-      @registry.key? name
+      @children.key? name
     end
 
     private
