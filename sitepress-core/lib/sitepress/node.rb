@@ -36,13 +36,7 @@ module Sitepress
 
     # Returns all parents up to the root node.
     def parents
-      parents = []
-      node = parent
-      while node do
-        parents << node
-        node = node.parent
-      end
-      parents
+      Enumerator.produce(parent, &:parent).take_while(&:itself)
     end
 
     def root?
@@ -54,23 +48,19 @@ module Sitepress
     end
 
     def parent=(parent)
-      return if parent == @parent
-
-      if parent.nil?
-        remove
-        return
-      end
-
       child = self
 
+      if parent == @parent
+        return
+      elsif parent.nil?
+        remove
+        return
       # Make sure we don't change the parent of this node to one if its children; otherwise
       # we'd have to jump into a time machine and do some really weird stuff with Doc Whatever-his-name-is.
-      if child.children.include? parent
+      elsif child.children.include? parent
         raise Sitepress::Error, "Parent node can't be changed to one of its children"
-      end
-
       # Check if the name of this node exists as a child on the new parent.
-      if parent.child? child.name
+      elsif parent.child? child.name
         raise Sitepress::Error, "Node exists with the name #{child.name.inspect} in #{parent.inspect}. Remove existing node."
       else
         @parent = parent
@@ -79,6 +69,7 @@ module Sitepress
     end
 
     def remove
+      return if @parent.nil?
       @parent.remove_child name
       @parent = nil
     end
