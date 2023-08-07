@@ -20,6 +20,13 @@ context Sitepress::Node do
           boo.child("radly").resources.add_asset(asset, format: :html)
         end
       end
+      # Let's build up some nodes manually.
+      post = Sitepress::Node.new(name: "post", default_format: nil)
+      post.resources.add_asset(asset, format: :html)
+      blog = Sitepress::Node.new(name: "blog", default_format: nil)
+      post.parent = blog
+      blog.resources.add_asset(asset, format: :html)
+      blog.parent = root
     end
   end
   let(:routes) { %w[
@@ -30,7 +37,10 @@ context Sitepress::Node do
       /app/is/bad.html
       /app/is/bad/really.html
       /app/boo.html
-      /app/boo/radly.html] }
+      /app/boo/radly.html
+      /blog.html
+      /blog/post.html
+    ] }
 
   subject { root.get(path)&.node }
 
@@ -40,6 +50,10 @@ context Sitepress::Node do
 
   it "is_leaf" do
     expect(root.get("/app/boo/radly.html").node).to be_leaf
+  end
+
+  it "flattens routes" do
+    expect(root.flatten.map(&:request_path)).to match_array(routes)
   end
 
   context "/default.html" do
@@ -52,6 +66,13 @@ context Sitepress::Node do
     it { is_expected.to be_nil }
   end
 
+  context "/blog/post.html" do
+    let(:path) { "/blog/post.html" }
+    it { should have_parents(%w[/blog.html /default.html]) }
+    it { should have_siblings(%w[/blog/post.html]) }
+    it { should have_children([]) }
+  end
+
   context "/app/is/bad.html" do
     let(:path) { "/app/is/bad.html" }
     it { should have_parents(%w[/app/is.html /app.html /default.html]) }
@@ -62,7 +83,7 @@ context Sitepress::Node do
   context "/app.html" do
     let(:path) { "/app.html" }
     it { should have_parents(%w[/default.html]) }
-    it { should have_siblings(%w[/app.html]) }
+    it { should have_siblings(%w[/app.html /blog.html]) }
     it { should have_children(%w[/app/is.html /app/boo.html]) }
   end
 
