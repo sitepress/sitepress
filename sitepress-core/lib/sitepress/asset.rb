@@ -70,7 +70,7 @@ module Sitepress
     end
 
     def destroy
-      FIleUtils.rm path
+      FileUtils.rm path
     end
 
     def save
