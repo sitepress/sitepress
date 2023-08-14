@@ -24,12 +24,18 @@ module Sitepress
       @registry.delete symbolize(extension)
     end
 
-    def get(extension)
+    def format(extension)
       @registry[symbolize(extension || default_format)]
     end
+    # TODO: Unalias this and update docs so it all works.
+    alias :get :format
 
     def formats
       @registry.keys
+    end
+
+    def format?(key)
+      @registry.key? key
     end
 
     def mime_type(mime_type)
@@ -37,7 +43,7 @@ module Sitepress
     end
 
     def add(resource)
-      if @registry.has_key? resource.format
+      if @registry.key? resource.format
         raise Sitepress::ExistingRequestPathError, "Resource at #{resource.request_path} already set with format #{resource.format.inspect}"
       else
         @registry[resource.format] = resource
