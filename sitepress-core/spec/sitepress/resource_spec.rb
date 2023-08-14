@@ -32,7 +32,7 @@ context Sitepress::Resource do
   context "node manipulation" do
     let(:site) { Sitepress::Site.new(root_path: "spec/sites/tree") }
     let(:node) { site.root.dig("vehicles", "cars", "compacts", "smart") }
-    let(:resource) { node.resources.get(:html) }
+    let(:resource) { node.resources.format(:html) }
     let(:destination) { site.root.dig("vehicles", "trucks") }
     describe "#node=" do
       before { resource.node = destination }

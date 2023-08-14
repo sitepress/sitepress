@@ -130,9 +130,9 @@ module Sitepress
       when :all
         nodes.map{ |node| node.resources }
       when :same
-        nodes.map{ |n| n.resources.get(format) }.flatten
+        nodes.map{ |n| n.resources.format(format) }.flatten
       when String, Symbol, NilClass
-        nodes.map{ |n| n.resources.get(type) }.flatten
+        nodes.map{ |n| n.resources.format(type) }.flatten
       when MIME::Type
         nodes.map{ |n| n.resources.mime_type(type) }.flatten
       else

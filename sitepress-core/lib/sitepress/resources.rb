@@ -27,8 +27,6 @@ module Sitepress
     def format(extension)
       @registry[symbolize(extension || default_format)]
     end
-    # TODO: Unalias this and update docs so it all works.
-    alias :get :format
 
     def formats
       @registry.keys
