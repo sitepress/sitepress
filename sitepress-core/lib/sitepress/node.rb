@@ -77,7 +77,7 @@ module Sitepress
     def get(path)
       path = Path.new(path)
       node = dig(*path.node_names)
-      node.resources.get(path.format) if node
+      node.resources.format(path.format) if node
     end
 
     def child(name)
