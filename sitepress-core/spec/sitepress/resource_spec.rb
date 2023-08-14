@@ -29,6 +29,24 @@ context Sitepress::Resource do
       expect(subject.url).to eql("/test")
     end
   end
+  describe "#clone" do
+    let(:clone) { resource.clone }
+    it "sets node to nil" do
+      expect(clone.node).to be_nil
+    end
+    it "has same asset" do
+      expect(clone.asset).to eql resource.asset
+    end
+    it "has same format" do
+      expect(clone.format).to eql resource.format
+    end
+    it "has same mime_type" do
+      expect(clone.mime_type).to eql resource.mime_type
+    end
+    it "has same handler" do
+      expect(clone.handler).to eql resource.handler
+    end
+  end
   context "node manipulation" do
     let(:site) { Sitepress::Site.new(root_path: "spec/sites/tree") }
     let(:node) { site.root.dig("vehicles", "cars", "compacts", "smart") }
