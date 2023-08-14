@@ -1,7 +1,14 @@
 require "spec_helper"
 
+class MySite < Sitepress::Site
+  def manipulate_nodes(root)
+    super root
+    root.get("blog/my-awesome-post").node = root.child("my-awesome-post")
+  end
+end
+
 context Sitepress::Site do
-  subject { Sitepress::Site.new(root_path: "spec/sites/sample") }
+  subject { MySite.new(root_path: "spec/sites/sample") }
   let(:resource_count) { 6 }
   it "has 5 resources" do
     expect(subject.resources.to_a.size).to eql(resource_count)
@@ -10,7 +17,6 @@ context Sitepress::Site do
     it "has root_path" do
       expect(subject.root_path.to_s).to eql("spec/sites/sample")
     end
-
     it "has pages_path" do
       expect(subject.pages_path.to_s).to eql("spec/sites/sample/pages")
     end
@@ -41,21 +47,9 @@ context Sitepress::Site do
       end
     end
   end
-  describe "#manipulate" do
-    it "adds ProcManipulator to_pipeline" do
-      subject.manipulate { |resource, resources| }
-      expect(subject.resources_pipeline.last).to be_instance_of(Sitepress::Extensions::ProcManipulator)
-    end
+  describe "#manipulate_nodes" do
     it "manipulates resources" do
-      subject.manipulate do |root|
-        root.get("blog/my-awesome-post").node = root.child("my-awesome-post")
-      end
       expect(subject.get("my-awesome-post").asset.path.to_s).to eql("spec/sites/sample/pages/blog/my-awesome-post.html.md")
-    end
-  end
-  describe "#delete" do
-    it "removes node" do
-      expect{subject.get("blog/my-awesome-post").remove}.to change{subject.resources.size}.by(-1)
     end
   end
   describe "#get" do

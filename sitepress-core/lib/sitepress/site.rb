@@ -1,5 +1,4 @@
 require "pathname"
-require "sitepress/extensions/proc_manipulator"
 require "forwardable"
 
 module Sitepress
@@ -9,7 +8,6 @@ module Sitepress
     DEFAULT_ROOT_PATH = Pathname.new(".").freeze
 
     attr_reader :root_path
-    attr_writer :resources_pipeline
 
     # TODO: Get rid of these so that folks have ot call site.resources.get ...
     extend Forwardable
@@ -19,13 +17,34 @@ module Sitepress
       self.root_path = root_path
     end
 
-    # A tree representation of the resourecs wthin the site. The root is a node that's
-    # processed by the `resources_pipeline`.
+    # A tree representation of the resourecs wthin the site.
     def root
-      @root ||= Node.new.tap do |root|
-        asset_node_mapper(root).map
-        resources_pipeline.process root
-      end
+      @root ||= Node.new.tap { |root| manipulate_nodes root }
+    end
+
+    # Override this method to manipulate the construction of the Sitepress site. For example, let's
+    # say you have a bunch of blog posts in date folders (please don't do this), like `./pages/posts/2022-12-19/my-post.html.erb`
+    # that you want to access at `/posts/my-post`, you might do something like this:
+    #
+    # ```ruby
+    # class MySite < Sitepress::Site
+    #   def manipulate_nodes(root)
+    #     super(root) # If you forget this, nothing will load from folders.
+    #     blog = root.dig("posts")
+    #     # This is actually a really bad idea, so don't do it. But if you must!
+    #     blog.children.each do |date|
+    #       dated_post = date.resources.flatten.resources.first { |r| r.format == :html }
+    #       dated_post.move_to blog
+    #     end
+    #   end
+    # end
+    # ```
+    #
+    # Ok, why is this such a bad idea? Its a huge advantage to know that a file from `./posts/my-post`
+    # can be found in `./app/content/pages/posts/my-post.html.erb`. When you add levels of indirection
+    # between the files and the URLs, you make it more difficult to manage the content.
+    def manipulate_nodes(root)
+      asset_node_mapper(root).map
     end
 
     # Maps a path of directories and files into the root node.
@@ -84,47 +103,8 @@ module Sitepress
       @models_path = Pathname.new(path)
     end
 
-    # Quick and dirty way to manipulate resources in the site without
-    # creating classes that implement the #process_resources method.
-    #
-    # A common example may be adding data to a resource if it begins with a
-    # certain path:
-    #
-    # ```ruby
-    # Sitepress.site.manipulate do |root|
-    #   root.get("videos").each do |resource|
-    #     resource.data["layout"] = "video"
-    #   end
-    # end
-    # ```
-    #
-    # A more complex, contrived example that sets index.html as the root node
-    # in the site:
-    #
-    # ```ruby
-    # Sitepress.site.manipulate do |root|
-    #   root.get("blog").each do |post|
-    #     post.move_to root
-    #   end
-    #
-    #   if resource.request_path == "/index"
-    #     # Remove the HTML format of index from the current resource level
-    #     # so we can level it up.
-    #     node = resource.node
-    #     node.formats.remove ".html"
-    #     node.remove
-    #     root.add path: "/", asset: resource.asset # Now we can get to this from `/`.
-    #   end
-    # end
-    # ```
-    def manipulate(&block)
-      resources_pipeline << Extensions::ProcManipulator.new(block)
-    end
-
-    # An array of procs that manipulate the tree and resources from the
-    # Node returned by #root.
-    def resources_pipeline
-      @resources_pipeline ||= ResourcesPipeline.new
+    def self.site
+      @site ||= self.class.new
     end
   end
 end

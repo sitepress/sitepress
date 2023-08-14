@@ -20,6 +20,5 @@ module Sitepress
   autoload :Resource,             "sitepress/resource"
   autoload :Resources,            "sitepress/resources"
   autoload :ResourceIndexer,      "sitepress/resource_indexer"
-  autoload :ResourcesPipeline,    "sitepress/resources_pipeline"
   autoload :Site,                 "sitepress/site"
 end
