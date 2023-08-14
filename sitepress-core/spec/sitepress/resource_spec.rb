@@ -29,26 +29,59 @@ context Sitepress::Resource do
       expect(subject.url).to eql("/test")
     end
   end
-  describe "#node=" do
+  context "node manipulation" do
     let(:site) { Sitepress::Site.new(root_path: "spec/sites/tree") }
     let(:node) { site.root.dig("vehicles", "cars", "compacts", "smart") }
     let(:resource) { node.resources.get(:html) }
     let(:destination) { site.root.dig("vehicles", "trucks") }
-    before { resource.node = destination }
-    it "sets node to destination" do
-      expect(resource.node).to eql destination
+    describe "#node=" do
+      before { resource.node = destination }
+      it "sets node to destination" do
+        expect(resource.node).to eql destination
+      end
+      it "removes resource from node" do
+        expect(node.resources).to_not include resource
+      end
+      it "adds resource to node" do
+        expect(destination.resources).to include resource
+      end
+      it "has new request path" do
+        expect(resource.request_path).to eql("/vehicles/trucks")
+      end
+      it "raises error if moved to a resource with the same format" do
+        expect{ resource.node = site.root.dig("vehicles", "cars", "camry") }.to raise_error(Sitepress::Error)
+      end
     end
-    it "removes resource from node" do
-      expect(node.resources).to_not include resource
+    describe "#move_to" do
+      before { resource.move_to destination }
+      it "containing node is destination node" do
+        expect(resource.node.parent).to eql destination
+      end
+      it "Removes node from source resources" do
+        expect(node.resources).to_not include(node)
+      end
+      it "Adds resource to destination resources" do
+        expect(destination.child("smart").resources).to include(resource)
+      end
     end
-    it "adds resource to node" do
-      expect(destination.resources).to include resource
-    end
-    it "has new request path" do
-      expect(resource.request_path).to eql("/vehicles/trucks")
-    end
-    it "raises error if moved to a resource with the same format" do
-      expect{ resource.node = site.root.dig("vehicles", "cars", "camry") }.to raise_error(Sitepress::Error)
+    describe "#copy_to" do
+      let(:copy) { resource.copy_to destination }
+      before { copy }
+      it "moves resource clone to destination node" do
+        expect(copy.node.parent).to eql destination
+      end
+      it "copies object" do
+        expect(copy.object_id).to_not eql(resource.object_id)
+      end
+      it "keeps existing resouce in source node" do
+        expect(resource.node).to eql node
+      end
+      it "Keeps node in source resources" do
+        expect(node.resources).to include(resource)
+      end
+      it "Adds copy to destination resources" do
+        expect(destination.child("smart").resources).to include(copy)
+      end
     end
   end
   describe "resource node relationships" do

@@ -33,7 +33,7 @@ module Sitepress
     alias :url :request_path
 
     def node=(destination)
-      if destination.resources.formats.include? format
+      if destination.resources.format? format
         raise Sitepress::Error, "#{destination.inspect} already has a resource with a #{format} format"
       end
       remove
@@ -41,8 +41,37 @@ module Sitepress
       @node = destination
     end
 
+    # Moves the resource to a destination node. Moving a resource to a Sitepress::Node
+    # is a little weird for people who are accustomed to working with files, which is pretty
+    # much everybody (including myself). A child node has to be created on the destination node
+    # with the name of the resource node.
+    #
+    # Or just ignore all of that and use the `move_to` method so you can feel like you're
+    # moving files around.
+    def move_to(destination)
+      raise Sitepress::Error, "#{destination.inspect} is not a Sitepress::Node" unless destination.is_a? Sitepress::Node
+      self.tap do |resource|
+        resource.node = destination.child(node.name)
+      end
+    end
+
+    # Creates a duplicate of the resource and moves it to the destination.
+    def copy_to(destination)
+      raise Sitepress::Error, "#{destination.inspect} is not a Sitepress::Node" unless destination.is_a? Sitepress::Node
+      self.clone.tap do |resource|
+        resource.node = destination.child(node.name)
+      end
+    end
+
+    # Clones should be initialized with a nil node. Initializing with a node would mean that multiple resources
+    # are pointing to the same node, which shouldn't be possible.
+    def clone
+      self.class.new(asset: @asset, node: nil, format: @format, mime_type: @mime_type, handler: @handler)
+    end
+
+    # Removes the resource from the node's resources list.
     def remove
-      node.resources.remove format
+      node.resources.remove format if node
     end
 
     def inspect
