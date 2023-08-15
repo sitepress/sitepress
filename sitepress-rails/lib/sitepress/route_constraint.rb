@@ -3,7 +3,7 @@ module Sitepress
   class RouteConstraint
     attr_reader :site
 
-    def initialize(site: Sitepress.site)
+    def initialize(site:)
       @site = site
     end
 

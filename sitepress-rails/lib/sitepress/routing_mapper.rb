@@ -8,13 +8,13 @@ module ActionDispatch::Routing
     ROUTE_GLOB_KEY = "/*resource_path".freeze
 
     # Hook up all the Sitepress pages
-    def sitepress_pages(controller: DEFAULT_CONTROLLER, action: DEFAULT_ACTION, root: false, constraints: Sitepress::RouteConstraint.new)
+    def sitepress_pages(controller: DEFAULT_CONTROLLER, action: DEFAULT_ACTION, root: false, site: Sitepress.site)
       get ROUTE_GLOB_KEY,
         controller: controller,
         action: action,
         as: :page,
         format: false,
-        constraints: constraints
+        constraints: Sitepress::RouteConstraint.new(site: site)
 
       sitepress_root controller: controller, action: action if root
     end
