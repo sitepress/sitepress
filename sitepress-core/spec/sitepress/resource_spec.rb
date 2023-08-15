@@ -48,7 +48,7 @@ context Sitepress::Resource do
     end
   end
   context "node manipulation" do
-    let(:site) { Sitepress::Site.from_path("spec/sites/tree") }
+    let(:site) { Sitepress::Site.from_root("spec/sites/tree") }
     let(:node) { site.root.dig("vehicles", "cars", "compacts", "smart") }
     let(:resource) { node.resources.format(:html) }
     let(:destination) { site.root.dig("vehicles", "trucks") }
@@ -103,7 +103,7 @@ context Sitepress::Resource do
     end
   end
   describe "resource node relationships" do
-    let(:site) { Sitepress::Site.from_path("spec/sites/tree") }
+    let(:site) { Sitepress::Site.from_root("spec/sites/tree") }
     let(:root) { site.root }
     subject{ root.get(path) }
     context "/" do

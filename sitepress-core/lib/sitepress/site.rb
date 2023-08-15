@@ -11,14 +11,17 @@ module Sitepress
     extend Forwardable
     def_delegators :resources, :get, :glob
 
-    attr_reader :pages_path
-
     def initialize(pages_path:)
-      @pages_path = Pathname.new(pages_path)
+      self.pages_path = pages_path
     end
 
-    def self.from_path(root_path)
-      new pages_path: Sitepress::Configuration::RailsPaths.new(root_path: root_path).pages_path
+    attr_reader :pages_path
+    def pages_path=(path)
+      @pages_path = Pathname.new(path)
+    end
+
+    def self.from_root(root_path)
+      new pages_path: Pathname.new(root_path).join("pages")
     end
 
     # A tree representation of the resourecs wthin the site.

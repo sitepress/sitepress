@@ -13,7 +13,6 @@ module Sitepress
   autoload :Asset,                "sitepress/asset"
   autoload :AssetNodeMapper,      "sitepress/asset_node_mapper"
   autoload :AssetPaths,           "sitepress/asset_paths"
-  autoload :Configuration,        "sitepress/configuration"
   autoload :Data,                 "sitepress/data"
   autoload :Node,                 "sitepress/node"
   autoload :Path,                 "sitepress/path"
