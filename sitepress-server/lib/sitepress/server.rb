@@ -43,7 +43,7 @@ module Sitepress
     # treat a page not being found as an exception, which it then handles. If the constraint
     # was set to the default, Sitepress would hand off routing back to rails if something isn't
     # found and fail silently.
-    routes.append { sitepress_pages root: true, controller: "site", site: Sitepress.site }
+    routes.append { sitepress_pages root: true, controller: "site", site: SiteController.site }
 
     # A logger without a formatter will crash when Sprockets is enabled.
     logger           = ActiveSupport::Logger.new(STDOUT)

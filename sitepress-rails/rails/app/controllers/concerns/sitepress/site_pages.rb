@@ -22,6 +22,12 @@ module Sitepress
       around_action :ensure_site_reload, only: :show
     end
 
+    class_methods do
+      def site
+        Sitepress.site
+      end
+    end
+
     # Public method that is primarily called by Rails to display the page. This should
     # be hooked up to the Rails routes file.
     def show
@@ -96,7 +102,7 @@ module Sitepress
     # pipeline and various path configurations. To make this possible, a new object should be introduced to
     # Sitepress that manages a many-sites to one-rails instance so there's no path issues.
     def site
-      Sitepress.site
+      self.class.site
     end
 
     # Raises a routing error for Rails to deal with in a more "standard" way if the user doesn't

@@ -8,7 +8,7 @@ module Sitepress
 
     def add_sitepress_routes
       route "sitepress_root"
-      route "sitepress_pages site: Sitepress.site"
+      route "sitepress_pages site: Sitepress::SiteController.site"
     end
 
     def append_sitepress_path_to_tailwind_config
