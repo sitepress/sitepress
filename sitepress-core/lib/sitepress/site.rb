@@ -12,7 +12,7 @@ module Sitepress
     def_delegators :resources, :get, :glob
 
     attr_reader :paths
-    def_delegators :paths, :root_path, :pages_path
+    def_delegators :paths, :pages_path
 
     def initialize(paths)
       @paths = paths

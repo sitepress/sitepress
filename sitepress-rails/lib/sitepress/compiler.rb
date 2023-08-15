@@ -54,11 +54,11 @@ module Sitepress
         end
 
         def before_compile
-          status "Building #{site.root_path.expand_path}"
+          status "Building #{site.pages_path.expand_path}"
         end
 
         def after_compile
-          status "Built #{site.root_path.expand_path}"
+          status "Built #{site.pages_path.expand_path}"
         end
 
         def render(resource)
@@ -94,7 +94,7 @@ module Sitepress
 
         def before_compile
           mkdir_p root_path
-          status "Building #{site.root_path.expand_path} to #{root_path.expand_path}"
+          status "Building #{site.pages_path.expand_path} to #{root_path.expand_path}"
         end
 
         def after_compile

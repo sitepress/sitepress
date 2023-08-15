@@ -68,7 +68,7 @@ describe Sitepress::SiteController, type: :controller do
   context "paths" do
     context "view_paths" do
       subject { Sitepress::SiteController.view_paths.map(&:path) }
-      it { is_expected.to include(site.root_path.to_s) }
+      it { is_expected.to include(site.pages_path.join("..").to_s) }
       it { is_expected.to include(site.pages_path.to_s) }
     end
     context "helper_paths" do

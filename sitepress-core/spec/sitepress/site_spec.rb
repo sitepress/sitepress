@@ -14,9 +14,6 @@ context Sitepress::Site do
     expect(subject.resources.to_a.size).to eql(resource_count)
   end
   describe "paths" do
-    it "has root_path" do
-      expect(subject.root_path.to_s).to eql("spec/sites/sample")
-    end
     it "has pages_path" do
       expect(subject.pages_path.to_s).to eql("spec/sites/sample/pages")
     end
