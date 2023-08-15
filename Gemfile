@@ -9,6 +9,5 @@ gemspec path: "sitepress-server"
 gem "appraisal", "~> 2.4.0"
 
 group :test do
-  gem "pry", require: nil
   gem "rack-test", require: nil
 end

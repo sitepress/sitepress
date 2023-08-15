@@ -4,7 +4,6 @@ ENV['RAILS_ENV'] ||= 'test'
 
 require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require "rspec/rails"
-require "pry"
 
 Rails.application.configure do
   # Why set to true? Because according to Rails:

@@ -6,7 +6,6 @@ gem "appraisal", "~> 2.4.0"
 gem "rails", "~> 6.0.0"
 
 group :test do
-  gem "pry", require: nil
   gem "rack-test", require: nil
 end
 

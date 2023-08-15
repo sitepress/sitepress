@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
   rails_version      = ">= 6.0"
 
   spec.add_development_dependency "rspec-rails"
-  spec.add_development_dependency "pry"
   spec.add_development_dependency "rails", rails_version
 
   spec.add_runtime_dependency "sitepress-core", spec.version

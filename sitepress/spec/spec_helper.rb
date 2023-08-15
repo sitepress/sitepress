@@ -1,7 +1,6 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require "sitepress-core"
-require "pry"
 
 # macOS and Linux builds of Ruby don't deal with this the same way, probably
 # because the file system iterates through paths a little differently in terms
