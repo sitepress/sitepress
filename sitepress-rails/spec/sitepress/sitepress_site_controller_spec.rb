@@ -73,9 +73,9 @@ describe Sitepress::SiteController, type: :controller do
     end
     context "helper_paths" do
       subject{ Sitepress::SiteController.helpers_path }
-      it { is_expected.to include(site.paths.helpers_path.to_s) }
+      it { is_expected.to include(Sitepress.configuration.paths.helpers_path.to_s) }
       it "has site#helper_paths in ActiveSupport::Dependencies.autoload_paths" do
-        expect(ActiveSupport::Dependencies.autoload_paths).to include(site.paths.helpers_path.to_s)
+        expect(ActiveSupport::Dependencies.autoload_paths).to include(Sitepress.configuration.paths.helpers_path.to_s)
       end
     end
   end

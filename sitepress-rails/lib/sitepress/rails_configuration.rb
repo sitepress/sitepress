@@ -28,7 +28,7 @@ module Sitepress
 
     # Location of Sprockets manifest file
     def manifest_file_path
-      site.paths.assets_path.join("config/manifest.js")
+      paths.assets_path.join("config/manifest.js")
     end
 
     private
