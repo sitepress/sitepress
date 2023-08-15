@@ -27,7 +27,7 @@ module Sitepress
     end
 
     def site
-      Sitepress::Site.new(root_path: @dir)
+      Sitepress::Site.from_path(@dir)
     end
 
     private

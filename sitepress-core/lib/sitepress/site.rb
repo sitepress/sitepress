@@ -7,14 +7,19 @@ module Sitepress
     # Default root_path for site.
     DEFAULT_ROOT_PATH = Pathname.new(".").freeze
 
-    attr_reader :root_path
-
     # TODO: Get rid of these so that folks have ot call site.resources.get ...
     extend Forwardable
     def_delegators :resources, :get, :glob
 
-    def initialize(root_path: DEFAULT_ROOT_PATH)
-      self.root_path = root_path
+    attr_reader :paths
+    def_delegators :paths, :root_path, :pages_path
+
+    def initialize(paths)
+      @paths = paths
+    end
+
+    def self.from_path(root_path)
+      new Sitepress::Configuration::RailsPaths.new(root_path: root_path)
     end
 
     # A tree representation of the resourecs wthin the site.
@@ -60,51 +65,6 @@ module Sitepress
     def reload!
       @resources = @root = nil
       self
-    end
-
-    # Root path to website project. Contains helpers, pages, and more.
-    def root_path=(path)
-      @root_path = Pathname.new(path)
-    end
-
-    # Location of website pages.
-    def pages_path
-      @pages_path ||= root_path.join("pages")
-    end
-
-    def pages_path=(path)
-      @pages_path = Pathname.new(path)
-    end
-
-    # Location of helper files.
-    def helpers_path
-      @helpers_path ||= root_path.join("helpers")
-    end
-
-    def helpers_path=(path)
-      @helpers_path = Pathname.new(path)
-    end
-
-    # Location of rails assets
-    def assets_path
-      @assets_path ||= root_path.join("assets")
-    end
-
-    def assets_path=(path)
-      @assets_path = Pathname.new(path)
-    end
-
-    # Location of pages models.
-    def models_path
-      @models_path ||= root_path.join("models")
-    end
-
-    def models_path=(path)
-      @models_path = Pathname.new(path)
-    end
-
-    def self.site
-      @site ||= self.class.new
     end
   end
 end
