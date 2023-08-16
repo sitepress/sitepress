@@ -2,7 +2,7 @@ require "forwardable"
 
 module Sitepress
   # Configures Rails with the paths, etc. necessary to handle Sitepress sites in Rails.
-  class RailsConfiguration
+  class Configuration
     # Store in ./app/content by default.
     DEFAULT_SITE_ROOT = "app/content".freeze
 

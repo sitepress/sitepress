@@ -6,7 +6,7 @@ module Sitepress
   module Models
     autoload :Collection,             "sitepress/models/collection"
   end
-  autoload :RailsConfiguration,       "sitepress/rails_configuration"
+  autoload :Configuration,            "sitepress/configuration"
   module Renderers
     autoload :Controller,             "sitepress/renderers/controller"
     autoload :Server,                 "sitepress/renderers/server"
@@ -36,7 +36,7 @@ module Sitepress
 
   # Default configuration object for Sitepress Rails integration.
   def self.configuration
-    @configuration ||= RailsConfiguration.new
+    @configuration ||= Configuration.new
   end
 
   def self.reset_configuration
