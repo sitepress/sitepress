@@ -20,10 +20,6 @@ module Sitepress
       @pages_path = Pathname.new(path)
     end
 
-    def self.from_root(root_path)
-      new pages_path: Pathname.new(root_path).join("pages")
-    end
-
     # A tree representation of the resourecs wthin the site.
     def root
       @root ||= Node.new.tap { |root| manipulate_nodes root }

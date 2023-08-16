@@ -8,7 +8,7 @@ class MySite < Sitepress::Site
 end
 
 context Sitepress::Site do
-  subject { MySite.from_root("spec/sites/sample") }
+  subject { MySite.new(pages_path: "spec/sites/sample/pages") }
   let(:resource_count) { 6 }
   it "has 5 resources" do
     expect(subject.resources.to_a.size).to eql(resource_count)

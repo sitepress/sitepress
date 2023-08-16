@@ -74,7 +74,7 @@ background_color: #0f0
 The Site accepts a directory path
 
 ```irb
-> site = Sitepress::Site.from_root("spec/pages")
+> site = Sitepress::Site.new(pages_path: "spec/pages/pages")
 => #<Sitepress::Site:0x007fcd24103710 @root=#<Pathname:spec/pages>, @request_path=#<Pathname:/>>
 ```
 
