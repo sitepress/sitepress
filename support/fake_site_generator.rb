@@ -12,8 +12,7 @@ module Sitepress
 
     # Generates pages in the site's root URL
     def generate_pages(count: , &block)
-      dir = @dir.join("pages")
-      FileUtils.mkdir_p dir.join("pages")
+      FileUtils.mkdir_p @dir
       next_page_name.take(count).map do |page_name|
         path = dir.join(page_name)
         block ? block.call(path) : File.write(path, '<h1>Some glorius content!</h1>')
@@ -27,7 +26,7 @@ module Sitepress
     end
 
     def site
-      Sitepress::Site.from_root(@dir)
+      Sitepress::Site.new pages_path: @dir
     end
 
     private
