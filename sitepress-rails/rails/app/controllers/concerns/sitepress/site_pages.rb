@@ -24,7 +24,7 @@ module Sitepress
 
     class_methods do
       def site
-        Sitepress.site
+        Sitepress.configuration.site
       end
     end
 

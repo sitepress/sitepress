@@ -34,11 +34,6 @@ module Sitepress
   # Raised when any of the Render subclasses can't render a page.
   RenderingError = Class.new(RuntimeError)
 
-  # Make site available via Sitepress.site from Rails app.
-  def self.site
-    configuration.site
-  end
-
   # Default configuration object for Sitepress Rails integration.
   def self.configuration
     @configuration ||= RailsConfiguration.new

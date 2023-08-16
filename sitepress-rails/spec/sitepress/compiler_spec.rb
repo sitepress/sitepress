@@ -3,7 +3,7 @@ require "tmpdir"
 require "fileutils"
 
 describe Sitepress::Compiler::Files do
-  let(:site) { Sitepress.site }
+  let(:site) { Sitepress.configuration.site }
   let(:build_path) { Pathname.new(Dir::tmpdir).join("build") }
   # Write compiler output to /dev/null so our test output remains clean.
   let(:stdout) { File.open(File::NULL, "w")  }

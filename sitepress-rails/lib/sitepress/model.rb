@@ -62,7 +62,7 @@ module Sitepress
       end
 
       def site
-        Sitepress.site
+        Sitepress.configuration.site
       end
     end
   end

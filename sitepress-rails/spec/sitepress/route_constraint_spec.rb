@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Sitepress::RouteConstraint do
-  let(:subject) { Sitepress::RouteConstraint.new(site: Sitepress.site) }
+  let(:subject) { Sitepress::RouteConstraint.new(site: Sitepress.configuration.site) }
 
   context "#matches?" do
     it "returns true if match" do
