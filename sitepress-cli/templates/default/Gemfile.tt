@@ -11,7 +11,7 @@ gem "webrick"
 gem "haml-rails"
 gem "slim-rails"
 gem "sass-rails"
-gem "markdown-rails"
+gem "markdown-rails", "~> 1.0"
 
 # View component libraries.
 gem "phlex-rails"
