@@ -42,9 +42,8 @@ module Sitepress
     end
 
     # Renders the markup within a resource that can be rendered.
-    def page_rendition(resource, layout: nil)
-      Rendition.new(resource).tap do |rendition|
-        rendition.layout = layout
+    def page_rendition(*args, **kwargs)
+      Rendition.new(*args, **kwargs).tap do |rendition|
         pre_render rendition
       end
     end
@@ -54,13 +53,17 @@ module Sitepress
     # contained in a way that the end user can override, we coupled the resource, source
     # and output within a `Rendition` object so that it may be processed via hooks.
     def render_resource_with_handler(resource)
-      rendition = page_rendition(resource, layout: controller_layout)
+      rendition = page_rendition(resource, layout: resource_layout(resource))
 
       # Fire a callback in the controller in case anybody needs it.
       process_rendition rendition
 
       # Now we finally render the output of the processed rendition to the client.
       post_render rendition
+    end
+
+    def resource_layout(resource)
+      resource.data.fetch("layout", controller_layout)
     end
 
     # This is where the actual rendering happens for the page source in Rails.
