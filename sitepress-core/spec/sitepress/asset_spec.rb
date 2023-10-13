@@ -42,6 +42,11 @@ context Sitepress::Asset do
     end
     context "none" do
       let(:path) { "spec/pages/nothing" }
+      describe "#mime_type" do
+        it "is text/plain" do
+          expect(subject.mime_type).to eql(MIME::Types["application/octet-stream"].first)
+        end
+      end
     end
     context "overriden mime_type " do
       subject { Sitepress::Asset.new(path: path, mime_type: MIME::Types["text/plain"]) }
