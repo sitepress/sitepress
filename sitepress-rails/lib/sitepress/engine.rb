@@ -45,8 +45,14 @@ module Sitepress
     # Configure Sitepress with Rails settings.
     initializer :configure_sitepress do |app|
       sitepress_configuration.parent_engine = app
-      # Reloads entire site between requests for development environments
-      sitepress_configuration.cache_resources = app.config.cache_classes
+      # Reloads entire site between requests for development environments.
+      sitepress_configuration.cache_resources = if app.config.respond_to? :enable_reloading?
+        # Rails 7.1 changed the name of this setting to enable_reloading, so check if that exist and use it.
+        app.config.enable_reloading?
+      else
+        # Rails 7.0.x and lower all use this method to check if reloading is enabled.
+        app.config.cache_classes
+      end
     end
 
     config.after_initialize do
