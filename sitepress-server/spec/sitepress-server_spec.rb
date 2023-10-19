@@ -16,9 +16,9 @@ describe Sitepress::Server do
   end
 
   let(:request_path) { "/test" }
-
   it "gets page" do
     get request_path
+    expect(last_response.body).to include("Let's see if this renders a page within: The page is not found on")
     expect(last_response.status).to eql(200)
   end
 end
