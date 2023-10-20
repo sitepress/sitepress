@@ -53,11 +53,13 @@ module Sitepress
         # Rails 7.0.x and lower all use this method to check if reloading is enabled.
         app.config.cache_classes
       end
-    end
 
-    config.after_initialize do
-      # Set the templates extensions (e.g. erb, haml) so that Sitepress can parse paths.
-      Sitepress::Path.handler_extensions = ActionView::Template::Handlers.extensions
+      # Setup Sitepress to handle Rails extensions.
+      ActiveSupport.on_load(:action_view) do
+        ActiveSupport.on_load(:after_initialize) do
+          Sitepress::Path.handler_extensions = ActionView::Template::Handlers.extensions
+        end
+      end
     end
 
     private
