@@ -18,7 +18,6 @@ module Sitepress
       rescue_from Sitepress::ResourceNotFound, with: :resource_not_found
       helper Sitepress::Engine.helpers
       helper_method :current_page, :site, :page_rendition
-      before_action :append_relative_partial_path, only: :show
       around_action :ensure_site_reload, only: :show
     end
 
@@ -54,6 +53,9 @@ module Sitepress
     # contained in a way that the end user can override, we coupled the resource, source
     # and output within a `Rendition` object so that it may be processed via hooks.
     def render_resource_with_handler(resource)
+      # Add the resource path to the view path so that partials can be rendered
+      append_relative_partial_path resource
+
       rendition = page_rendition(resource, layout: controller_layout)
 
       # Fire a callback in the controller in case anybody needs it.
@@ -108,8 +110,8 @@ module Sitepress
     private
     # This makes it possible to render partials from the current resource with relative
     # paths. Without this the paths would have to be absolute.
-    def append_relative_partial_path
-      append_view_path current_resource.asset.path.dirname
+    def append_relative_partial_path(resource)
+      append_view_path resource.asset.path.dirname
     end
 
     def send_binary_resource(resource)
