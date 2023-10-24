@@ -24,7 +24,7 @@ module Sitepress
     # Public method that is primarily called by Rails to display the page. This should
     # be hooked up to the Rails routes file.
     def show
-      render_resource current_resource
+      render_resource requested_resource
     end
 
     protected
@@ -34,6 +34,9 @@ module Sitepress
     # file and serve it up.
     def render_resource(resource)
       if resource.renderable?
+        # Set this as our "top-level" resource. We might change it again in the pre-render
+        # method to deal with rendering resources inside of resources.
+        @current_resource = resource
         render_resource_with_handler resource
       else
         send_binary_resource resource
@@ -56,7 +59,7 @@ module Sitepress
       # Add the resource path to the view path so that partials can be rendered
       append_relative_partial_path resource
 
-      rendition = page_rendition(resource, layout: controller_layout)
+      rendition = page_rendition(resource, layout: controller_layout(resource))
 
       # Fire a callback in the controller in case anybody needs it.
       process_rendition rendition
@@ -67,9 +70,16 @@ module Sitepress
 
     # This is where the actual rendering happens for the page source in Rails.
     def pre_render(rendition)
-      rendition.output = render_to_string inline: rendition.source,
-        type: rendition.handler,
-        layout: rendition.layout
+      original_resource = @current_resource
+      begin
+        # This sets the `current_page` and `current_resource` variable equal to the given resource.
+        @current_resource = rendition.resource
+        rendition.output = render_to_string inline: rendition.source,
+          type: rendition.handler,
+          layout: rendition.layout
+      ensure
+        @current_resource = original_resource
+      end
     end
 
     # This is to be used by end users if they need to do any post-processing on the rendering page.
@@ -86,9 +96,8 @@ module Sitepress
     end
 
     # A reference to the current resource that's being requested.
-    def current_resource
-      @current_resource ||= find_resource
-    end
+    attr_reader :current_resource
+
     # In templates resources are more naturally thought of as pages, so we call it `current_page` from
     # there and from the controller.
     alias :current_page :current_resource
@@ -134,7 +143,7 @@ module Sitepress
 
     # Default finder of the resource for the current controller context. If the :resource_path
     # isn't present, then its probably the root path so grab that.
-    def find_resource
+    def requested_resource
       get resource_request_path
     end
 
@@ -146,13 +155,13 @@ module Sitepress
     # Returns the current layout for the inline Sitepress renderer. This is
     # exposed via some really convoluted private methods inside of the various
     # versions of Rails, so I try my best to hack out the path to the layout below.
-    def controller_layout
+    def controller_layout(resource)
       private_layout_method = self.method(:_layout)
       layout =
         if Rails.version >= "6"
-          private_layout_method.call lookup_context, current_resource_rails_formats
+          private_layout_method.call lookup_context, resource_rails_formats(resource)
         elsif Rails.version >= "5"
-          private_layout_method.call current_resource_rails_formats
+          private_layout_method.call resource_rails_formats(resource)
         else
           private_layout_method.call
         end
@@ -172,8 +181,8 @@ module Sitepress
     # method returns the intersection of the formats Rails supports from Mime::Types
     # and the current page's node formats. If nothing intersects, HTML is returned
     # as a default.
-    def current_resource_rails_formats
-      node_formats = current_resource.node.formats
+    def resource_rails_formats(resource)
+      node_formats = resource.node.formats
       supported_formats = node_formats & Mime::EXTENSION_LOOKUP.keys
 
       if supported_formats.empty?
