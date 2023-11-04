@@ -9,7 +9,7 @@ describe Sitepress::Model do
     subject { model.all }
     context "models" do
       it "has correct count" do
-        expect(subject.count).to eql 3
+        expect(subject.count).to eql 4
       end
       it "is instances of model" do
         expect(subject.first).to be_instance_of PageModel
@@ -18,7 +18,7 @@ describe Sitepress::Model do
     describe "#resources" do
       subject { model.all.resources }
       it "has correct count" do
-        expect(subject.count).to eql 3
+        expect(subject.count).to eql 4
       end
       it "is instances of pages" do
         expect(subject.first).to be_instance_of Sitepress::Resource

@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rails", rails_version
+  spec.add_development_dependency "phlex-rails"
 
   spec.add_runtime_dependency "sitepress-core", spec.version
 

@@ -40,6 +40,18 @@ describe Sitepress::SiteController, type: :controller do
     end
   end
 
+  context "phlex layout wrapped page" do
+    render_views
+    before { get_resource "/phlex" }
+    let(:resource) { site.get("/phlex") }
+    it "is status 200" do
+      expect(response.status).to eql(200)
+    end
+    it "renders body" do
+      expect(response.body).to include("<h1>Hello from Phlex wrapper layout</h1>")
+    end
+  end
+
   context "static page" do
     render_views
     before { get_resource "/hi" }
