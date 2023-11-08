@@ -18,7 +18,7 @@ module Sitepress
       rescue_from Sitepress::ResourceNotFound, with: :resource_not_found
       helper Sitepress::Engine.helpers
       helper_method :current_page, :site, :page_rendition
-      around_action :ensure_site_reload, only: :show
+      around_action :ensure_site_reload
     end
 
     # Public method that is primarily called by Rails to display the page. This should
