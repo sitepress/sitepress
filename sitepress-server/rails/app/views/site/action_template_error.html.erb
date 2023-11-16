@@ -1,8 +1,8 @@
-<h2><%= @exception.class %>: <%= @exception.message %> in <%= current_page.asset.path %>:<%= @exception.line_number %></h2>
+<h2><%= @exception.class %>: <%= @exception.message %> in <%= @resource.asset.path %>:<%= @exception.line_number %></h2>
 <h3>Source</h3>
 
 <code>
-  <pre><%= current_page.asset.path %>:<%= @exception.line_number %>
+  <pre><%= @resource.asset.path %>:<%= @exception.line_number %>
 <%= @exception.annotated_source_code.join("\n") %></pre>
 </code>
 

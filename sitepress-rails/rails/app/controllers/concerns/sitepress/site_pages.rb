@@ -28,15 +28,18 @@ module Sitepress
     end
 
     protected
+    # Returns the current page being rendered. This is set in the `render_resource` method
+
+    attr_reader :current_page
 
     # If a resource has a handler, (e.g. erb, haml, etc.) we say its "renderable" and
     # process it. If it doesn't have a handler, we treat it like its just a plain ol'
     # file and serve it up.
     def render_resource(resource)
       if resource.renderable?
+        @current_page = resource
         # Set this as our "top-level" resource. We might change it again in the pre-render
         # method to deal with rendering resources inside of resources.
-        @current_resource = resource
         render_resource_with_handler resource
       else
         send_binary_resource resource
@@ -70,16 +73,14 @@ module Sitepress
 
     # This is where the actual rendering happens for the page source in Rails.
     def pre_render(rendition)
-      original_resource = @current_resource
-      begin
-        # This sets the `current_page` and `current_resource` variable equal to the given resource.
-        @current_resource = rendition.resource
-        rendition.output = render_to_string inline: rendition.source,
-          type: rendition.handler,
-          layout: rendition.layout
-      ensure
-        @current_resource = original_resource
-      end
+      # This sets the `current_page` and `current_resource` variable equal to the given resource.
+      rendition.output = render_to_string inline: rendition.source,
+        type: rendition.handler,
+        layout: rendition.layout,
+        locals: {
+          current_resource: rendition.resource,
+          current_page: rendition.resource
+        }
     end
 
     # This is to be used by end users if they need to do any post-processing on the rendering page.
@@ -94,13 +95,6 @@ module Sitepress
     def post_render(rendition)
       render body: rendition.output, content_type: rendition.mime_type
     end
-
-    # A reference to the current resource that's being requested.
-    attr_reader :current_resource
-
-    # In templates resources are more naturally thought of as pages, so we call it `current_page` from
-    # there and from the controller.
-    alias :current_page :current_resource
 
     # References the singleton Site from the Sitepress::Configuration object. If you try to make this a class
     # variable and let Rails have multiple Sitepress sites, you might run into issues with respect to the asset
