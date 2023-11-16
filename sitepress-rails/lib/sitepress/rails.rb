@@ -11,7 +11,6 @@ module Sitepress
     autoload :Controller,             "sitepress/renderers/controller"
     autoload :Server,                 "sitepress/renderers/server"
   end
-  autoload :Rendition,                "sitepress/rendition"
   autoload :RouteConstraint,          "sitepress/route_constraint"
   module BuildPaths
     autoload :RootPath,               "sitepress/build_paths/root_path"

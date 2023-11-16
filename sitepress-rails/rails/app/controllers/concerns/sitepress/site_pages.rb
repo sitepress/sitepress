@@ -17,7 +17,7 @@ module Sitepress
     included do
       rescue_from Sitepress::ResourceNotFound, with: :resource_not_found
       helper Sitepress::Engine.helpers
-      helper_method :current_page, :site, :page_rendition
+      helper_method :current_page, :site
       around_action :ensure_site_reload
     end
 
@@ -43,14 +43,6 @@ module Sitepress
       end
     end
 
-    # Renders the markup within a resource that can be rendered.
-    def page_rendition(resource, layout: nil)
-      Rendition.new(resource).tap do |rendition|
-        rendition.layout = layout
-        pre_render rendition
-      end
-    end
-
     # If a resource has a handler (e.g. erb, haml, etc.) we use the Rails renderer to
     # process templates, layouts, partials, etc. To keep the whole rendering process
     # contained in a way that the end user can override, we coupled the resource, source
@@ -59,24 +51,22 @@ module Sitepress
       # Add the resource path to the view path so that partials can be rendered
       append_relative_partial_path resource
 
-      rendition = page_rendition(resource, layout: controller_layout(resource))
+      rendition = render_resource_inline(resource)
 
       # Fire a callback in the controller in case anybody needs it.
       process_rendition rendition
 
       # Now we finally render the output of the processed rendition to the client.
-      post_render rendition
+      post_render resource, rendition
     end
 
     # This is where the actual rendering happens for the page source in Rails.
-    def pre_render(rendition)
+    def render_resource_inline(resource)
       original_resource = @current_resource
       begin
         # This sets the `current_page` and `current_resource` variable equal to the given resource.
-        @current_resource = rendition.resource
-        rendition.output = render_to_string inline: rendition.source,
-          type: rendition.handler,
-          layout: rendition.layout
+        @current_resource = resource
+        render_to_string inline: resource.body, type: resource.handler
       ensure
         @current_resource = original_resource
       end
@@ -91,8 +81,8 @@ module Sitepress
 
     # Send the inline rendered, post-processed string into the Rails rendering method that actually sends
     # the output to the end-user as a web response.
-    def post_render(rendition)
-      render body: rendition.output, content_type: rendition.mime_type
+    def post_render(resource, rendition)
+      render inline: rendition, content_type: resource.mime_type, layout: resource.data.fetch("layout", controller_layout(resource))
     end
 
     # A reference to the current resource that's being requested.
@@ -156,14 +146,13 @@ module Sitepress
     # exposed via some really convoluted private methods inside of the various
     # versions of Rails, so I try my best to hack out the path to the layout below.
     def controller_layout(resource)
-      private_layout_method = self.method(:_layout)
       layout =
         if Rails.version >= "6"
-          private_layout_method.call lookup_context, resource_rails_formats(resource)
+          _layout lookup_context, resource_rails_formats(resource)
         elsif Rails.version >= "5"
-          private_layout_method.call resource_rails_formats(resource)
+          _layout resource_rails_formats(resource)
         else
-          private_layout_method.call
+          _layout
         end
 
       if layout.instance_of? String # Rails 4 and 5 return a string from above.
