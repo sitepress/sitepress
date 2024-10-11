@@ -72,4 +72,9 @@ context Sitepress::Site do
       expect(subject.get("/../pages/test")).to be_nil
     end
   end
+  describe "#dig" do
+    it "finds resource" do
+      expect(subject.dig("blog", "my-awesome-post").format(:html)).to eql subject.get("/blog/my-awesome-post.html")
+    end
+  end
 end

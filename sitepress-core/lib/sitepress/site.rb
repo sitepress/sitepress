@@ -14,6 +14,7 @@ module Sitepress
     # TODO: Get rid of these so that folks have ot call site.resources.get ...
     extend Forwardable
     def_delegators :resources, :get, :glob
+    def_delegators :root, :dig
 
     def initialize(root_path: DEFAULT_ROOT_PATH)
       self.root_path = root_path
