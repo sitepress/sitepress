@@ -256,4 +256,24 @@ context Sitepress::Node do
       end
     end
   end
+
+  describe "#format" do
+    let(:path) { "/app.html" }
+    it "returns html node" do
+      expect(subject.format(:html)).to eql root.get("/app.html")
+    end
+    it "does not return json node" do
+      expect(subject.format(:json)).to be nil
+    end
+  end
+
+  describe "#format?" do
+    let(:path) { "/app.html" }
+    it "returns html node" do
+      expect(subject.format?(:html)).to be true
+    end
+    it "does not return json node" do
+      expect(subject.format?(:json)).to be false
+    end
+  end
 end

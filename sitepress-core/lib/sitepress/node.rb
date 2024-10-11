@@ -6,7 +6,7 @@ module Sitepress
   # makes it possible to reason through path relationships from code to build out elements in a website like tree navigation.
   class Node
     extend Forwardable
-    def_delegators :resources, :formats
+    def_delegators :resources, :formats, :format, :format?
 
     attr_reader :parent, :name, :default_format, :default_name, :resources
 
