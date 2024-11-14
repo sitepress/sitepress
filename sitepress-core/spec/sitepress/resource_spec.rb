@@ -66,6 +66,9 @@ context Sitepress::Resource do
       it "has new request path" do
         expect(resource.request_path).to eql("/vehicles/trucks")
       end
+      it "has new path" do
+        expect(resource.path).to eql("vehicles/trucks")
+      end
       it "raises error if moved to a resource with the same format" do
         expect{ resource.node = site.root.dig("vehicles", "cars", "camry") }.to raise_error(Sitepress::Error)
       end

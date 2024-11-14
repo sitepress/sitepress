@@ -24,7 +24,12 @@ module Sitepress
     end
 
     def request_path
-      File.join("/", *lineage, request_filename)
+      File.join("/", path)
+    end
+
+    # The `page_url|page_path` helper in Rails uses this method to determine the URL of a resource.
+    def path
+      File.join(*lineage, request_filename)
     end
 
     # Eugh, I really don't like this because it's not a full URL. To get a full URL though this thing
