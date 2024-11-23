@@ -54,11 +54,8 @@ module Sitepress
         app.config.cache_classes
       end
 
-      # Setup Sitepress to handle Rails extensions.
-      ActiveSupport.on_load(:action_view) do
-        ActiveSupport.on_load(:after_initialize) do
-          Sitepress::Path.handler_extensions = ActionView::Template::Handlers.extensions
-        end
+      config.to_prepare do
+        Sitepress::Path.handler_extensions = ActionView::Template::Handlers.extensions
       end
     end
 
