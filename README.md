@@ -11,7 +11,7 @@ It features:
 * Page models
 * Helpers
 
-[![Build status](https://github.com/sitepress/sitepress/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sitepress/sitepress/actions/workflows/test.yml) [![Code Climate](https://codeclimate.com/github/sitepress/sitepress/badges/gpa.svg)](https://codeclimate.com/github/sitepress/sitepress)
+[![Build status](https://github.com/sitepress/sitepress/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sitepress/sitepress/actions/workflows/test.yml) [![Maintainability](https://api.codeclimate.com/v1/badges/14edce5d81e1892d2836/maintainability)](https://codeclimate.com/github/sitepress/sitepress/maintainability)
 
 ## Installation
 
