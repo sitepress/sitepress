@@ -5,7 +5,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gemfile: ["rails_6_0", "rails_6_1", "rails_7_0", "rails_8_0"]
+        gemfile: ["rails_7_0", "rails_7_2", "rails_8_0"]
         ruby: ["2.7", "3.0", "3.2", "3.3"]
         exclude:
           # Exclude Rails 8.x on Ruby 2.7
