@@ -12,7 +12,7 @@ describe Sitepress::Server do
   end
 
   def app
-    Sitepress::Server.initialize!
+    @app ||= Sitepress::Server.initialize!
   end
 
   let(:request_path) { "/test" }

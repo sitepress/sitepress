@@ -108,6 +108,10 @@ module Sitepress
       node.parents.reject(&:root?).reverse.map(&:name)
     end
 
+    def render_in(view_context)
+      view_context.render inline: body, type: handler
+    end
+
     class << self
       attr_accessor :path_suffix_hack_that_you_should_not_use
 

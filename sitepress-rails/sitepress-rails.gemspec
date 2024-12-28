@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.test_files = Dir["spec/**/*"]
 
-  rails_version      = ">= 6.0"
+  rails_version      = ">= 7.0"
 
   spec.add_development_dependency "rspec-rails"
   spec.add_development_dependency "pry"

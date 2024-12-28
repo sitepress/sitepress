@@ -17,7 +17,7 @@ module Sitepress
     included do
       rescue_from Sitepress::ResourceNotFound, with: :resource_not_found
       helper Sitepress::Engine.helpers
-      helper_method :current_page, :site, :page_rendition
+      helper_method :current_page, :site
       around_action :ensure_site_reload
     end
 
@@ -43,54 +43,12 @@ module Sitepress
       end
     end
 
-    # Renders the markup within a resource that can be rendered.
-    def page_rendition(resource, layout: nil)
-      Rendition.new(resource).tap do |rendition|
-        rendition.layout = layout
-        pre_render rendition
-      end
-    end
-
     # If a resource has a handler (e.g. erb, haml, etc.) we use the Rails renderer to
     # process templates, layouts, partials, etc. To keep the whole rendering process
     # contained in a way that the end user can override, we coupled the resource, source
     # and output within a `Rendition` object so that it may be processed via hooks.
     def render_resource_with_handler(resource)
-      # Add the resource path to the view path so that partials can be rendered
-      append_relative_partial_path resource
-
-      rendition = page_rendition(resource, layout: controller_layout(resource))
-
-      # Fire a callback in the controller in case anybody needs it.
-      process_rendition rendition
-
-      # Now we finally render the output of the processed rendition to the client.
-      post_render rendition
-    end
-
-    # This is where the actual rendering happens for the page source in Rails.
-    def pre_render(rendition)
-      original_resource = @current_resource
-      begin
-        # This sets the `current_page` and `current_resource` variable equal to the given resource.
-        @current_resource = rendition.resource
-        rendition.output = render_to_string rendition, layout: rendition.layout
-      ensure
-        @current_resource = original_resource
-      end
-    end
-
-    # This is to be used by end users if they need to do any post-processing on the rendering page.
-    # For example, the user may use Nokogiri to parse static HTML pages and hook it into the asset pipeline.
-    # They may also use tools like `HTMLPipeline` to process links from a markdown renderer.
-    def process_rendition(rendition)
-      # Do nothing unless the user extends this method.
-    end
-
-    # Send the inline rendered, post-processed string into the Rails rendering method that actually sends
-    # the output to the end-user as a web response.
-    def post_render(rendition)
-      render body: rendition.output, content_type: rendition.mime_type
+      render resource, layout: resource_layout(resource)
     end
 
     # A reference to the current resource that's being requested.
@@ -153,40 +111,14 @@ module Sitepress
     # Returns the current layout for the inline Sitepress renderer. This is
     # exposed via some really convoluted private methods inside of the various
     # versions of Rails, so I try my best to hack out the path to the layout below.
-    def controller_layout(resource)
-      private_layout_method = self.method(:_layout)
-      layout =
-        if Rails.version >= "6"
-          private_layout_method.call lookup_context, resource_rails_formats(resource)
-        elsif Rails.version >= "5"
-          private_layout_method.call resource_rails_formats(resource)
+    def resource_layout(resource)
+      resource.data.fetch "layout" do
+        case template = _layout(lookup_context, resource.node.formats)
+        when ActionView::Template
+          template.virtual_path
         else
-          private_layout_method.call
+          template
         end
-
-      if layout.instance_of? String # Rails 4 and 5 return a string from above.
-        layout
-      elsif layout # Rails 3 and older return an object that gives us a file name
-        File.basename(layout.identifier).split('.').first
-      else
-        # If none of the conditions are met, then no layout was
-        # specified, so nil is returned.
-        nil
-      end
-    end
-
-    # Rails 5 requires an extension, like `:html`, to resolve a template. This
-    # method returns the intersection of the formats Rails supports from Mime::Types
-    # and the current page's node formats. If nothing intersects, HTML is returned
-    # as a default.
-    def resource_rails_formats(resource)
-      node_formats = resource.node.formats
-      supported_formats = node_formats & Mime::EXTENSION_LOOKUP.keys
-
-      if supported_formats.empty?
-        DEFAULT_PAGE_RAILS_FORMATS
-      else
-        supported_formats.map?(&:to_sym)
       end
     end
 

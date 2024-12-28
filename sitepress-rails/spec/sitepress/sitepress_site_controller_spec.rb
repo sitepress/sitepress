@@ -4,11 +4,7 @@ describe Sitepress::SiteController, type: :controller do
   # Rails 5 introduces a new format of calling the `get` rspec helper method.
   def get_resource(path)
     request.env["PATH_INFO"] = path
-    if Gem::Version.new(Rails.version) >= Gem::Version.new("5.0.0")
-      get :show, params: { resource_path: path }
-    else
-      get :show, resource_path: path
-    end
+    get :show, params: { resource_path: path }
   end
 
   let(:site) { Sitepress.configuration.site }
