@@ -74,9 +74,7 @@ module Sitepress
       begin
         # This sets the `current_page` and `current_resource` variable equal to the given resource.
         @current_resource = rendition.resource
-        rendition.output = render_to_string inline: rendition.source,
-          type: rendition.handler,
-          layout: rendition.layout
+        rendition.output = render_to_string rendition, layout: rendition.layout
       ensure
         @current_resource = original_resource
       end

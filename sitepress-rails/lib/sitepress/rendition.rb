@@ -24,5 +24,13 @@ module Sitepress
     def layout
       resource.data.fetch("layout", @layout)
     end
+
+    def format
+      resource.format
+    end
+
+    def render_in(view_context)
+      view_context.render inline: source, type: handler
+    end
   end
 end
