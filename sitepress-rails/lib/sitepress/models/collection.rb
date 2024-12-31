@@ -11,16 +11,19 @@ module Sitepress
       # Iterate over all resources in the site by default.
       DEFAULT_GLOB = "**/*.*".freeze
 
-      attr_reader :model, :glob, :site
+      attr_reader :model, :glob, :site, :sort
 
-      def initialize(model:, site:, glob: DEFAULT_GLOB)
+      def initialize(model:, site:, glob: DEFAULT_GLOB, sort: nil)
         @model = model
         @glob = glob
         @site = site
+        @sort = sort
       end
 
       def resources
-        site.glob glob
+        return unsorted_resources unless sort
+
+        unsorted_resources.sort_by { |resource| resource.data.try(:[], @sort) }
       end
 
       # Wraps each resource in a model object.
@@ -28,6 +31,12 @@ module Sitepress
         resources.each do |resource|
           yield model.new resource
         end
+      end
+
+      private
+
+      def unsorted_resources
+        site.glob(glob)
       end
     end
   end

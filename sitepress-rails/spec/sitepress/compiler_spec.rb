@@ -13,7 +13,7 @@ describe Sitepress::Compiler::Files do
     after { FileUtils.rm_rf(build_path) }
     it "writes files to build_path" do
       subject.compile
-      expect(Dir.glob(build_path.join("**")).size).to eql(3) # 2 items in the site... mkay?
+      expect(Dir.glob(build_path.join("**")).size).to eql(4) # 3 items in the site... mkay?
     end
   end
 end
