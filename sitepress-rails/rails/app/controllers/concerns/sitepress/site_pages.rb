@@ -113,12 +113,23 @@ module Sitepress
     # versions of Rails, so I try my best to hack out the path to the layout below.
     def resource_layout(resource)
       resource.data.fetch "layout" do
-        case template = _layout(lookup_context, resource.node.formats)
+        case template = find_layout(formats: resource.node.formats)
         when ActionView::Template
           template.virtual_path
         else
           template
         end
+      end
+    end
+
+    # For whatever reason, Rails can't stablize this API so we need to check
+    # the version of Rails to make the right call and stablize it.
+    def find_layout(formats:)
+      case Rails::VERSION::MAJOR
+      when 8
+        _layout(lookup_context, formats, lookup_context.prefixes)
+      else
+        _layout(lookup_context, formats)
       end
     end
 
