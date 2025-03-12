@@ -12,7 +12,8 @@ sitepress-rails/_yardoc/
 sitepress-rails/coverage/
 sitepress-rails/doc/
 sitepress-rails/spec/reports/
-sitepress-rails/spec/dummy/log/*.log
+sitepress-rails/spec/dummy/log/*
+sitepress-rails/spec/dummy/tmp/*
 sitepress-rails/tmp/
 
 sitepress-server/rails/tmp/
