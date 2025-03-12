@@ -12,8 +12,10 @@ module Sitepress
     end
 
     def append_sitepress_path_to_tailwind_config
-      inject_into_file 'config/tailwind.config.js', ",\n    './app/content/**/*.{erb,haml,html,slim,rb}'",
-        after: "    './app/views/**/*.{erb,haml,html,slim}'"
+      if File.exist? 'config/tailwind.config.js'
+        inject_into_file 'config/tailwind.config.js', ",\n    './app/content/**/*.{erb,haml,html,slim,rb}'",
+          after: "    './app/views/**/*.{erb,haml,html,slim}'"
+      end
     end
   end
 end
