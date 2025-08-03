@@ -32,4 +32,18 @@ describe Sitepress::Model do
       expect(subject).to respond_to :title
     end
   end
+
+  describe ".get" do
+    subject { model.first }
+    context "no page" do
+      it "returns nil" do
+        expect(model.get("does-not-exist")).to be_nil
+      end
+    end
+    context "existing page" do
+      it "returns page" do
+        expect(model.get("hi")).to be_a(PageModel)
+      end
+    end
+  end
 end

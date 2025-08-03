@@ -27,9 +27,6 @@ module Sitepress
   # that up here for backwards compatability.
   ResourceNotFound = ResourceNotFoundError
 
-  # Raised if a model isn't found.
-  ModelNotFoundError = Class.new(NotFoundError)
-
   # Raised when any of the Render subclasses can't render a page.
   RenderingError = Class.new(RuntimeError)
 

@@ -44,11 +44,11 @@ module Sitepress
         when Model
           page
         when String
-          new site.get page
+          get site.get page
         when Sitepress::Resource
           new page
         else
-          raise ModelNotFoundError, "#{self.inspect} could not find #{page.inspect}"
+          nil
         end
       end
       alias :find :get
