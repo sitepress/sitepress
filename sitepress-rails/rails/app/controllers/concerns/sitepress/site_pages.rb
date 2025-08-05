@@ -125,8 +125,8 @@ module Sitepress
     # For whatever reason, Rails can't stablize this API so we need to check
     # the version of Rails to make the right call and stablize it.
     def find_layout(formats:)
-      case Rails::VERSION::MAJOR
-      when 8
+      case Rails::VERSION
+      when -> (rails_version) { rails_version::MAJOR > 8 || rails_version::MAJOR == 8 && rails_version::MINOR > 1 }
         _layout(lookup_context, formats, lookup_context.prefixes)
       else
         _layout(lookup_context, formats)
