@@ -26,10 +26,17 @@ describe Sitepress::Model do
     end
   end
 
-  describe ".data" do
+  describe "#save" do
+    subject { model.first }
+    it "saves" do
+      subject.save
+    end
+  end
+
+  describe "#data" do
     subject { model.first }
     it "defines #title method" do
-      expect(subject).to respond_to :title
+      expect(subject.title).to eql "Tick tock, tick tock"
     end
   end
 

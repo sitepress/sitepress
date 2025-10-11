@@ -6,8 +6,11 @@ module Sitepress
     delegate \
       :request_path,
       :data,
+      :asset,
       :body,
         to: :page
+
+    delegate :save, to: :asset
 
     def initialize(page)
       @page = page
