@@ -1,7 +1,5 @@
 require "spec_helper"
 
-# TODO: Figure out hte best way to test the dang Thor cli and
-# test that the classes are recieving the right messages.
 describe Sitepress::CLI do
   subject { Sitepress::CLI.start(args) }
   context "#server" do

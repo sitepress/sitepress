@@ -11,7 +11,6 @@ module Sitepress
     attr_reader :root_path
     attr_writer :resources_pipeline
 
-    # TODO: Get rid of these so that folks have ot call site.resources.get ...
     extend Forwardable
     def_delegators :resources, :get, :glob
     def_delegators :root, :dig

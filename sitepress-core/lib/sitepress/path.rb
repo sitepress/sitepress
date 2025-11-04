@@ -65,8 +65,6 @@ module Sitepress
     end
 
     private
-      # TODO: I don't want to look this up everytime I try to figure out the
-      # extension. I'll have to create an extension registry .
 
       # Rails has handlers, like `:html` and `:raw` that are both
       # handlers and formats. If we don't account for this, then the object

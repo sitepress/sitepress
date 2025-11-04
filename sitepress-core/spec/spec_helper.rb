@@ -2,7 +2,6 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
 require "sitepress-core"
 
-# TODO: Move into a support file.
 RSpec::Matchers.define :have_children do |expected|
   match do |actual|
     actual.children.map(&:resources).map(&:to_a).flatten.map(&:request_path).sort == expected.sort
