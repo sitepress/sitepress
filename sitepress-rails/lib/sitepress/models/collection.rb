@@ -5,22 +5,15 @@ module Sitepress
     class Collection
       include Enumerable
 
-      # Page models will have `PageModel.all` method defined by default.
-      DEFAULT_NAME = :all
+      attr_reader :model
 
-      # Iterate over all resources in the site by default.
-      DEFAULT_GLOB = "**/*.*".freeze
-
-      attr_reader :model, :glob, :site
-
-      def initialize(model:, site:, glob: DEFAULT_GLOB)
+      def initialize(model:, &resources)
         @model = model
-        @glob = glob
-        @site = site
+        @resources = resources
       end
 
       def resources
-        site.glob glob
+        @resources.call
       end
 
       # Wraps each resource in a model object.

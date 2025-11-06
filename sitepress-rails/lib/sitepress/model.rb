@@ -29,15 +29,23 @@ module Sitepress
       # Defines a class method that may be called later to return a
       # collection of objects. The default glob, for example, is named `:all`,
       # which defines `MyModel.all` on the class.
-      def collection(name = Models::Collection::DEFAULT_NAME, glob:, **kwargs)
-        define_singleton_method name do
-          self.glob glob, **kwargs
+      def collection(name = :all, glob: nil, **, &)
+        if block_given?
+          _collection(&)
+        else
+          define_singleton_method name do
+            self.glob glob, **
+          end
         end
       end
 
+      def _collection(*, model: self, **, &)
+        Models::Collection.new(*, model:, **, &)
+      end
+
       # Adhoc querying of models via `Model.glob("foo/bar").all`
-      def glob(glob, **kwargs)
-        Models::Collection.new model: self, site: site, glob: glob, **kwargs
+      def glob(glob, **)
+        _collection(model: self, **){ site.glob(glob) }
       end
 
       # Wraps a page in a class if given a string that represents the path or
