@@ -17,9 +17,11 @@ module Sitepress
       end
 
       # Wraps each resource in a model object.
-      def each
+      def each(&block)
+        return to_enum(:each) unless block_given?
+
         resources.each do |resource|
-          yield model.new resource
+          yield model.new(resource)
         end
       end
     end
