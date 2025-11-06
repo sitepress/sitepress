@@ -33,6 +33,10 @@ module Sitepress
         if block_given?
           _collection(&)
         else
+          ActiveSupport::Deprecation.new.warn(
+            "The `collection :#{name}, glob: ...` macro is deprecated. " \
+            "Use `def self.#{name} = glob('#{glob}')` instead."
+          )
           define_singleton_method name do
             self.glob glob, **
           end
