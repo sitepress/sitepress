@@ -14,6 +14,9 @@ describe Sitepress::Model do
       it "is instances of model" do
         expect(subject.first).to be_instance_of PageModel
       end
+      it "returns a Collection" do
+        expect(subject).to be_a(Sitepress::Models::Collection)
+      end
     end
     describe "#resources" do
       subject { model.all.resources }
@@ -50,6 +53,121 @@ describe Sitepress::Model do
     context "existing page" do
       it "returns page" do
         expect(model.get("hi")).to be_a(PageModel)
+      end
+    end
+  end
+
+  describe ".collection" do
+    context "with block (new style)" do
+      it "returns a Collection directly" do
+        test_model = Class.new(Sitepress::Model)
+        result = test_model.collection(:custom_pages) { test_model.site.glob("*.html*") }
+        expect(result).to be_a(Sitepress::Models::Collection)
+      end
+
+      it "returns model instances from the collection" do
+        test_model = Class.new(Sitepress::Model)
+        result = test_model.collection { test_model.site.glob("*.html*") }
+        expect(result.first).to be_a(test_model)
+      end
+
+      it "can be chained with enumerable methods" do
+        test_model = Class.new(Sitepress::Model)
+        result = test_model.collection { test_model.site.glob("*.html*") }
+        paths = result.map(&:request_path)
+        expect(paths).to be_an(Array)
+        expect(paths).to all(be_a(String))
+      end
+    end
+
+    context "without block (deprecated style)" do
+      let(:test_model) do
+        Class.new(Sitepress::Model) do
+          collection :deprecated_pages, glob: "*.html*"
+        end
+      end
+
+      it "defines the collection method" do
+        expect(test_model).to respond_to(:deprecated_pages)
+      end
+
+      it "shows deprecation warning" do
+        expect(ActiveSupport::Deprecation).to receive(:new).and_call_original
+        test_model.deprecated_pages
+      end
+
+      it "still returns a Collection" do
+        expect(test_model.deprecated_pages).to be_a(Sitepress::Models::Collection)
+      end
+
+      it "still returns model instances" do
+        expect(test_model.deprecated_pages.first).to be_a(test_model)
+      end
+    end
+  end
+
+  describe ".glob" do
+    it "returns a Collection" do
+      expect(model.glob("*.html*")).to be_a(Sitepress::Models::Collection)
+    end
+
+    it "returns model instances" do
+      result = model.glob("*.html*")
+      expect(result.first).to be_a(PageModel)
+    end
+
+    it "filters resources by glob pattern" do
+      result = model.glob("hi.html")
+      expect(result.count).to eql 1
+      expect(result.first.request_path).to eql "/hi"
+    end
+  end
+
+  describe "chaining" do
+    it "supports standard enumerable methods" do
+      result = model.all.select { |page| page.request_path.include?("hi") }
+      expect(result).to be_an(Array)
+      expect(result).to all(be_a(PageModel))
+    end
+
+    it "supports map" do
+      paths = model.all.map(&:request_path)
+      expect(paths).to be_an(Array)
+      expect(paths).to all(be_a(String))
+    end
+
+    it "supports each" do
+      count = 0
+      model.all.each { |page| count += 1 }
+      expect(count).to eql 3
+    end
+
+    it "supports first" do
+      expect(model.all.first).to be_a(PageModel)
+    end
+
+    it "supports count" do
+      expect(model.all.count).to be_a(Integer)
+    end
+
+    it "can convert to array" do
+      array = model.all.to_a
+      expect(array).to be_an(Array)
+      expect(array).to all(be_a(PageModel))
+    end
+  end
+
+  describe "model equality" do
+    it "considers models equal if they have the same page and class" do
+      page1 = model.first
+      page2 = model.get(page1.request_path)
+      expect(page1).to eq(page2)
+    end
+
+    it "considers models unequal if they have different pages" do
+      pages = model.all.to_a
+      if pages.size >= 2
+        expect(pages[0]).not_to eq(pages[1])
       end
     end
   end
