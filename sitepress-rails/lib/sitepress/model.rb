@@ -31,7 +31,7 @@ module Sitepress
       # which defines `MyModel.all` on the class.
       def collection(name = :all, glob: nil, **, &)
         if block_given?
-          _collection(&)
+          build_collection(&)
         else
           ActiveSupport::Deprecation.new.warn(
             "The `collection :#{name}, glob: ...` macro is deprecated. " \
@@ -43,13 +43,9 @@ module Sitepress
         end
       end
 
-      def _collection(*, model: self, **, &)
-        Models::Collection.new(*, model:, **, &)
-      end
-
       # Adhoc querying of models via `Model.glob("foo/bar").all`
       def glob(glob, **)
-        _collection(model: self, **){ site.glob(glob) }
+        build_collection(model: self, **){ site.glob(glob) }
       end
 
       # Wraps a page in a class if given a string that represents the path or
@@ -78,6 +74,12 @@ module Sitepress
 
       def site
         Sitepress.site
+      end
+
+      private
+
+      def build_collection(*, model: self, **, &)
+        Models::Collection.new(*, model:, **, &)
       end
     end
   end
