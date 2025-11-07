@@ -54,6 +54,12 @@ module Sitepress
         app.config.cache_classes
       end
 
+      # Set handler extensions from ActionView after all gems have loaded their handlers.
+      # This runs both during initialization and on each request in development (via to_prepare).
+      config.after_initialize do
+        Sitepress::Path.handler_extensions = ActionView::Template::Handlers.extensions
+      end
+
       config.to_prepare do
         Sitepress::Path.handler_extensions = ActionView::Template::Handlers.extensions
       end
