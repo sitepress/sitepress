@@ -4,6 +4,7 @@ require "rake/clean"
 CLOBBER.include "pkg"
 
 require "bundler/gem_helper"
+require "appraisal"
 require_relative "support/project"
 
 Sitepress::Project.all.each do |project|
