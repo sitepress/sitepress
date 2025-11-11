@@ -5,7 +5,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        gemfile: ["rails_7_2", "rails_8_0"]
+        gemfile: ["rails_7_2", "rails_8_0", "rails_8_1"]
         ruby: ["3.2", "3.3", "3.4"]
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
