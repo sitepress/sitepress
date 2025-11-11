@@ -24,15 +24,44 @@ module Sitepress
       "app/markdown"                      # When Sitepress is launched embedded in Rails project.
     ], autoload: true
 
-    # Load paths from `Sitepress#site` into rails so it can render views, helpers, etc. properly.
+    # Load paths from `Sitepress#site` into Rails.
+    #
+    # We configure two separate systems:
+    #
+    # 1. app.paths["app/*"] - Rails component path registry
+    #    Tells ActionView where to find templates, ActionController where to find helpers, etc.
+    #
+    # 2. config.autoload_paths - Zeitwerk autoloader configuration
+    #    Tells Zeitwerk what to autoload. Rails automatically includes these in
+    #    config.eager_load_paths for production environments.
+    #
     initializer :set_sitepress_paths, before: :set_autoload_paths do |app|
-      app.paths["app/helpers"].push site.helpers_path.expand_path
+      # Helpers: autoloadable and available to controllers
+      # Collapsed so app/content/helpers/sample_helper.rb defines SampleHelper (not Helpers::SampleHelper)
+      site.helpers_path.expand_path.tap do |path|
+        app.paths["app/helpers"].push path
+        app.config.autoload_paths << path
+        app.config.eager_load_paths << path
+        Rails.autoloaders.main.collapse(path)
+      end
+
+      # Models: autoloadable
+      # Collapsed so models don't require namespace prefixes
+      site.models_path.expand_path.tap do |path|
+        app.paths["app/models"].push path
+        app.config.autoload_paths << path
+        app.config.eager_load_paths << path
+        Rails.autoloaders.main.collapse(path)
+      end
+
+      # Assets: available to Sprockets (no autoloading needed)
       app.paths["app/assets"].push site.assets_path.expand_path
+
+      # Views: available to ActionView (no autoloading needed - these are templates)
       app.paths["app/views"].push site.root_path.expand_path
       app.paths["app/views"].push site.pages_path.expand_path
-      app.paths["app/models"].push site.models_path.expand_path
 
-      # Set for view_components to load at ./components
+      # Components: autoloadable for view_components
       app.config.autoload_paths << File.expand_path("./components")
     end
 

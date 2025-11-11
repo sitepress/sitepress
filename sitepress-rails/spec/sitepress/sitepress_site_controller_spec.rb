@@ -70,8 +70,29 @@ describe Sitepress::SiteController, type: :controller do
     context "helper_paths" do
       subject{ Sitepress::SiteController.helpers_path }
       it { is_expected.to include(site.helpers_path.to_s) }
-      it "has site#helper_paths in ActiveSupport::Dependencies.autoload_paths" do
-        expect(ActiveSupport::Dependencies.autoload_paths).to include(site.helpers_path.to_s)
+      
+      it "adds helpers_path to Rails autoload_paths" do
+        expect(Rails.application.config.autoload_paths).to include(site.helpers_path)
+      end
+      
+      it "adds helpers_path to Rails eager_load_paths" do
+        expect(Rails.application.config.eager_load_paths).to include(site.helpers_path)
+      end
+      
+      it "makes helpers autoloadable" do
+        # SampleHelper is defined in app/content/helpers/sample_helper.rb
+        expect { SampleHelper }.not_to raise_error
+        expect(SampleHelper).to be_a(Module)
+      end
+    end
+    
+    context "model_paths" do
+      it "adds models_path to Rails autoload_paths" do
+        expect(Rails.application.config.autoload_paths).to include(site.models_path)
+      end
+      
+      it "adds models_path to Rails eager_load_paths" do
+        expect(Rails.application.config.eager_load_paths).to include(site.models_path)
       end
     end
   end
