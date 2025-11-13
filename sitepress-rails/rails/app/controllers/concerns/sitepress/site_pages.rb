@@ -16,7 +16,6 @@ module Sitepress
 
     included do
       rescue_from Sitepress::ResourceNotFound, with: :resource_not_found
-      helper Sitepress::Engine.helpers
       helper_method :current_page, :site
       around_action :ensure_site_reload
     end
