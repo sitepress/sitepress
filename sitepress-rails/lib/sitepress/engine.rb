@@ -13,7 +13,7 @@ module Sitepress
     ]
 
     # Load the `config/site.rb` file so users can configure Sitepress.
-    initializer :load_sitepress_file, before: :set_sitepress_paths do
+    initializer "sitepress.load_site_file", before: "sitepress.set_paths" do
       site_file = paths["config/site.rb"].existent.first
       load site_file if site_file
     end
@@ -35,7 +35,9 @@ module Sitepress
     #    Tells Zeitwerk what to autoload. Rails automatically includes these in
     #    config.eager_load_paths for production environments.
     #
-    initializer :set_sitepress_paths, before: :set_autoload_paths do |app|
+    initializer "sitepress.set_paths", before: :set_autoload_paths do |app|
+      site = Sitepress.configuration.site
+
       # Helpers: autoloadable and available to controllers
       # Collapsed so app/content/helpers/sample_helper.rb defines SampleHelper (not Helpers::SampleHelper)
       site.helpers_path.expand_path.tap do |path|
@@ -66,16 +68,16 @@ module Sitepress
     end
 
     # Configure sprockets paths for the site.
-    initializer :set_manifest_file_path, before: :append_assets_path do |app|
-      manifest_file = sitepress_configuration.manifest_file_path.expand_path
+    initializer "sitepress.set_manifest_file_path", before: :append_assets_path do |app|
+      manifest_file = Sitepress.configuration.manifest_file_path.expand_path
       app.config.assets.precompile << manifest_file.to_s if manifest_file.exist?
     end
 
     # Configure Sitepress with Rails settings.
-    initializer :configure_sitepress do |app|
-      sitepress_configuration.parent_engine = app
+    initializer "sitepress.configure" do |app|
+      Sitepress.configuration.parent_engine = app
       # Reloads entire site between requests for development environments.
-      sitepress_configuration.cache_resources = if app.config.respond_to? :enable_reloading?
+      Sitepress.configuration.cache_resources = if app.config.respond_to? :enable_reloading?
         # Rails 7.1 changed the name of this setting to enable_reloading, so check if that exist and use it.
         app.config.enable_reloading?
       else
@@ -92,16 +94,6 @@ module Sitepress
             ActionView::Template::Handlers.extensions
         end
       end
-    end
-
-    private
-
-    def sitepress_configuration
-      Sitepress.configuration
-    end
-
-    def site
-      sitepress_configuration.site
     end
   end
 end
