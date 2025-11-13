@@ -82,15 +82,15 @@ module Sitepress
         # Rails 7.0.x and lower all use this method to check if reloading is enabled.
         app.config.cache_classes
       end
+    end
 
-      # Set handler extensions from ActionView after all gems have loaded their handlers.
-      # This runs both during initialization and on each request in development (via to_prepare).
-      config.after_initialize do
-        Sitepress::Path.handler_extensions = ActionView::Template::Handlers.extensions
-      end
-
-      config.to_prepare do
-        Sitepress::Path.handler_extensions = ActionView::Template::Handlers.extensions
+    # Set handler extensions once, after ActionView and all template engines are loaded.
+    initializer "sitepress.set_handler_extensions" do
+      ActiveSupport.on_load(:action_view) do
+        ActiveSupport.on_load(:after_initialize) do
+          Sitepress::Path.handler_extensions =
+            ActionView::Template::Handlers.extensions
+        end
       end
     end
 
