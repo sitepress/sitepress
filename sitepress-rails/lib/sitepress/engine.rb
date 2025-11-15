@@ -85,15 +85,5 @@ module Sitepress
         app.config.cache_classes
       end
     end
-
-    # Set handler extensions once, after ActionView and all template engines are loaded.
-    initializer "sitepress.set_handler_extensions" do
-      ActiveSupport.on_load(:action_view) do
-        ActiveSupport.on_load(:after_initialize) do
-          Sitepress::Path.handler_extensions =
-            ActionView::Template::Handlers.extensions
-        end
-      end
-    end
   end
 end
