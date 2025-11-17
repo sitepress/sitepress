@@ -41,19 +41,25 @@ module Sitepress
       # Helpers: autoloadable and available to controllers
       # Collapsed so app/content/helpers/sample_helper.rb defines SampleHelper (not Helpers::SampleHelper)
       site.helpers_path.expand_path.tap do |path|
-        app.paths["app/helpers"].push path
-        app.config.autoload_paths << path
-        app.config.eager_load_paths << path
-        Rails.autoloaders.main.collapse(path)
+        if path.exist?
+          app.paths["app/helpers"].push path
+          app.config.autoload_paths << path
+          app.config.eager_load_paths << path
+          Rails.autoloaders.main.push_dir(path)
+          Rails.autoloaders.main.collapse(path)
+        end
       end
 
       # Models: autoloadable
       # Collapsed so models don't require namespace prefixes
       site.models_path.expand_path.tap do |path|
-        app.paths["app/models"].push path
-        app.config.autoload_paths << path
-        app.config.eager_load_paths << path
-        Rails.autoloaders.main.collapse(path)
+        if path.exist?
+          app.paths["app/models"].push path
+          app.config.autoload_paths << path
+          app.config.eager_load_paths << path
+          Rails.autoloaders.main.push_dir(path)
+          Rails.autoloaders.main.collapse(path)
+        end
       end
 
       # Assets: available to Sprockets (no autoloading needed)
