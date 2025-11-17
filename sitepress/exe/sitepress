@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require "sitepress-cli"
+require "sitepress"
 
 Sitepress::CLI.start(ARGV)

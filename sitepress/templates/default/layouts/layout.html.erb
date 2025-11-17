@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= current_page.data.fetch("title", "Sitepress") %></title>
+    <%= stylesheet_link_tag "site" %>
+  </head>
+  <body>
+    <header>
+      <%= image_tag "logo-brown.svg", class: "logo logo-light" %>
+      <%= image_tag "logo-white.svg", class: "logo logo-dark" %>
+      <h1 id="title"><%= current_page.data.fetch("title", "Sitepress") %></h1>
+    </header>
+    <main>
+      <%= yield %>
+    </main>
+    <footer>
+      Running version Sitepress <%= Sitepress::VERSION %>. Visit <a href="https://sitepress.cc/">sitepress.cc</a> for documentation, help, and updates.
+    </footer>
+  </body>
+</html>

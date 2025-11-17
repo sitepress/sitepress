@@ -6,8 +6,6 @@ module Sitepress
     GEMSPEC_PATHS = %w[
       sitepress-core
       sitepress-rails
-      sitepress-server
-      sitepress-cli
       sitepress
     ]
 
