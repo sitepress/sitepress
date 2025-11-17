@@ -56,10 +56,6 @@ describe Sitepress::CLI do
       expect(File.directory?(File.join(@test_site_path, "config"))).to be true
     end
 
-    it "creates an assets/config directory" do
-      expect(File.directory?(File.join(@test_site_path, "assets", "config"))).to be true
-    end
-
     it "creates an assets/stylesheets directory" do
       expect(File.directory?(File.join(@test_site_path, "assets", "stylesheets"))).to be true
     end
