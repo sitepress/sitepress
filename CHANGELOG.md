@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+**BREAKING: Consolidated sitepress-cli and sitepress-server into main sitepress gem**
+
+The `sitepress-cli` and `sitepress-server` gems have been consolidated into the main `sitepress` gem for simplicity. These gems were never used independently - they were only ever dependencies of the main gem.
+
+**What this means:**
+- When you install `sitepress`, you get CLI and server functionality built-in
+- No separate gems to manage
+- Simpler dependency tree
+
+**New structure:**
+```
+sitepress (includes CLI + Server + Rails + Core)
+```
+
+**For Rails-only users** (embedded in Rails apps):
+```
+sitepress-rails (standalone)
+  └── sitepress-core
+```
+
+**Migration:** No changes needed. If you were using `gem "sitepress"`, everything works the same.
+
 **BREAKING: Removed deprecated collection syntax**
 
 The old macro-style collection definition has been removed:
