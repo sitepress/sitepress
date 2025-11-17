@@ -1,6 +1,8 @@
 module Sitepress
   # Wraps a page in a class, which makes it much easier to decorate and validate.
   class Model
+    HTML_PAGES_GLOB = "**/*.html*".freeze
+
     attr_reader :page
 
     delegate \
@@ -22,30 +24,22 @@ module Sitepress
     end
 
     class << self
-      delegate \
-        :first,
-          to: :all
+      delegate :first, to: :all
 
       # Defines a class method that may be called later to return a
       # collection of objects. The default glob, for example, is named `:all`,
       # which defines `MyModel.all` on the class.
-      def collection(name = :all, glob: nil, **, &)
-        if block_given?
-          build_collection(&)
-        else
-          ActiveSupport::Deprecation.new.warn(
-            "The `collection :#{name}, glob: ...` macro is deprecated. " \
-            "Use `def self.#{name} = glob('#{glob}')` instead."
-          )
-          define_singleton_method name do
-            self.glob glob, **
-          end
-        end
+      def collection(&block)
+        Models::Collection.new(model: self, &block)
       end
 
       # Adhoc querying of models via `Model.glob("foo/bar").all`
-      def glob(glob, **)
-        build_collection(model: self, **){ site.glob(glob) }
+      def glob(...)
+        collection{ site.glob(...) }
+      end
+
+      def all
+        glob HTML_PAGES_GLOB
       end
 
       # Wraps a page in a class if given a string that represents the path or
@@ -79,7 +73,6 @@ module Sitepress
       private
 
       def build_collection(*, model: self, **, &)
-        Models::Collection.new(*, model:, **, &)
       end
     end
   end
