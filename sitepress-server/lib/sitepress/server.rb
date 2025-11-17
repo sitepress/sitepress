@@ -70,6 +70,3 @@ module Sitepress
     paths["config/initializers"] << File.expand_path("./config/initializers")
   end
 end
-
-# Load the SassC template handler if SassC is installed as part of this stand-alone server.
-require_relative "sass_template_handlers" if defined? SassC::Engine

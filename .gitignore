@@ -1,6 +1,5 @@
 Gemfile.lock
 **/pkg/
-.sass-cache
 
 gemfiles/*.gemfile.lock
 gemfiles/.bundle
