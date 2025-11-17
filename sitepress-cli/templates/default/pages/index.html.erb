@@ -6,7 +6,7 @@ title: Welcome to Sitepress
 <p>All the website files are in <code><%= site.root_path.expand_path %></code>. If you've built stuff on <a href="https://rubyonrails.org">Rails</a>, you'll feel right at home because Sitepress is actually running on Rails.</p>
 
 <h3>Assets</h3>
-<p>There's an asset pipeline at <code><%= site.assets_path.expand_path %></code> where you can put all of your images, stylesheets, and scripts, which will be compiled and fingerprinted for your deployment via Sprockets.</p>
+<p>There's an asset pipeline at <code><%= site.assets_path.expand_path %></code> where you can put all of your images, stylesheets, and scripts, which will be compiled and fingerprinted for your deployment via Propshaft.</p>
 
 <h3>Compile</h3>
 <p>When you're ready to build the website, run <code>sitepress compile</code> and the website files and assets will all be built and compiled into the <code><%= site.root_path.join("build").expand_path %></code> path.</p>

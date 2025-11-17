@@ -1,5 +1,6 @@
 require "action_controller/railtie"
-require "sprockets/railtie"
+require "propshaft"
+require "propshaft/railtie"
 require "sitepress-rails"
 
 # Require the gems listed in Gemfile, including any gems
@@ -45,7 +46,7 @@ module Sitepress
     # found and fail silently.
     routes.append { sitepress_pages root: true, controller: "site", constraints: nil }
 
-    # A logger without a formatter will crash when Sprockets is enabled.
+    # A logger without a formatter will crash when Propshaft is enabled.
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)

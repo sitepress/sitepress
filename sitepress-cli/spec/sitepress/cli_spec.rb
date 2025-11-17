@@ -125,18 +125,34 @@ describe Sitepress::CLI do
       expect(manifest_data).to be_a(Hash)
     end
 
-    it "compiles assets with digested filenames" do
-      assets_path = File.join(@build_path, "assets")
-      asset_files = Dir.glob(File.join(assets_path, "**/*")).select { |f| File.file?(f) }
-      expect(asset_files).not_to be_empty
+    it "compiles manifest-356a192b.js" do
+      expect(File.exist?(File.join(@build_path, "assets", "manifest-356a192b.js"))).to be true
     end
 
-    it "includes Propshaft fingerprints in asset filenames" do
-      assets_path = File.join(@build_path, "assets")
-      asset_files = Dir.glob(File.join(assets_path, "**/*")).select { |f| File.file?(f) }
-      # At least some files should have digests (format: filename-digest.ext)
-      digested_files = asset_files.select { |f| File.basename(f) =~ /-[a-f0-9]{8,}\.[^.]+$/ }
-      expect(digested_files.size).to be > 0
+    it "compiles logo-brown-bb6b6291.svg" do
+      expect(File.exist?(File.join(@build_path, "assets", "logo-brown-bb6b6291.svg"))).to be true
+    end
+
+    it "compiles logo-white-85b54d31.svg" do
+      expect(File.exist?(File.join(@build_path, "assets", "logo-white-85b54d31.svg"))).to be true
+    end
+
+    it "compiles site-cd791f61.css" do
+      expect(File.exist?(File.join(@build_path, "assets", "site-cd791f61.css"))).to be true
+    end
+
+    it "compiles rails-ujs-3de06f48.js" do
+      expect(File.exist?(File.join(@build_path, "assets", "rails-ujs-3de06f48.js"))).to be true
+    end
+
+    it "compiles rails-ujs.esm-2f36ae4d.js" do
+      expect(File.exist?(File.join(@build_path, "assets", "rails-ujs.esm-2f36ae4d.js"))).to be true
+    end
+
+    it "references logo-brown-bb6b6291.svg in the compiled HTML" do
+      index_html_path = File.join(@build_path, "index.html")
+      html_content = File.read(index_html_path)
+      expect(html_content).to include("logo-brown-bb6b6291.svg")
     end
   end
 
