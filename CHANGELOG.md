@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+**BREAKING: Removed deprecated collection syntax**
+
+The old macro-style collection definition has been removed:
+
+```ruby
+# ❌ Old (removed):
+class MyModel < Sitepress::Model
+  collection :posts, glob: "posts/*.html"
+end
+
+# ✅ New (use instead):
+class MyModel < Sitepress::Model
+  def self.posts = glob("posts/*.html")
+end
+```
+
+Or use `collection` with a block directly:
+
+```ruby
+collection { site.glob("posts/*.html") }
+```
+
 **BREAKING: Replaced Sprockets with Propshaft for asset pipeline**
 
 Sitepress 5.0 replaces Sprockets with Propshaft as the default asset pipeline. Propshaft is a simpler, more modern asset handling system that focuses on serving assets as-is with fingerprinting, without the complexity of asset compilation and transpilation.
