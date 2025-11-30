@@ -54,7 +54,7 @@ module Sitepress
       initialize!
 
       logger.info "Sitepress compiling assets"
-      sprockets_manifest(target_path: options.fetch("output_path")).compile precompile_assets
+      compile_assets(target_path: options.fetch("output_path"))
 
       logger.info "Sitepress compiling pages"
       compiler = Compiler::Files.new \
@@ -110,11 +110,23 @@ module Sitepress
       Sitepress.configuration
     end
 
-    def sprockets_manifest(target_path: )
+    # Compile assets using Propshaft. This copies and fingerprints all assets
+    # from the configured asset paths to the target output directory.
+    def compile_assets(target_path:)
       target_path = Pathname.new(target_path)
-      Sprockets::Manifest.new(rails.assets, target_path.join("assets/manifest.json")).tap do |manifest|
-        manifest.environment.logger = logger
-      end
+      output_path = target_path.join("assets")
+      manifest_path = output_path.join(".manifest.json")
+
+      # Create a Propshaft::Processor with custom output paths for the build
+      assembly = rails.assets
+      processor = Propshaft::Processor.new(
+        load_path: assembly.load_path,
+        output_path: output_path,
+        compilers: assembly.compilers,
+        manifest_path: manifest_path
+      )
+
+      processor.process
     end
 
     def rails
@@ -123,10 +135,6 @@ module Sitepress
 
     def logger
       rails.config.logger
-    end
-
-    def precompile_assets
-      rails.config.assets.precompile
     end
 
     def initialize!(&block)

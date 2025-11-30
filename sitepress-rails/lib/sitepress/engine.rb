@@ -62,7 +62,7 @@ module Sitepress
         end
       end
 
-      # Assets: available to Sprockets (no autoloading needed)
+      # Assets: available to the asset pipeline (no autoloading needed)
       app.paths["app/assets"].push site.assets_path.expand_path
 
       # Views: available to ActionView (no autoloading needed - these are templates)
@@ -71,12 +71,6 @@ module Sitepress
 
       # Components: autoloadable for view_components
       app.config.autoload_paths << File.expand_path("./components")
-    end
-
-    # Configure sprockets paths for the site.
-    initializer "sitepress.set_manifest_file_path", before: :append_assets_path do |app|
-      manifest_file = Sitepress.configuration.manifest_file_path.expand_path
-      app.config.assets.precompile << manifest_file.to_s if manifest_file.exist?
     end
 
     # Configure Sitepress with Rails settings.
