@@ -21,6 +21,3 @@ sitepress-server/rails/tmp/
 sitepress-core/coverage
 
 .ruby-version
-
-# Bundler binstubs
-bin/
