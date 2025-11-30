@@ -33,5 +33,4 @@ Gem::Specification.new do |spec|
   # We don't need every single rals rependency, so grab the subset here.
   spec.add_dependency "railties",       rails_version
   spec.add_dependency "actionpack",     rails_version
-  spec.add_dependency "propshaft", ">= 1.0.0"
 end

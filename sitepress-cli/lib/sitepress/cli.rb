@@ -110,23 +110,13 @@ module Sitepress
       Sitepress.configuration
     end
 
-    # Compile assets using Propshaft. This copies and fingerprints all assets
-    # from the configured asset paths to the target output directory.
+    # Compile assets using the available asset pipeline (Propshaft, Sprockets, or simple copy).
     def compile_assets(target_path:)
-      target_path = Pathname.new(target_path)
-      output_path = target_path.join("assets")
-      manifest_path = output_path.join(".manifest.json")
-
-      # Create a Propshaft::Processor with custom output paths for the build
-      assembly = rails.assets
-      processor = Propshaft::Processor.new(
-        load_path: assembly.load_path,
-        output_path: output_path,
-        compilers: assembly.compilers,
-        manifest_path: manifest_path
+      Sitepress::AssetCompiler.compile(
+        app: rails,
+        target_path: target_path,
+        logger: logger
       )
-
-      processor.process
     end
 
     def rails

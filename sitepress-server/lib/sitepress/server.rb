@@ -1,5 +1,6 @@
 require "action_controller/railtie"
-require "propshaft"
+require_relative "asset_pipeline"
+Sitepress::AssetPipeline.load!
 require "sitepress-rails"
 
 # Require the gems listed in Gemfile, including any gems
