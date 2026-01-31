@@ -1,3 +1,5 @@
+require "forwardable"
+
 module Sitepress
   module Data
     def self.manage(value)

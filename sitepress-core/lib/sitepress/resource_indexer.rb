@@ -1,3 +1,5 @@
+require "forwardable"
+
 module Sitepress
   # Flattens a tree of Sitepress::Node and Sitepress:Resource classes into a collection of
   # resources that can be quickly globbed, queried, or accessed.

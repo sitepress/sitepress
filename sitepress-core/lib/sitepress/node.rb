@@ -1,3 +1,5 @@
+require "forwardable"
+
 module Sitepress
   # Resource nodes give resources their parent/sibling/child relationships. The relationship are determined
   # by the `request_path` given to an asset when its added to a node. Given the `request_path` `/foo/bar/biz/buz.html`,
