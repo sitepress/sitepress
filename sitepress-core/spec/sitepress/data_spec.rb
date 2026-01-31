@@ -56,6 +56,28 @@ context Sitepress::Data do
         expect(subject.nothing_exists?).to be false
       end
     end
+    describe "respond_to?" do
+      it "returns true for existing string keys" do
+        expect(subject.respond_to?(:title)).to be true
+      end
+      it "returns true for existing symbol keys" do
+        expect(subject.respond_to?(:colors)).to be true
+      end
+      it "returns true for existing keys with ? suffix" do
+        expect(subject.respond_to?(:title?)).to be true
+      end
+      it "returns true for existing keys with ! suffix" do
+        expect(subject.respond_to?(:title!)).to be true
+      end
+      it "returns false for non-existing keys" do
+        expect(subject.respond_to?(:nonexistent)).to be false
+      end
+      it "returns true for standard methods" do
+        expect(subject.respond_to?(:fetch)).to be true
+        expect(subject.respond_to?(:keys)).to be true
+        expect(subject.respond_to?(:each)).to be true
+      end
+    end
     describe "Enumerable" do
       let(:key) { element.first }
       let(:value) { element.last }

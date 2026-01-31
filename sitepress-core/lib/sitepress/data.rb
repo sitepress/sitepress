@@ -72,20 +72,21 @@ module Sitepress
       end
 
       def method_missing(name, *args, **kwargs, &block)
-        if respond_to? name
-          self.send name, *args, **kwargs, &block
-        else
-          key, modifier, _ = name.to_s.partition(/[!?]/)
+        key, modifier, _ = name.to_s.partition(/[!?]/)
 
-          case modifier
-          when ""
-            self[key]
-          when "!"
-            self.fetch(key, *args, &block)
-          when "?"
-            !!self[key]
-          end
+        case modifier
+        when ""
+          self[key]
+        when "!"
+          self.fetch(key, *args, &block)
+        when "?"
+          !!self[key]
         end
+      end
+
+      def respond_to_missing?(name, include_private = false)
+        key, _, _ = name.to_s.partition(/[!?]/)
+        @hash.key?(key) || @hash.key?(key.to_sym) || super
       end
 
       def dig(*args, **kwargs, &block)
