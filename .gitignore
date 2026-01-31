@@ -21,3 +21,4 @@ sitepress-server/rails/tmp/
 sitepress-core/coverage
 
 .ruby-version
+.claude/
