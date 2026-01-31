@@ -14,12 +14,7 @@ module Sitepress
         end
 
         def dump_yaml(data)
-          if YAML.respond_to? :safe_dump
-            YAML.safe_dump data, permitted_classes: Frontmatter.permitted_classes
-          else
-            # Live dangerously, lol
-            YAML.dump data
-          end
+          YAML.safe_dump data, permitted_classes: Frontmatter.permitted_classes
         end
 
         def render
@@ -54,12 +49,7 @@ module Sitepress
       end
 
       def load_yaml(data)
-        if YAML.respond_to? :safe_load
-          YAML.safe_load data, permitted_classes: self.class.permitted_classes
-        else
-          # Live dangerously, lol
-          YAML.load data
-        end
+        YAML.safe_load data, permitted_classes: self.class.permitted_classes
       end
 
       class << self

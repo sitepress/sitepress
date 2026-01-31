@@ -60,9 +60,11 @@ module Sitepress
       !!handler
     end
 
-    # Mmm.... that's the smell of cache busting, which means the hiearchy of this is wrong.
+    # When changing the parser, clear all cached parsed data.
     def parser=(parser_klass)
       @parser = nil
+      @data = nil
+      @body = nil
       @parser_klass = parser_klass
     end
 

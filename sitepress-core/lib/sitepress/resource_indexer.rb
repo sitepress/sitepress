@@ -1,4 +1,5 @@
 require "forwardable"
+require "set"
 
 module Sitepress
   # Flattens a tree of Sitepress::Node and Sitepress:Resource classes into a collection of
@@ -19,8 +20,8 @@ module Sitepress
     end
 
     def glob(pattern)
-      paths = Dir.glob root_path.join(pattern)
-      resources.select { |r| paths.include? r.asset.path.to_s }
+      paths = Dir.glob(root_path.join(pattern)).to_set
+      resources.select { |r| paths.include?(r.asset.path.to_s) }
     end
 
     def get(request_path)
