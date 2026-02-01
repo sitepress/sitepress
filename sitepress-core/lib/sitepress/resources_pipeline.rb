@@ -1,5 +1,3 @@
-require "forwardable"
-
 module Sitepress
   # Processes a collection of resources
   class ResourcesPipeline < Array

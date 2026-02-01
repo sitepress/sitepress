@@ -14,10 +14,5 @@ module Sitepress
     def copy(to:)
       cp_r @path, to
     end
-
-    def bundle
-      Dir.chdir @path do
-      end
-    end
   end
 end

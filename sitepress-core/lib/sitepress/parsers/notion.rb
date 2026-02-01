@@ -1,4 +1,5 @@
 require "yaml"
+require "strscan"
 
 module Sitepress
   module Parsers

@@ -23,14 +23,6 @@ module Sitepress
         action_view_template_handlers_extensions || HANDLER_EXTENSIONS
       end
 
-      # I tried to hook this into Rails engines in the `config.after_initialize` block,
-      # but the way template handlers register their extensions is across the board.
-      #
-      # config.after_initialize do
-      #   Sitepress::Path.handler_extensions = ActionView::Template::Handlers.method(:extensions)
-      # ends
-      #
-      # I couldn't get that working, instead I do this check to find the handlers.
       def action_view_template_handlers_extensions
         ActionView::Template::Handlers.extensions if defined?(ActionView::Template::Handlers)
       end
