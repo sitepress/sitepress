@@ -2,7 +2,7 @@ require_relative 'boot'
 
 require "action_controller/railtie"
 require "action_mailer/railtie"
-require "sprockets/railtie"
+require "propshaft"
 
 Bundler.require(*Rails.groups)
 require "sitepress-rails"

@@ -10,7 +10,6 @@ gem "webrick"
 # down Rails, so rails templating engines should mostly work.
 gem "haml-rails"
 gem "slim-rails"
-gem "sass-rails"
 gem "markdown-rails", "~> 1.0"
 
 # View component libraries.

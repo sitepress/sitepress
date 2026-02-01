@@ -55,7 +55,7 @@ module Sitepress
       initialize!
 
       logger.info "Sitepress compiling assets"
-      sprockets_manifest(target_path: options.fetch("output_path")).compile precompile_assets
+      rails.assets.reveal(full_path: Pathname.new(options.fetch("output_path")).join("assets"))
 
       logger.info "Sitepress compiling pages"
       compiler = Compiler::Files.new \
@@ -111,23 +111,12 @@ module Sitepress
       Sitepress.configuration
     end
 
-    def sprockets_manifest(target_path: )
-      target_path = Pathname.new(target_path)
-      Sprockets::Manifest.new(rails.assets, target_path.join("assets/manifest.json")).tap do |manifest|
-        manifest.environment.logger = logger
-      end
-    end
-
     def rails
       configuration.parent_engine
     end
 
     def logger
       rails.config.logger
-    end
-
-    def precompile_assets
-      rails.config.assets.precompile
     end
 
     def initialize!(&block)
