@@ -24,4 +24,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rack-test"
 
   spec.add_runtime_dependency "sitepress-rails", spec.version
+
+  # Default asset pipeline for standalone server. The abstraction in
+  # Sitepress::AssetPipeline allows users to swap this for sprockets if preferred.
+  spec.add_runtime_dependency "propshaft", ">= 1.0.0"
 end

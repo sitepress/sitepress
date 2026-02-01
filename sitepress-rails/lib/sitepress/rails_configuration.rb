@@ -22,11 +22,6 @@ module Sitepress
       @site ||= Site.new(root_path: default_root)
     end
 
-    # Location of Sprockets manifest file
-    def manifest_file_path
-      site.assets_path.join("config/manifest.js")
-    end
-
     private
     def default_root
       Rails.root.join(DEFAULT_SITE_ROOT)

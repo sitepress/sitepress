@@ -2,8 +2,10 @@ require_relative 'boot'
 
 require "action_controller/railtie"
 require "action_mailer/railtie"
-require "sprockets/railtie"
 
+# sitepress-rails is asset-pipeline agnostic. It works with Propshaft, Sprockets,
+# or no asset pipeline at all. The host Rails app chooses its own asset pipeline.
+# For testing, we let Bundler load whatever is available.
 Bundler.require(*Rails.groups)
 require "sitepress-rails"
 
