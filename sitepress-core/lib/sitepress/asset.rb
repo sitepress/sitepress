@@ -98,7 +98,7 @@ module Sitepress
       def parse_error(&parse)
         parse.call
       rescue StandardError => e
-        raise ParseError.new("Error parsing asset at #{path.to_s}: #{e}")
+        raise ParseError, "Error parsing #{path.expand_path}: #{e.class} - #{e.message}"
       end
 
       def parser

@@ -8,6 +8,7 @@ class SiteController < ApplicationController
   # won't be properly handled.
   rescue_from Exception, with: :standard_error
   rescue_from ActionView::Template::Error, with: :action_view_template_error
+  rescue_from Sitepress::ParseError, with: :parse_error
   rescue_from Sitepress::ResourceNotFoundError, with: :page_not_found
 
   layout :site_layout
@@ -23,6 +24,14 @@ class SiteController < ApplicationController
 
   def action_view_template_error(exception)
     render_exception(template: "action_template_error", exception: exception)
+  end
+
+  def parse_error(exception)
+    raise exception unless has_error_reporting_enabled?
+
+    @title = "Parse error"
+    @exception = exception
+    render "parse_error", layout: "sitepress", status: :internal_server_error, formats: :html
   end
 
   def render_exception(template:, exception:)

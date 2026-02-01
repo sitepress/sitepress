@@ -4,6 +4,9 @@ module Sitepress
   # Errors raised by Sitepress
   Error = Class.new(StandardError)
 
+  # Raised when an asset fails to parse (e.g., invalid YAML frontmatter)
+  ParseError = Class.new(Error)
+
   # Raised by Resources if a path is added that's not a valid path.
   InvalidRequestPathError = Class.new(RuntimeError)
 
