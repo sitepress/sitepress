@@ -41,7 +41,13 @@ module Sitepress
       PATTERN = /\A(#{DELIMITER}#{NEWLINE}(.+?)#{NEWLINE}#{DELIMITER}#{NEWLINE}*)?(.+)\Z/m
 
       def initialize(content)
-        _, @data, @body = content.match(PATTERN).captures
+        @frontmatter_block, @data, @body = content.match(PATTERN).captures
+      end
+
+      # Returns the line number where the body starts in the original file.
+      def body_line_offset
+        return 1 unless @frontmatter_block
+        @frontmatter_block.count("\n") + 1
       end
 
       def data

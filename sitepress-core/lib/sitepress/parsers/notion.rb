@@ -20,8 +20,15 @@ module Sitepress
           @raw_data.append scanner.captures
         end
         scanner.scan(/\n/)
+        # Track where body starts for line number offset
+        @header_content = content[0, scanner.pos]
         # Parse body
         @body = scanner.rest
+      end
+
+      # Returns the line number where the body starts in the original file.
+      def body_line_offset
+        @header_content.count("\n") + 1
       end
 
       def data

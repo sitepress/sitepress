@@ -12,6 +12,10 @@ context Sitepress::Parsers::Frontmatter do
     it "parses body" do
       expect(subject.body).to_not be_nil
     end
+    it "returns correct body_line_offset" do
+      # Frontmatter is 6 lines (including trailing blank line), body starts at line 7
+      expect(subject.body_line_offset).to eq(7)
+    end
   end
   context "sin frontmatter" do # That's Spanish for pages that don't have Parsers::Frontmatter.
     subject { Sitepress::Parsers::Frontmatter.new File.read "spec/sites/sample/pages/sin_frontmatter.html.haml" }
@@ -20,6 +24,9 @@ context Sitepress::Parsers::Frontmatter do
     end
     it "parses body" do
       expect(subject.body).to_not be_nil
+    end
+    it "returns body_line_offset of 1 without frontmatter" do
+      expect(subject.body_line_offset).to eq(1)
     end
   end
   context "confusing frontmatter" do
@@ -40,6 +47,10 @@ This is a sample
 
 That's all!
 """)
+    end
+    it "returns correct body_line_offset" do
+      # Frontmatter is 4 lines (including trailing blank line), body starts at line 5
+      expect(subject.body_line_offset).to eq(5)
     end
   end
 end

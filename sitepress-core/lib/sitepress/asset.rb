@@ -44,6 +44,12 @@ module Sitepress
       @body ||= exists? ? parse_error { parser.body } : nil
     end
 
+    # Returns the line number where the body starts in the original file.
+    # Used to adjust error line numbers when frontmatter is present.
+    def body_line_offset
+      exists? ? parser.body_line_offset : 1
+    end
+
     # Treat resources with the same request path as equal.
     def ==(asset)
       path == asset.path
