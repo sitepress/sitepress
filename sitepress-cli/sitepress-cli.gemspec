@@ -22,6 +22,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "thor", ">= 1.0.0"
-  spec.add_runtime_dependency "rack", ">= 1.0.0", "< 3.0.0"
+  spec.add_runtime_dependency "rackup", ">= 1.0.0"
   spec.add_runtime_dependency "sitepress-server", spec.version
 end

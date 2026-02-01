@@ -1,4 +1,5 @@
 require "thor"
+require "rackup"
 
 module Sitepress
   # Command line interface for compiling Sitepress sites.
@@ -42,7 +43,7 @@ module Sitepress
       end
 
       # This will use whatever server is found in the user's Gemfile.
-      Rack::Server.start app: app,
+      Rackup::Server.start app: app,
         Port: options.fetch("port"),
         Host: options.fetch("bind_address")
     end
