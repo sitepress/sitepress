@@ -4,23 +4,29 @@ module Sitepress
   # Represents the request path of an asset. There may be multiple
   # resources that point to the same asset. Resources are immutable
   # and may be altered by the resource proxy.
+  #
+  # The source can be any object that implements the Renderable protocol:
+  # - #data - returns a Hash of metadata
+  # - #render_in(view_context) - renders the content
   class Resource
     extend Forwardable
-    def_delegators :asset, :body, :data, :renderable?
+    def_delegators :source, :body, :data, :renderable?
 
-    attr_reader :node, :asset
+    attr_reader :node, :source
+    alias :asset :source  # Backwards compatibility
 
     attr_accessor :format, :mime_type, :handler
 
     # Default scope for querying parent/child/sibling resources.
     DEFAULT_FILTER_SCOPE = :same
 
-    def initialize(asset:, node:, format: nil, mime_type: nil, handler: nil)
-      @asset = asset
+    def initialize(asset: nil, source: nil, node:, format: nil, mime_type: nil, handler: nil)
+      @source = source || asset
+      raise ArgumentError, "Either asset: or source: must be provided" unless @source
       @node = node
-      @format = format || asset.format
-      @mime_type = mime_type || asset.mime_type
-      @handler = handler || asset.handler
+      @format = format || @source.format
+      @mime_type = mime_type || @source.mime_type
+      @handler = handler || @source.handler
     end
 
     def request_path
@@ -71,7 +77,7 @@ module Sitepress
     # Clones should be initialized with a nil node. Initializing with a node would mean that multiple resources
     # are pointing to the same node, which shouldn't be possible.
     def clone
-      self.class.new(asset: @asset, node: nil, format: @format, mime_type: @mime_type, handler: @handler)
+      self.class.new(source: @source, node: nil, format: @format, mime_type: @mime_type, handler: @handler)
     end
 
     # Removes the resource from the node's resources list.
@@ -80,7 +86,8 @@ module Sitepress
     end
 
     def inspect
-      "<#{self.class}:#{object_id} request_path=#{request_path.inspect} asset_path=#{asset.path.to_s.inspect}>"
+      source_info = source.respond_to?(:path) ? "source_path=#{source.path.to_s.inspect}" : "source=#{source.class}"
+      "<#{self.class}:#{object_id} request_path=#{request_path.inspect} #{source_info}>"
     end
 
     def parent(**args)
@@ -109,7 +116,7 @@ module Sitepress
     end
 
     def render_in(view_context)
-      view_context.render inline: body, type: handler
+      source.render_in(view_context)
     end
 
     private

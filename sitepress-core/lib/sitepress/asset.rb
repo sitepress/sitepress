@@ -94,6 +94,12 @@ module Sitepress
       @parser_klass::Renderer.new(data: data, body: body)
     end
 
+    # Renders the asset in a view context. This is part of the Renderable protocol
+    # that allows any object to be used as a resource source.
+    def render_in(view_context)
+      view_context.render inline: body, type: handler
+    end
+
     private
       def parse_error(&parse)
         parse.call
