@@ -10,10 +10,25 @@ module Sitepress
   # - #render_in(view_context) - renders the content
   class Resource
     extend Forwardable
-    def_delegators :source, :body, :data, :renderable?
+    def_delegators :source, :body
 
     attr_reader :node, :source
     alias :asset :source  # Backwards compatibility
+
+    # Check if the source implements the data protocol.
+    def has_data?
+      source.respond_to?(:data)
+    end
+
+    # Check if the source implements the render_in protocol.
+    def renderable?
+      source.respond_to?(:render_in)
+    end
+
+    # Returns metadata from the source, or an empty hash if not available.
+    def data
+      has_data? ? source.data : {}
+    end
 
     attr_accessor :format, :mime_type, :handler
 
@@ -116,7 +131,7 @@ module Sitepress
     end
 
     def render_in(view_context)
-      source.render_in(view_context)
+      renderable? ? source.render_in(view_context) : nil
     end
 
     private

@@ -197,4 +197,71 @@ context Sitepress::Resource do
       end
     end
   end
+
+  describe "Renderable protocol" do
+    context "with Asset source (implements full protocol)" do
+      it "has_data? returns true" do
+        expect(subject.has_data?).to be true
+      end
+
+      it "renderable? returns true" do
+        expect(subject.renderable?).to be true
+      end
+
+      it "data returns source data" do
+        expect(subject.data["title"]).to eql("Name")
+      end
+    end
+
+    context "with minimal source (no protocol methods)" do
+      let(:minimal_source) do
+        Class.new do
+          def format = :html
+          def mime_type = MIME::Types["text/html"].first
+          def handler = nil
+        end.new
+      end
+      let(:resource) { Sitepress::Resource.new(source: minimal_source, node: node.child("minimal"), format: :html) }
+
+      it "has_data? returns false" do
+        expect(resource.has_data?).to be false
+      end
+
+      it "renderable? returns false" do
+        expect(resource.renderable?).to be false
+      end
+
+      it "data returns empty hash" do
+        expect(resource.data).to eq({})
+      end
+
+      it "render_in returns nil" do
+        expect(resource.render_in(double("view_context"))).to be_nil
+      end
+    end
+
+    context "with partial source (only data)" do
+      let(:data_only_source) do
+        Class.new do
+          def format = :html
+          def mime_type = MIME::Types["text/html"].first
+          def handler = nil
+          def data = { "title" => "Custom" }
+        end.new
+      end
+      let(:resource) { Sitepress::Resource.new(source: data_only_source, node: node.child("data_only"), format: :html) }
+
+      it "has_data? returns true" do
+        expect(resource.has_data?).to be true
+      end
+
+      it "renderable? returns false" do
+        expect(resource.renderable?).to be false
+      end
+
+      it "data returns source data" do
+        expect(resource.data).to eq({ "title" => "Custom" })
+      end
+    end
+  end
 end
