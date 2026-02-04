@@ -3,11 +3,11 @@ require "forwardable"
 require "fileutils"
 
 module Sitepress
-  # Represents a file on a web server that may be parsed to extract
+  # Represents a page on a website - a file that may be parsed to extract
   # metadata or be renderable via a template. Multiple resources
-  # may point to the same asset. Properties of an asset should be mutable.
+  # may point to the same page. Properties of a page should be mutable.
   # The Resource object is immutable and may be modified by the Resources proxy.
-  class Asset
+  class Page
     # If we can't resolve a mime type for the resource, we'll fall
     # back to this binary octet-stream type so the client can download
     # the resource and figure out what to do with it.
@@ -51,8 +51,8 @@ module Sitepress
     end
 
     # Treat resources with the same request path as equal.
-    def ==(asset)
-      path == asset.path
+    def ==(other)
+      path == other.path
     end
 
     def mime_type
@@ -94,7 +94,7 @@ module Sitepress
       @parser_klass::Renderer.new(data: data, body: body)
     end
 
-    # Renders the asset in a view context. This is part of the Renderable protocol
+    # Renders the page in a view context. This is part of the Renderable protocol
     # that allows any object to be used as a resource source.
     def render_in(view_context)
       view_context.render inline: body, type: handler
@@ -118,4 +118,7 @@ module Sitepress
         MIME::Types.type_for(format_extension).first if format_extension
       end
   end
+
+  # Backwards compatibility
+  Asset = Page
 end

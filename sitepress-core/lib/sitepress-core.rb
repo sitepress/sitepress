@@ -13,11 +13,13 @@ module Sitepress
   # Raised by Resources if a path is already in its index
   ExistingRequestPathError = Class.new(InvalidRequestPathError)
 
-  autoload :Asset,                "sitepress/asset"
+  autoload :Asset,                "sitepress/page"  # Backwards compatibility
   autoload :AssetNodeMapper,      "sitepress/asset_node_mapper"
   autoload :AssetPaths,           "sitepress/asset_paths"
   autoload :Data,                 "sitepress/data"
+  autoload :Image,                "sitepress/image"
   autoload :Node,                 "sitepress/node"
+  autoload :Page,                 "sitepress/page"
   autoload :Path,                 "sitepress/path"
   autoload :Parsers,              "sitepress/parsers"
   autoload :Resource,             "sitepress/resource"

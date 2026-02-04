@@ -26,4 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
 
   spec.add_runtime_dependency "mime-types", ">= 2.99"
+  spec.add_runtime_dependency "fastimage", "~> 2.0"
 end

@@ -104,6 +104,215 @@ The Site API is a powerful way to query content via resource globbing. For examp
     %li=link_to page.data["title"], page.request_path
 ```
 
+## Architecture
+
+Sitepress has a layered architecture that separates concerns: reading files, organizing them into a tree, and presenting them with domain logic.
+
+### Overview
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  PageModel (optional)                                   │
+│  - Domain logic, computed properties                    │
+│  - Wraps Resources, hoists data to methods              │
+├─────────────────────────────────────────────────────────┤
+│  Resource                                               │
+│  - URL/request path, format, MIME type                  │
+│  - Tree navigation (parent, children, siblings)         │
+│  - Wraps a Source                                       │
+├─────────────────────────────────────────────────────────┤
+│  Source (Page, Image, or custom)                        │
+│  - Reads files, provides data and body                  │
+│  - Page: text with frontmatter, renderable              │
+│  - Image: binary with dimensions                        │
+├─────────────────────────────────────────────────────────┤
+│  Node                                                   │
+│  - Tree structure (parent, children)                    │
+│  - Holds Resources by format                            │
+├─────────────────────────────────────────────────────────┤
+│  Site                                                   │
+│  - Entry point, builds tree from files                  │
+│  - Provides get/glob methods to query resources         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Building a Tree Manually
+
+Understanding how to build a tree manually helps clarify how the pieces fit together.
+
+```ruby
+require "sitepress-core"
+
+# The root node is the top of the tree. Nodes represent positions
+# in the URL hierarchy, like directories in a filesystem.
+root = Sitepress::Node.new
+
+# Sources know how to read files. A Page reads text files with
+# optional YAML frontmatter. An Image reads binary image files
+# and extracts dimensions.
+homepage = Sitepress::Page.new(path: "pages/index.html.erb")
+logo = Sitepress::Image.new(path: "pages/logo.png")
+
+# Resources connect Sources to Nodes. A Resource has a format
+# (html, png, etc.) and knows its request path based on its
+# position in the tree.
+#
+# Here we add the homepage to the root node. The "index" child
+# node is created automatically.
+root.child("index").resources.add_source(homepage, format: :html)
+
+# Multiple formats can exist at the same node. This is how
+# /about.html and /about.json can coexist.
+root.child("logo").resources.add_source(logo, format: :png)
+
+# Now we can query the tree:
+root.get("/index")           # => Resource (homepage)
+root.get("/index").data      # => {"title" => "Welcome"} (from frontmatter)
+root.get("/index").body      # => "<h1>Hello</h1>..." (template body)
+
+root.get("/logo")            # => Resource (logo)
+root.get("/logo").data       # => {"width" => 200, "height" => 100}
+root.get("/logo").source.width  # => 200
+```
+
+### Sources: Page and Image
+
+Sources are responsible for reading files and providing a consistent interface.
+
+```ruby
+# Page reads text files with optional YAML frontmatter.
+# It's renderable through template handlers (ERB, Haml, etc.)
+page = Sitepress::Page.new(path: "about.html.erb")
+page.data          # => {"title" => "About Us"} (from frontmatter)
+page.body          # => "<h1>About</h1>..." (template content)
+page.format        # => :html
+page.mime_type     # => #<MIME::Type: text/html>
+page.renderable?   # => true
+
+# Image reads binary image files and extracts dimensions.
+# It's not renderable - you serve the binary directly.
+image = Sitepress::Image.new(path: "photo.jpg")
+image.data         # => {"width" => 1920, "height" => 1080}
+image.body         # => binary content
+image.format       # => :jpg
+image.mime_type    # => #<MIME::Type: image/jpeg>
+image.width        # => 1920
+image.height       # => 1080
+```
+
+### Resources and Tree Navigation
+
+Resources wrap Sources and provide tree navigation filtered by format.
+
+```ruby
+# Get a resource
+about = site.get("/about")
+
+# Tree navigation returns resources of the same format by default
+about.parent          # => Resource at "/" (html format)
+about.children        # => [Resource, Resource, ...] (html children)
+about.siblings        # => [Resource, Resource, ...] (html siblings)
+
+# This makes iteration natural - you're always dealing with
+# the same type of content:
+about.children.each do |child|
+  puts child.data["title"]  # Works because all children are html pages
+end
+```
+
+### Custom Sources
+
+You can create custom sources for other file types by implementing the source interface:
+
+```ruby
+class VideoSource
+  attr_reader :path
+
+  def initialize(path:)
+    @path = Pathname.new(path)
+  end
+
+  def format
+    path.extname.delete(".").to_sym
+  end
+
+  def mime_type
+    MIME::Types.type_for(path.to_s).first
+  end
+
+  def data
+    # Extract video metadata (duration, dimensions, codec, etc.)
+    @data ||= Sitepress::Data.manage({
+      "width" => video_width,
+      "height" => video_height,
+      "duration" => video_duration
+    })
+  end
+
+  def body
+    File.binread(path)
+  end
+end
+```
+
+Then configure the `AssetNodeMapper` (or subclass it) to use your custom source for video files.
+
+### Page Models (Optional)
+
+Page models add domain logic on top of resources. They're decoupled from resources - a single resource can be used by multiple page models.
+
+```ruby
+class Photo
+  def initialize(resource)
+    @resource = resource
+  end
+
+  # Hoist data to methods
+  def title
+    @resource.data["title"] || filename_as_title
+  end
+
+  def width
+    @resource.data["width"]
+  end
+
+  def height
+    @resource.data["height"]
+  end
+
+  # Add computed properties
+  def landscape?
+    width > height
+  end
+
+  def thumbnail_url
+    "#{@resource.request_path}?size=thumb"
+  end
+
+  # Class method to find all photos
+  def self.all(site)
+    site.resources.select { |r| r.source.is_a?(Sitepress::Image) }
+                  .map { |r| new(r) }
+  end
+
+  private
+
+  def filename_as_title
+    @resource.source.filename.sub(/\.\w+$/, "").gsub(/[-_]/, " ").capitalize
+  end
+end
+
+# Usage in templates:
+Photo.all(site).each do |photo|
+  puts "#{photo.title}: #{photo.width}x#{photo.height}"
+  puts "Landscape!" if photo.landscape?
+end
+```
+
+### Backwards Compatibility
+
+For backwards compatibility, `Sitepress::Asset` is an alias for `Sitepress::Page`.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

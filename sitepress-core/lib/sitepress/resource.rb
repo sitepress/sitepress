@@ -41,7 +41,7 @@ module Sitepress
       @node = node
       @format = format || @source.format
       @mime_type = mime_type || @source.mime_type
-      @handler = handler || @source.handler
+      @handler = handler || source_handler
     end
 
     def request_path
@@ -155,6 +155,10 @@ module Sitepress
       else
         raise ArgumentError, "Invalid type argument #{type}. Must be either :same, :all, an extension string, or a Mime::Type"
       end
+    end
+
+    def source_handler
+      @source.handler if @source.respond_to?(:handler)
     end
 
     # Deals with situations, particularly in the root node and other "index" nodes, for the `request_path`
