@@ -220,6 +220,38 @@ about.children.each do |child|
 end
 ```
 
+### Mounting Content
+
+Use `<<` to add content to the site tree:
+
+```ruby
+Sitepress.configure do |site|
+  # Mount pages at the root
+  site.root << Directory.new("./pages")
+
+  # Mount docs under /docs
+  site.root.child("docs") << Directory.new("./docs")
+end
+```
+
+The resulting site tree:
+
+```
+/                          ← from ./pages
+/about                     ← from ./pages
+/docs/getting-started      ← from ./docs
+/docs/api-reference        ← from ./docs
+```
+
+You can mount the same content in multiple places:
+
+```ruby
+docs = Directory.new("./docs")
+
+site.root.child("docs") << docs
+site.dig("api", "v1", "docs") << docs
+```
+
 ### Custom Sources
 
 You can create custom sources for other file types by implementing the source interface:
@@ -255,7 +287,20 @@ class VideoSource
 end
 ```
 
-Then configure the `AssetNodeMapper` (or subclass it) to use your custom source for video files.
+Then subclass `Directory` to use your custom source and mount it:
+
+```ruby
+class VideoDirectory < Sitepress::Directory
+  protected
+
+  def process_asset(path, node)
+    source = VideoSource.new(path: path)
+    node.child(source.node_name).resources.add_source(source, format: source.format)
+  end
+end
+
+site.root.child("videos") << VideoDirectory.new("./videos")
+```
 
 ### Page Models (Optional)
 

@@ -23,14 +23,14 @@ module Sitepress
     # processed by the `resources_pipeline`.
     def root
       @root ||= Node.new.tap do |root|
-        root.mount asset_node_mapper
+        root << asset_node_mapper
         resources_pipeline.process root
       end
     end
 
     # Maps a path of directories and files into the root node.
     def asset_node_mapper
-      AssetNodeMapper.new(pages_path)
+      Directory.new(pages_path)
     end
 
     # Returns a list of all the resources within #root.
