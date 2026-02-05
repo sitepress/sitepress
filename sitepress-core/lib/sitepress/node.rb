@@ -98,6 +98,11 @@ module Sitepress
       "<#{self.class}: name=#{name.inspect}, formats=#{formats.inspect}, children=#{children.map(&:name).inspect}, resource_request_paths=#{resources.map(&:request_path)}>"
     end
 
+    def mount(mapper)
+      mapper.map(self)
+    end
+    alias :<< :mount
+
     def dig(*args)
       head, *tail = args
       if (head.nil? or head.empty? or head == default_name) and tail.empty?

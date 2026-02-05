@@ -3,20 +3,16 @@ require "spec_helper"
 RSpec.describe Sitepress::AssetNodeMapper do
   let(:path) { "spec/sites/sample/pages" }
   let(:node) { Sitepress::Node.new }
-  subject(:mapper) { Sitepress::AssetNodeMapper.new(path: path, node: node) }
+  subject(:mapper) { Sitepress::AssetNodeMapper.new(path) }
 
   describe "#initialize" do
     it "creates AssetPaths from path" do
       expect(mapper.asset_paths).to be_a(Sitepress::AssetPaths)
     end
-
-    it "stores the node" do
-      expect(mapper.node).to eq(node)
-    end
   end
 
   describe "#map" do
-    before { mapper.map }
+    before { mapper.map(node) }
 
     it "adds resources to the node tree" do
       all_resources = node.resources.flatten
@@ -43,7 +39,7 @@ RSpec.describe Sitepress::AssetNodeMapper do
   describe "directory handling" do
     let(:path) { "spec/sites/tree/pages" }
 
-    before { mapper.map }
+    before { mapper.map(node) }
 
     it "creates nested nodes for directories" do
       vehicles_node = node.child("vehicles")
@@ -70,7 +66,7 @@ RSpec.describe Sitepress::AssetNodeMapper do
   describe "file type handling" do
     let(:path) { "spec/sites/tree/pages" }
 
-    before { mapper.map }
+    before { mapper.map(node) }
 
     it "handles .html.haml files" do
       about_node = node.child("about")
@@ -106,7 +102,7 @@ RSpec.describe Sitepress::AssetNodeMapper do
   describe "asset creation" do
     let(:path) { "spec/sites/sample/pages" }
 
-    before { mapper.map }
+    before { mapper.map(node) }
 
     it "creates assets with correct paths" do
       test_node = node.child("test")
@@ -118,7 +114,7 @@ RSpec.describe Sitepress::AssetNodeMapper do
   describe "ignores filtered files" do
     let(:path) { "spec/sites/sample/pages" }
 
-    before { mapper.map }
+    before { mapper.map(node) }
 
     it "does not create nodes for swap files" do
       all_resources = node.resources.flatten

@@ -19,18 +19,18 @@ module Sitepress
       self.root_path = root_path
     end
 
-    # A tree representation of the resourecs wthin the site. The root is a node that's
+    # A tree representation of the resources within the site. The root is a node that's
     # processed by the `resources_pipeline`.
     def root
       @root ||= Node.new.tap do |root|
-        asset_node_mapper(root).map
+        root.mount asset_node_mapper
         resources_pipeline.process root
       end
     end
 
     # Maps a path of directories and files into the root node.
-    def asset_node_mapper(root_node)
-      AssetNodeMapper.new(path: pages_path, node: root_node)
+    def asset_node_mapper
+      AssetNodeMapper.new(pages_path)
     end
 
     # Returns a list of all the resources within #root.
