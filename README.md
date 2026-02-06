@@ -252,6 +252,73 @@ site.root.child("docs") << docs
 site.dig("api", "v1", "docs") << docs
 ```
 
+### Example: Blog with Tags
+
+Posts live on disk with tags in frontmatter:
+
+```
+./posts/2024/12/my-post.html.md
+./posts/2024/11/another.html.md
+```
+
+```yaml
+# ./posts/2024/12/my-post.html.md
+---
+title: My Post
+tags: [ruby, sitepress]
+---
+```
+
+Mount posts, then mount tags that reference them:
+
+```ruby
+Sitepress.configure do |site|
+  site.root.child("posts") << Directory.new("./posts")
+
+  site.root.child("tags") << Tags.new(
+    source: site.root.child("posts"),
+    template: "./templates/tag.html.erb"
+  )
+end
+```
+
+The `Tags` class collects tags from all resources under the source node:
+
+```ruby
+class Tags
+  def initialize(source:, template:)
+    @source = source
+    @template = template
+  end
+
+  def mount(node)
+    collect_tags.each do |tag, resources|
+      source = TagPage.new(tag: tag, resources: resources, template: @template)
+      node.child(tag).resources.add_asset(source, format: :html)
+    end
+  end
+
+  private
+
+  def collect_tags
+    index = Hash.new { |h, k| h[k] = [] }
+    @source.resources.flatten.each do |resource|
+      resource.data["tags"]&.each { |tag| index[tag] << resource }
+    end
+    index
+  end
+end
+```
+
+Resulting tree:
+
+```
+/posts/2024/12/my-post   ← from disk
+/posts/2024/11/another   ← from disk
+/tags/ruby               ← generated (both posts)
+/tags/sitepress          ← generated (my-post only)
+```
+
 ### Custom Sources
 
 You can create custom sources for other file types by implementing the source interface:
