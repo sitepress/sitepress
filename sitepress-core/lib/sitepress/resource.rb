@@ -101,8 +101,7 @@ module Sitepress
     end
 
     def inspect
-      source_path = source.path.to_s.inspect if source.respond_to?(:path)
-      "#<#{self.class}:0x#{object_id.to_s(16)} request_path=#{request_path.inspect} source=#{source.class} path=#{source_path}>"
+      "#<#{self.class}:0x#{object_id.to_s(16)} request_path=#{request_path.inspect} source=#{source.inspect}>"
     end
 
     def parent(**args)

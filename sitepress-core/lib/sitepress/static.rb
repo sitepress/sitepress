@@ -41,7 +41,7 @@ module Sitepress
     end
 
     def inspect
-      "#<#{self.class}:0x#{object_id.to_s(16)} path=#{path.to_s.inspect} mime_type=#{mime_type}>"
+      "#<#{self.class}:0x#{object_id.to_s(16)} path=#{path.to_s.inspect}>"
     end
   end
 end

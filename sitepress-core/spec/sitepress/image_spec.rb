@@ -198,13 +198,12 @@ RSpec.describe Sitepress::Image do
       expect(resource.source.height).to eq(32)
     end
 
-    it "source#inspect shows path and mime_type" do
+    it "source#inspect shows path" do
       expect(resource.source.inspect).to include("path=")
-      expect(resource.source.inspect).to include("mime_type=image/png")
     end
 
-    it "resource#inspect shows source class" do
-      expect(resource.inspect).to include("source=Sitepress::Image")
+    it "resource#inspect shows nested source inspect" do
+      expect(resource.inspect).to include("source=#<Sitepress::Image:")
     end
   end
 end
