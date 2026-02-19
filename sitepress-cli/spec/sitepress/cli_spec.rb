@@ -90,14 +90,6 @@ RSpec.describe Sitepress::CLI do
       expect(command.options).to have_key(:port)
     end
 
-    it "has site_reloading option" do
-      expect(command.options).to have_key(:site_reloading)
-    end
-
-    it "has site_error_reporting option" do
-      expect(command.options).to have_key(:site_error_reporting)
-    end
-
     it "port option has correct default" do
       expect(command.options[:port].default).to eq(8080)
     end

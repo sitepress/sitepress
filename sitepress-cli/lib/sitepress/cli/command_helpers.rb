@@ -2,32 +2,31 @@ require "thor"
 
 module Sitepress
   class CLI < Thor
-    # Helpers for CLI plugin commands.
+    # Helpers for CLI commands.
     #
-    # Include this module in your plugin's Thor class to get access
+    # Include this module in your Thor class to get access
     # to Sitepress configuration, site, and Rails environment.
+    #
+    # The Sitepress environment is automatically booted before commands
+    # run, so you can access site, configuration, etc. immediately.
     #
     # Example:
     #
     #   class Sitepress::Deploy::CLI < Thor
-    #     include Sitepress::CLI::PluginHelpers
+    #     include Sitepress::CLI::CommandHelpers
     #
     #     desc "s3", "Deploy to S3"
     #     def s3
-    #       initialize!  # Boot Rails/Sitepress
     #       site.resources.each { |r| upload(r) }
     #     end
     #   end
     #
-    module PluginHelpers
-      # Boot the Rails/Sitepress environment.
-      # Call this at the start of commands that need access to the site.
-      #
-      # @yield [app] Optional block to configure the app before initialization
+    module CommandHelpers
+      # No-op for backwards compatibility.
+      # The environment is now automatically booted in CLI.start.
       def initialize!(&block)
-        require File.expand_path("../boot", __dir__)
+        # Environment already booted, but yield to block if given
         app.tap(&block) if block_given?
-        app.initialize! unless app.initialized?
       end
 
       # The Sitepress::Server Rails application.
@@ -55,5 +54,8 @@ module Sitepress
         rails.config.logger
       end
     end
+
+    # Backwards compatibility alias
+    PluginHelpers = CommandHelpers
   end
 end

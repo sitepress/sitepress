@@ -1,6 +1,7 @@
 require "spec_helper"
+require "thor"
 
-RSpec.describe Sitepress::Plugins do
+RSpec.describe Sitepress::Commands do
   before do
     described_class.reset!
   end
@@ -8,7 +9,7 @@ RSpec.describe Sitepress::Plugins do
   describe ".register" do
     let(:cli_class) { Class.new(Thor) }
 
-    it "adds plugin to registry" do
+    it "adds command to registry" do
       described_class.register(name: "test", cli: cli_class)
       expect(described_class.registered).to include("test")
     end
@@ -19,8 +20,8 @@ RSpec.describe Sitepress::Plugins do
     end
 
     it "stores description" do
-      described_class.register(name: "test", cli: cli_class, description: "Test plugin")
-      expect(described_class.get("test")[:description]).to eq("Test plugin")
+      described_class.register(name: "test", cli: cli_class, description: "Test command")
+      expect(described_class.get("test")[:description]).to eq("Test command")
     end
 
     it "uses default description when not provided" do
@@ -40,7 +41,7 @@ RSpec.describe Sitepress::Plugins do
       }.to output(/already registered/).to_stderr
     end
 
-    it "does not overwrite existing plugin" do
+    it "does not overwrite existing command" do
       original_class = Class.new(Thor)
       new_class = Class.new(Thor)
 
@@ -52,11 +53,11 @@ RSpec.describe Sitepress::Plugins do
   end
 
   describe ".registered" do
-    it "returns empty array when no plugins" do
+    it "returns empty array when no commands" do
       expect(described_class.registered).to eq([])
     end
 
-    it "returns list of registered plugin names" do
+    it "returns list of registered command names" do
       described_class.register(name: "foo", cli: Class.new(Thor))
       described_class.register(name: "bar", cli: Class.new(Thor))
       expect(described_class.registered).to contain_exactly("foo", "bar")
@@ -64,11 +65,11 @@ RSpec.describe Sitepress::Plugins do
   end
 
   describe ".get" do
-    it "returns nil for unknown plugin" do
+    it "returns nil for unknown command" do
       expect(described_class.get("unknown")).to be_nil
     end
 
-    it "returns plugin hash for known plugin" do
+    it "returns command hash for known command" do
       cli_class = Class.new(Thor)
       described_class.register(name: "test", cli: cli_class)
       expect(described_class.get("test")).to be_a(Hash)
@@ -76,7 +77,7 @@ RSpec.describe Sitepress::Plugins do
   end
 
   describe ".each" do
-    it "iterates over all plugins" do
+    it "iterates over all commands" do
       described_class.register(name: "foo", cli: Class.new(Thor))
       described_class.register(name: "bar", cli: Class.new(Thor))
 
@@ -104,5 +105,12 @@ RSpec.describe Sitepress::Plugins do
         expect { described_class.discover! }.not_to raise_error
       end
     end
+  end
+end
+
+# Test backwards compatibility alias
+RSpec.describe "Sitepress::Plugins (backwards compatibility)" do
+  it "Sitepress::Plugins is an alias for Sitepress::Commands" do
+    expect(Sitepress::Plugins).to eq(Sitepress::Commands)
   end
 end
