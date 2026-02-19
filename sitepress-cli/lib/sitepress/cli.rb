@@ -1,29 +1,37 @@
 require "thor"
-require "rackup"
-require_relative "plugins"
-require_relative "cli/plugin_helpers"
+require "rackup/server"
+require_relative "commands"
+require_relative "cli/command_helpers"
 
 module Sitepress
   # Command line interface for compiling Sitepress sites.
   class CLI < Thor
-    # Load plugins before processing commands.
+    # Boot Sitepress and load commands before processing.
     def self.start(given_args = ARGV, config = {})
-      load_plugins!
+      load_commands!
+      boot!
       super
     end
 
     class << self
       private
 
-      def load_plugins!
-        return if @plugins_loaded
+      def load_commands!
+        return if @commands_loaded
 
-        Plugins.discover!
-        Plugins.each do |name, plugin|
-          register(plugin[:cli], name, "#{name} SUBCOMMAND", plugin[:description])
+        Commands.discover!
+        Commands.each do |name, command|
+          register(command[:cli], name, "#{name} SUBCOMMAND", command[:description])
         end
 
-        @plugins_loaded = true
+        @commands_loaded = true
+      end
+
+      def boot!
+        return if @booted
+        require File.expand_path("../boot", __FILE__)
+        Sitepress::Server.initialize!
+        @booted = true
       end
     end
     # Default port address for server port.
@@ -50,21 +58,8 @@ module Sitepress
 
     option :bind_address, default: SERVER_BIND_ADDRESS, aliases: :a
     option :port, default: SERVER_PORT, aliases: :p, type: :numeric
-    option :site_reloading, default: SERVER_SITE_RELOADING, aliases: :r, type: :boolean
-    option :site_error_reporting, default: SERVER_SITE_ERROR_REPORTING, aliases: :e, type: :boolean
     desc "server", "Run preview server"
     def server
-      # Now boot everything for the Rack server to pickup.
-      initialize! do |app|
-        # Enable Sitepress web error reporting so users have more friendly
-        # error messages instead of seeing a Rails exception.
-        app.config.enable_site_error_reporting = options.fetch("site_error_reporting")
-
-        # Enable reloading the site between requests so we can see changes.
-        app.config.enable_site_reloading = options.fetch("site_reloading")
-      end
-
-      # This will use whatever server is found in the user's Gemfile.
       Rackup::Server.start app: app,
         Port: options.fetch("port"),
         Host: options.fetch("bind_address")
@@ -74,8 +69,6 @@ module Sitepress
     option :fail_on_error, default: false, type: :boolean
     desc "compile", "Compile project into static pages"
     def compile
-      initialize!
-
       logger.info "Sitepress compiling assets"
       rails.assets.reveal(full_path: Pathname.new(options.fetch("output_path")).join("assets"))
 
@@ -106,8 +99,6 @@ module Sitepress
 
     desc "console", "Interactive project shell"
     def console
-      initialize!
-      # Start's an interactive console.
       REPL.new(context: configuration).start
     end
 
@@ -128,8 +119,8 @@ module Sitepress
       say Sitepress::VERSION
     end
 
-    # Include shared helpers (available to plugins too)
-    include PluginHelpers
+    # Include shared helpers (available to command extensions too)
+    include CommandHelpers
     private :initialize!, :app, :configuration, :site, :rails, :logger
   end
 end
