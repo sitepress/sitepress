@@ -16,8 +16,9 @@ context Sitepress::Resource do
   it "has #body" do
     expect(subject.body).to include("This is just some content")
   end
-  it "has #inspect" do
-    expect(subject.inspect).to include("test.html")
+  it "has #inspect with source class and path" do
+    expect(subject.inspect).to include("source=Sitepress::Page")
+    expect(subject.inspect).to include("path=")
   end
   describe "#request_path" do
     it "infers request_path from Asset#to_request_path" do

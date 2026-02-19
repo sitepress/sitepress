@@ -11,6 +11,12 @@ module Sitepress
   #   image.data["width"]  # => 1920
   #
   class Image
+    MIME_TYPES = %w[image/png image/jpeg image/gif image/webp].freeze
+
+    def self.mime_types
+      MIME_TYPES
+    end
+
     attr_reader :path
 
     def initialize(path:)
@@ -19,6 +25,10 @@ module Sitepress
 
     def filename
       path.basename.to_s
+    end
+
+    def node_name
+      path.basename(".*").to_s.split(".").first
     end
 
     def format
@@ -54,6 +64,10 @@ module Sitepress
 
     def exists?
       path.exist?
+    end
+
+    def inspect
+      "#<#{self.class}:0x#{object_id.to_s(16)} path=#{path.to_s.inspect} mime_type=#{mime_type}>"
     end
 
     private

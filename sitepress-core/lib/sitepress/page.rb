@@ -13,6 +13,25 @@ module Sitepress
     # the resource and figure out what to do with it.
     DEFAULT_MIME_TYPE = MIME::Types["application/octet-stream"].first
 
+    # MIME types that Page can handle - text-based content that may have frontmatter
+    MIME_TYPES = %w[
+      text/html
+      text/plain
+      text/markdown
+      text/x-web-markdown
+      text/css
+      text/javascript
+      application/json
+      application/xml
+      text/xml
+      image/svg+xml
+      text/x-haml
+    ].freeze
+
+    def self.mime_types
+      MIME_TYPES
+    end
+
     # Parsers can be swapped out to deal with different types of resources, like Notion
     # documents, JSON, exif data on images, etc.
     DEFAULT_PARSER = Parsers::Frontmatter
@@ -53,6 +72,10 @@ module Sitepress
     # Treat resources with the same request path as equal.
     def ==(other)
       path == other.path
+    end
+
+    def inspect
+      "#<#{self.class}:0x#{object_id.to_s(16)} path=#{path.to_s.inspect} mime_type=#{mime_type}>"
     end
 
     def mime_type
