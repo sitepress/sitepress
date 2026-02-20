@@ -120,7 +120,13 @@ module Sitepress
     # Renders the page in a view context. This is part of the Renderable protocol
     # that allows any object to be used as a resource source.
     def render_in(view_context)
-      view_context.render inline: body, type: handler
+      template = ActionView::Template.new(
+        body,
+        path.to_s,
+        ActionView::Template.handler_for_extension(handler),
+        locals: []
+      )
+      template.render(view_context, {})
     end
 
     private

@@ -1,4 +1,5 @@
-<% adjusted_line = @exception.line_number + current_page.asset.body_line_offset - 1 %>
+<% body_offset = current_page.asset.respond_to?(:body_line_offset) ? current_page.asset.body_line_offset : 1 %>
+<% adjusted_line = @exception.line_number.to_i + body_offset - 1 %>
 <h2><%= @exception.class %>: <%= @exception.message %> in <%= current_page.asset.path %>:<%= adjusted_line %></h2>
 <h3>Source</h3>
 

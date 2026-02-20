@@ -61,6 +61,19 @@ describe Sitepress::SiteController, type: :controller do
     end
   end
 
+  context "page with error" do
+    render_views
+    it "includes file path in stack trace, not 'inline template'" do
+      expect {
+        get_resource "/error_test"
+      }.to raise_exception(ActionView::Template::Error) do |error|
+        # Stack trace should reference the actual file, not "inline template"
+        expect(error.backtrace.join("\n")).to include("error_test.html.erb")
+        expect(error.backtrace.join("\n")).not_to include("inline template")
+      end
+    end
+  end
+
   context "paths" do
     context "view_paths" do
       subject { Sitepress::SiteController.view_paths.map(&:path) }
