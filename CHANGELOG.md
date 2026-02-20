@@ -35,6 +35,18 @@
   #<Sitepress::Resource:0x... request_path="/about" source=#<Sitepress::Page:0x... path="pages/about.html.md">>
   ```
 
+- **Improved error page** - Better developer experience with:
+  - "Copy Error" button for easy LLM debugging
+  - App trace shown by default, framework trace in collapsible details
+  - Cleaned up ugly ERB-generated method names in stack traces
+  - Proper file paths in stack traces instead of "inline template"
+
+- **Compile command supports both asset pipelines** - Works with Sprockets and Propshaft
+
 ### Bug Fixes
 
 - **Fixed `sitepress server` not starting** - Corrected rackup require path (`rackup/server` instead of `rackup`)
+
+- **Fixed `sitepress compile` with Sprockets** - Handle `Sprockets::CachedEnvironment` and use Rails precompile config
+
+- **Fixed error page crashing** - Handle non-Page sources that don't have `body_line_offset`
