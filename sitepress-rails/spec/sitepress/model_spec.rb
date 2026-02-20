@@ -9,7 +9,7 @@ describe Sitepress::Model do
     subject { model.all }
     context "models" do
       it "has correct count" do
-        expect(subject.count).to eql 3
+        expect(subject.count).to eql 4
       end
       it "is instances of model" do
         expect(subject.first).to be_instance_of PageModel
@@ -21,7 +21,7 @@ describe Sitepress::Model do
     describe "#resources" do
       subject { model.all.resources }
       it "has correct count" do
-        expect(subject.count).to eql 3
+        expect(subject.count).to eql 4
       end
       it "is instances of pages" do
         expect(subject.first).to be_instance_of Sitepress::Resource
@@ -37,7 +37,7 @@ describe Sitepress::Model do
   end
 
   describe "#data" do
-    subject { model.first }
+    subject { model.get("time") }
     it "defines #title method" do
       expect(subject.title).to eql "Tick tock, tick tock"
     end
@@ -117,7 +117,7 @@ describe Sitepress::Model do
     it "supports each" do
       count = 0
       model.all.each { |page| count += 1 }
-      expect(count).to eql 3
+      expect(count).to eql 4
     end
 
     it "supports first" do
