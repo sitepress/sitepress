@@ -7,13 +7,12 @@ module Sitepress
       @context = context
     end
 
-    # Start interactive REPL.
     def start
-      IRB.setup nil
-      IRB.conf[:MAIN_CONTEXT] = IRB::Irb.new.context
+      ARGV.clear
+      IRB.setup(nil)
       IRB.conf[:PROMPT_MODE] = :SIMPLE
-      require 'irb/ext/multi-irb'
-      IRB.irb nil, @context
+      workspace = IRB::WorkSpace.new(@context)
+      IRB::Irb.new(workspace).run(IRB.conf)
     end
   end
 end
