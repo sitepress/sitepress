@@ -58,51 +58,29 @@ describe Sitepress::Model do
   end
 
   describe ".collection" do
-    context "with block (new style)" do
-      it "returns a Collection directly" do
-        test_model = Class.new(Sitepress::Model)
-        result = test_model.collection(:custom_pages) { test_model.site.glob("*.html*") }
-        expect(result).to be_a(Sitepress::Models::Collection)
-      end
-
-      it "returns model instances from the collection" do
-        test_model = Class.new(Sitepress::Model)
-        result = test_model.collection { test_model.site.glob("*.html*") }
-        expect(result.first).to be_a(test_model)
-      end
-
-      it "can be chained with enumerable methods" do
-        test_model = Class.new(Sitepress::Model)
-        result = test_model.collection { test_model.site.glob("*.html*") }
-        paths = result.map(&:request_path)
-        expect(paths).to be_an(Array)
-        expect(paths).to all(be_a(String))
-      end
+    it "returns a Collection" do
+      test_model = Class.new(Sitepress::Model)
+      result = test_model.collection { test_model.site.glob("*.html*") }
+      expect(result).to be_a(Sitepress::Models::Collection)
     end
 
-    context "without block (deprecated style)" do
-      let(:test_model) do
-        Class.new(Sitepress::Model) do
-          collection :deprecated_pages, glob: "*.html*"
-        end
-      end
+    it "returns model instances from the collection" do
+      test_model = Class.new(Sitepress::Model)
+      result = test_model.collection { test_model.site.glob("*.html*") }
+      expect(result.first).to be_a(test_model)
+    end
 
-      it "defines the collection method" do
-        expect(test_model).to respond_to(:deprecated_pages)
-      end
+    it "can be chained with enumerable methods" do
+      test_model = Class.new(Sitepress::Model)
+      result = test_model.collection { test_model.site.glob("*.html*") }
+      paths = result.map(&:request_path)
+      expect(paths).to be_an(Array)
+      expect(paths).to all(be_a(String))
+    end
 
-      it "shows deprecation warning" do
-        expect(ActiveSupport::Deprecation).to receive(:new).and_call_original
-        test_model.deprecated_pages
-      end
-
-      it "still returns a Collection" do
-        expect(test_model.deprecated_pages).to be_a(Sitepress::Models::Collection)
-      end
-
-      it "still returns model instances" do
-        expect(test_model.deprecated_pages.first).to be_a(test_model)
-      end
+    it "raises without a block" do
+      test_model = Class.new(Sitepress::Model)
+      expect { test_model.collection }.to raise_error(ArgumentError)
     end
   end
 

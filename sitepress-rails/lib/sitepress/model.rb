@@ -26,21 +26,10 @@ module Sitepress
         :first,
           to: :all
 
-      # Defines a class method that may be called later to return a
-      # collection of objects. The default glob, for example, is named `:all`,
-      # which defines `MyModel.all` on the class.
-      def collection(name = :all, glob: nil, **, &)
-        if block_given?
-          build_collection(&)
-        else
-          ActiveSupport::Deprecation.new.warn(
-            "The `collection :#{name}, glob: ...` macro is deprecated. " \
-            "Use `def self.#{name} = glob('#{glob}')` instead."
-          )
-          define_singleton_method name do
-            self.glob glob, **
-          end
-        end
+      # Builds a collection from a block that returns resources.
+      def collection(&)
+        raise ArgumentError, "collection requires a block" unless block_given?
+        build_collection(&)
       end
 
       # Adhoc querying of models via `Model.glob("foo/bar").all`

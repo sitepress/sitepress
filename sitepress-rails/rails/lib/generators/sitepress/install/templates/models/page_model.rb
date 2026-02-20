@@ -1,4 +1,4 @@
 class PageModel < Sitepress::Model
-  collection glob: "**/*.html*"
+  def self.all = glob("**/*.html*")
   data :title
 end
