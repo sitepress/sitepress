@@ -1,4 +1,3 @@
-require "mime/types"
 require "fastimage"
 
 module Sitepress
@@ -10,33 +9,15 @@ module Sitepress
   #   image.height  # => 1080
   #   image.data["width"]  # => 1920
   #
-  class Image
+  class Image < Static
     MIME_TYPES = %w[image/png image/jpeg image/gif image/webp].freeze
 
     def self.mime_types
       MIME_TYPES
     end
 
-    attr_reader :path
-
-    def initialize(path:)
-      @path = Pathname.new(path)
-    end
-
     def filename
       path.basename.to_s
-    end
-
-    def node_name
-      path.basename(".*").to_s.split(".").first
-    end
-
-    def format
-      path.extname.delete(".").to_sym
-    end
-
-    def mime_type
-      MIME::Types.type_for(path.to_s).first
     end
 
     def size
@@ -56,18 +37,6 @@ module Sitepress
         "width" => width,
         "height" => height
       }.compact)
-    end
-
-    def body
-      File.binread(path)
-    end
-
-    def exists?
-      path.exist?
-    end
-
-    def inspect
-      "#<#{self.class}:0x#{object_id.to_s(16)} path=#{path.to_s.inspect}>"
     end
 
     private

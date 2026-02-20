@@ -24,6 +24,10 @@
   - `Page` - HTML, Markdown, Haml, ERB, SVG, and other text formats (supports frontmatter)
   - `Static` - Fallback for all other file types
 
+- **Source class inheritance** - `Image` and `Page` now inherit from `Static`, sharing common behavior:
+  - All sources use `Path` for consistent path parsing
+  - `fetch_data(key)` method includes file path in KeyError messages for easier debugging
+
 - **Console improvements** - Added command history (persists to ~/.irb_history) and simple prompt
 
 - **Better frontmatter error messages** - `fetch_data` method on Page and Resource includes file path in KeyError:

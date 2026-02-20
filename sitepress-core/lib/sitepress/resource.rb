@@ -25,16 +25,14 @@ module Sitepress
       source.respond_to?(:render_in)
     end
 
-    # Returns metadata from the source, or an empty hash if not available.
+    # Delegate to source.
     def data
-      has_data? ? source.data : {}
+      has_data? ? source.data : Data.manage({})
     end
 
-    # Fetch data with better error messages that include the resource path
+    # Delegate to source.
     def fetch_data(key, *args, &block)
-      data.fetch(key, *args, &block)
-    rescue KeyError
-      raise KeyError, "key not found: #{key.inspect} in #{request_path}"
+      source.fetch_data(key, *args, &block)
     end
 
     attr_accessor :format, :mime_type, :handler

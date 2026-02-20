@@ -1,5 +1,3 @@
-require "mime/types"
-require "forwardable"
 require "fileutils"
 
 module Sitepress
@@ -7,7 +5,7 @@ module Sitepress
   # metadata or be renderable via a template. Multiple resources
   # may point to the same page. Properties of a page should be mutable.
   # The Resource object is immutable and may be modified by the Resources proxy.
-  class Page
+  class Page < Static
     # If we can't resolve a mime type for the resource, we'll fall
     # back to this binary octet-stream type so the client can download
     # the resource and figure out what to do with it.
@@ -36,18 +34,15 @@ module Sitepress
     # documents, JSON, exif data on images, etc.
     DEFAULT_PARSER = Parsers::Frontmatter
 
-    attr_reader :path
     attr_writer :body
 
-    extend Forwardable
     def_delegators :renderer, :render
-    def_delegators :path, :handler, :node_name, :format, :exists?
 
     def initialize(path:, mime_type: nil, parser: DEFAULT_PARSER)
+      super(path: path)
       # The MIME::Types gem returns an array when types are looked up.
       # This grabs the first one, which is likely the intent on these lookups.
       @mime_type = Array(mime_type).first
-      @path = Path.new path
       @parser_klass = parser
     end
 
@@ -57,13 +52,6 @@ module Sitepress
 
     def data=(data)
       @data = Data.manage(data)
-    end
-
-    # Fetch data with better error messages that include the file path
-    def fetch_data(key, *args, &block)
-      data.fetch(key, *args, &block)
-    rescue KeyError
-      raise KeyError, "key not found: #{key.inspect} in #{path}"
     end
 
     def body

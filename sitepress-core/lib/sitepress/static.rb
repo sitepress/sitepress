@@ -1,4 +1,5 @@
 require "mime/types"
+require "forwardable"
 
 module Sitepress
   # A source for static files that are served as-is without processing.
@@ -10,18 +11,14 @@ module Sitepress
   #   static.body       # => binary content
   #
   class Static
+    extend Forwardable
+
     attr_reader :path
 
+    def_delegators :path, :handler, :node_name, :format, :exists?
+
     def initialize(path:)
-      @path = Pathname.new(path)
-    end
-
-    def node_name
-      path.basename(".*").to_s.split(".").first
-    end
-
-    def format
-      path.extname.delete(".").to_sym
+      @path = Path.new(path)
     end
 
     def mime_type
@@ -36,8 +33,10 @@ module Sitepress
       @data ||= Data.manage({})
     end
 
-    def exists?
-      path.exist?
+    def fetch_data(key, *args, &block)
+      data.fetch(key, *args, &block)
+    rescue KeyError
+      raise KeyError, "key not found: #{key.inspect} in #{path}"
     end
 
     def inspect

@@ -19,8 +19,8 @@ context Sitepress::Resource do
       expect(subject.fetch_data(:title)).to eql("Name")
     end
 
-    it "raises KeyError with request path for missing key" do
-      expect { subject.fetch_data(:nonexistent) }.to raise_error(KeyError, /nonexistent.*\/test/)
+    it "raises KeyError with file path for missing key" do
+      expect { subject.fetch_data(:nonexistent) }.to raise_error(KeyError, /nonexistent.*#{Regexp.escape(asset_path)}/)
     end
   end
   it "has #body" do
@@ -241,8 +241,9 @@ context Sitepress::Resource do
         expect(resource.renderable?).to be false
       end
 
-      it "data returns empty hash" do
-        expect(resource.data).to eq({})
+      it "data returns empty Data::Record" do
+        expect(resource.data).to be_a(Sitepress::Data::Record)
+        expect(resource.data.keys).to be_empty
       end
 
       it "render_in returns nil" do
