@@ -42,7 +42,7 @@ context Sitepress::Asset do
   end
 
   context "content types" do
-    context "format" do
+    context "with extension" do
       let(:path) { "spec/pages.ar-awesome is here/text.txt" }
       describe "#mime_type" do
         it "is text/plain" do
@@ -50,18 +50,12 @@ context Sitepress::Asset do
         end
       end
     end
-    context "none" do
+    context "without extension" do
       let(:path) { "spec/pages/nothing" }
       describe "#mime_type" do
-        it "is text/plain" do
-          expect(subject.mime_type).to eql(MIME::Types["application/octet-stream"].first)
+        it "is nil" do
+          expect(subject.mime_type).to be_nil
         end
-      end
-    end
-    context "overriden mime_type " do
-      subject { Sitepress::Asset.new(path: path, mime_type: MIME::Types["text/plain"]) }
-      it "is text/plain" do
-        expect(subject.mime_type).to eql(MIME::Types["text/plain"].first)
       end
     end
   end

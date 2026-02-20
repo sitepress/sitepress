@@ -32,12 +32,6 @@ RSpec.describe Sitepress::Image do
 
     after { tempfile.close! }
 
-    describe "#format" do
-      it "returns the file extension as symbol" do
-        expect(subject.format).to eq(:png)
-      end
-    end
-
     describe "#mime_type" do
       it "returns the MIME type" do
         expect(subject.mime_type.to_s).to eq("image/png")
@@ -99,12 +93,6 @@ RSpec.describe Sitepress::Image do
     subject { described_class.new(path: tempfile.path) }
 
     after { tempfile.close! }
-
-    describe "#format" do
-      it "returns :jpg" do
-        expect(subject.format).to eq(:jpg)
-      end
-    end
 
     describe "#mime_type" do
       it "returns image/jpeg" do

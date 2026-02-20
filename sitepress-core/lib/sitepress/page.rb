@@ -1,15 +1,11 @@
 require "fileutils"
+require "forwardable"
 
 module Sitepress
-  # Represents a page on a website - a file that may be parsed to extract
-  # metadata or be renderable via a template. Multiple resources
-  # may point to the same page. Properties of a page should be mutable.
-  # The Resource object is immutable and may be modified by the Resources proxy.
+  # A source for text-based files that may have frontmatter.
+  # Handles parsing of YAML frontmatter and provides access to data and body.
   class Page < Static
-    # If we can't resolve a mime type for the resource, we'll fall
-    # back to this binary octet-stream type so the client can download
-    # the resource and figure out what to do with it.
-    DEFAULT_MIME_TYPE = MIME::Types["application/octet-stream"].first
+    extend Forwardable
 
     # MIME types that Page can handle - text-based content that may have frontmatter
     MIME_TYPES = %w[
@@ -38,11 +34,8 @@ module Sitepress
 
     def_delegators :renderer, :render
 
-    def initialize(path:, mime_type: nil, parser: DEFAULT_PARSER)
+    def initialize(path:, parser: DEFAULT_PARSER)
       super(path: path)
-      # The MIME::Types gem returns an array when types are looked up.
-      # This grabs the first one, which is likely the intent on these lookups.
-      @mime_type = Array(mime_type).first
       @parser_klass = parser
     end
 
@@ -64,24 +57,9 @@ module Sitepress
       exists? ? parser.body_line_offset : 1
     end
 
-    # Treat resources with the same request path as equal.
+    # Treat sources with the same path as equal.
     def ==(other)
       path == other.path
-    end
-
-    def inspect
-      "#<#{self.class}:0x#{object_id.to_s(16)} path=#{path.to_s.inspect}>"
-    end
-
-    def mime_type
-      @mime_type ||= inferred_mime_type || DEFAULT_MIME_TYPE
-    end
-
-    # Certain files, like binary file types, aren't something that we should try to
-    # parse. When this returns true in some cases, a reference to the file will be
-    # passed and skip all the overhead of trying to parse and render.
-    def renderable?
-      !!handler
     end
 
     # When changing the parser, clear all cached parsed data.
@@ -112,34 +90,15 @@ module Sitepress
       @parser_klass::Renderer.new(data: data, body: body)
     end
 
-    # Renders the page in a view context. This is part of the Renderable protocol
-    # that allows any object to be used as a resource source.
-    def render_in(view_context)
-      template = ActionView::Template.new(
-        body,
-        path.to_s,
-        ActionView::Template.handler_for_extension(handler),
-        locals: []
-      )
-      template.render(view_context, {})
-    end
-
     private
       def parse_error(&parse)
         parse.call
       rescue StandardError => e
-        raise ParseError, "Error parsing #{path.expand_path}: #{e.class} - #{e.message}"
+        raise ParseError, "Error parsing #{File.expand_path(path)}: #{e.class} - #{e.message}"
       end
 
       def parser
         @parser ||= @parser_klass.new File.read path
-      end
-
-      # Returns the mime type of the file extension. If a type can't
-      # be resolved then we'll just grab the first type.
-      def inferred_mime_type
-        format_extension = path.format&.to_s
-        MIME::Types.type_for(format_extension).first if format_extension
       end
   end
 

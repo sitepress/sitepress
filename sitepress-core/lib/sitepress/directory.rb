@@ -30,8 +30,10 @@ module Sitepress
     end
 
     def process_asset(path, node)
-      asset = source_for(path)
-      node.child(asset.node_name).resources.add_asset(asset, format: asset.format)
+      source = source_for(path)
+      # Parse the path to get node_name and format for tree building
+      parsed_path = Path.new(path.to_s)
+      node.child(parsed_path.node_name).resources.add_asset(source, format: parsed_path.format)
     end
 
     def source_for(path)

@@ -1,28 +1,27 @@
 require "forwardable"
 
 module Sitepress
-  # Represents the request path of an asset. There may be multiple
-  # resources that point to the same asset. Resources are immutable
-  # and may be altered by the resource proxy.
+  # Represents the web-facing view of a source file. A Resource wraps a source
+  # and adds web-serving concerns: request path, handler, format, and rendering.
   #
-  # The source can be any object that implements the Renderable protocol:
-  # - #data - returns a Hash of metadata
-  # - #render_in(view_context) - renders the content
+  # Source = file on disk (Pathname)
+  # Resource = web representation (Path parsing, rendering)
   class Resource
     extend Forwardable
     def_delegators :source, :body
 
-    attr_reader :node, :source
+    # If we can't resolve a mime type for the resource, we'll fall
+    # back to this binary octet-stream type so the client can download
+    # the resource and figure out what to do with it.
+    DEFAULT_MIME_TYPE = MIME::Types["application/octet-stream"].first
+
+    attr_reader :node, :source, :source_path
+
     alias :asset :source  # Backwards compatibility
 
     # Check if the source implements the data protocol.
     def has_data?
       source.respond_to?(:data)
-    end
-
-    # Check if the source implements the render_in protocol.
-    def renderable?
-      source.respond_to?(:render_in)
     end
 
     # Delegate to source.
@@ -44,9 +43,27 @@ module Sitepress
       @source = source || asset
       raise ArgumentError, "Either asset: or source: must be provided" unless @source
       @node = node
-      @format = format || @source.format
-      @mime_type = mime_type || @source.mime_type
-      @handler = handler || source_handler
+      # Parse the source path to extract handler, format, node_name (if source has path)
+      if @source.respond_to?(:path)
+        @source_path = Path.new(@source.path.to_s)
+        @format = format || @source_path.format
+        @handler = handler || @source_path.handler
+      else
+        @source_path = nil
+        @format = format
+        @handler = handler
+      end
+      @mime_type = mime_type || inferred_mime_type || DEFAULT_MIME_TYPE
+    end
+
+    # The node name is derived from the source path
+    def node_name
+      @source_path&.node_name
+    end
+
+    # Whether this resource can be rendered (has a template handler)
+    def renderable?
+      !!handler
     end
 
     def request_path
@@ -134,8 +151,16 @@ module Sitepress
       node.parents.reject(&:root?).reverse.map(&:name)
     end
 
+    # Renders the resource in a view context using the appropriate template handler.
     def render_in(view_context)
-      renderable? ? source.render_in(view_context) : nil
+      return nil unless renderable?
+      template = ActionView::Template.new(
+        body,
+        source.path.to_s,
+        ActionView::Template.handler_for_extension(handler),
+        locals: []
+      )
+      template.render(view_context, {})
     end
 
     private
@@ -161,8 +186,10 @@ module Sitepress
       end
     end
 
-    def source_handler
-      @source.handler if @source.respond_to?(:handler)
+    # Returns the mime type inferred from the format extension
+    def inferred_mime_type
+      format_extension = format&.to_s
+      MIME::Types.type_for(format_extension).first if format_extension
     end
 
     # Deals with situations, particularly in the root node and other "index" nodes, for the `request_path`

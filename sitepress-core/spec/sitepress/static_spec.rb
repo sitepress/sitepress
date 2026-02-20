@@ -17,12 +17,6 @@ RSpec.describe Sitepress::Static do
 
     after { tempfile.close! }
 
-    describe "#format" do
-      it "returns the file extension as symbol" do
-        expect(subject.format).to eq(:pdf)
-      end
-    end
-
     describe "#mime_type" do
       it "returns the MIME type" do
         expect(subject.mime_type.to_s).to eq("application/pdf")
@@ -52,12 +46,6 @@ RSpec.describe Sitepress::Static do
       end
     end
 
-    describe "#node_name" do
-      it "returns the base filename without extension" do
-        expect(subject.node_name).to start_with("document")
-      end
-    end
-
     describe "#inspect" do
       it "includes class name and path" do
         expect(subject.inspect).to match(/#<Sitepress::Static:0x[0-9a-f]+ path=/)
@@ -77,12 +65,6 @@ RSpec.describe Sitepress::Static do
     subject { described_class.new(path: tempfile.path) }
 
     after { tempfile.close! }
-
-    describe "#format" do
-      it "returns :woff2" do
-        expect(subject.format).to eq(:woff2)
-      end
-    end
 
     describe "#mime_type" do
       it "returns font/woff2" do

@@ -1,24 +1,23 @@
 require "mime/types"
-require "forwardable"
 
 module Sitepress
-  # A source for static files that are served as-is without processing.
-  # Used as a fallback for files that don't match Image or Page MIME types.
+  # Base class for source files. A source represents a file on disk
+  # without any web-serving concerns (handlers, formats, etc.).
   #
   # Example:
-  #   static = Static.new(path: "fonts/roboto.woff2")
-  #   static.mime_type  # => #<MIME::Type font/woff2>
-  #   static.body       # => binary content
+  #   source = Static.new(path: "fonts/roboto.woff2")
+  #   source.mime_type  # => #<MIME::Type font/woff2>
+  #   source.body       # => binary content
   #
   class Static
-    extend Forwardable
-
     attr_reader :path
 
-    def_delegators :path, :handler, :node_name, :format, :exists?
-
     def initialize(path:)
-      @path = Path.new(path)
+      @path = Pathname.new(path)
+    end
+
+    def exists?
+      path.exist?
     end
 
     def mime_type
