@@ -1,31 +1,9 @@
 require "thor"
-require "rackup"
-require_relative "plugins"
-require_relative "cli/plugin_helpers"
+require "rackup/server"
 
 module Sitepress
   # Command line interface for compiling Sitepress sites.
   class CLI < Thor
-    # Load plugins before processing commands.
-    def self.start(given_args = ARGV, config = {})
-      load_plugins!
-      super
-    end
-
-    class << self
-      private
-
-      def load_plugins!
-        return if @plugins_loaded
-
-        Plugins.discover!
-        Plugins.each do |name, plugin|
-          register(plugin[:cli], name, "#{name} SUBCOMMAND", plugin[:description])
-        end
-
-        @plugins_loaded = true
-      end
-    end
     # Default port address for server port.
     SERVER_PORT = 8080
 
@@ -128,8 +106,27 @@ module Sitepress
       say Sitepress::VERSION
     end
 
-    # Include shared helpers (available to plugins too)
-    include PluginHelpers
-    private :initialize!, :app, :configuration, :site, :rails, :logger
+    private
+    def configuration
+      Sitepress.configuration
+    end
+
+    def rails
+      configuration.parent_engine
+    end
+
+    def logger
+      rails.config.logger
+    end
+
+    def initialize!(&block)
+      require_relative "boot"
+      app.tap(&block) if block_given?
+      app.initialize!
+    end
+
+    def app
+      Sitepress::Server
+    end
   end
 end
