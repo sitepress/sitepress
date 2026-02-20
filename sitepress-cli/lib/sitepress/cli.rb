@@ -1,5 +1,6 @@
 require "thor"
 require "rackup/server"
+require "fileutils"
 
 module Sitepress
   # Command line interface for compiling Sitepress sites.
@@ -55,7 +56,7 @@ module Sitepress
       initialize!
 
       logger.info "Sitepress compiling assets"
-      rails.assets.reveal(full_path: Pathname.new(options.fetch("output_path")).join("assets"))
+      compile_assets(Pathname.new(options.fetch("output_path")).join("assets"))
 
       logger.info "Sitepress compiling pages"
       compiler = Compiler::Files.new \
@@ -107,6 +108,30 @@ module Sitepress
     end
 
     private
+    def compile_assets(output_path)
+      assets = rails.assets
+
+      if defined?(Propshaft) && assets.is_a?(Propshaft::Assembly)
+        # Propshaft - create processor with our output path
+        FileUtils.mkdir_p(output_path)
+        processor = Propshaft::Processor.new(
+          load_path: assets.load_path,
+          output_path: output_path,
+          compilers: assets.compilers,
+          manifest_path: output_path.join(".manifest.json")
+        )
+        processor.process
+      elsif defined?(Sprockets) && assets.class.name.start_with?("Sprockets::")
+        # Sprockets - compile assets from precompile list
+        FileUtils.mkdir_p(output_path)
+        manifest = Sprockets::Manifest.new(assets, output_path)
+        precompile = rails.config.assets.precompile
+        manifest.compile(precompile)
+      else
+        logger.warn "Unknown asset pipeline, skipping asset compilation"
+      end
+    end
+
     def configuration
       Sitepress.configuration
     end

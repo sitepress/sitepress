@@ -114,7 +114,7 @@ RSpec.describe "CLI Integration", :integration do
   describe "sitepress compile", :slow do
     before { create_project_with_local_sitepress! }
 
-    it "compiles the site to build directory", skip: "Propshaft reveal bug - needs fix" do
+    it "compiles the site to build directory" do
       output = run_sitepress("compile")
 
       expect($?.success?).to be(true), "sitepress compile failed: #{output}"

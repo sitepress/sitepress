@@ -127,6 +127,98 @@ RSpec.describe Sitepress::CLI do
     end
   end
 
+  describe "#compile_assets" do
+    let(:cli) { described_class.new }
+    let(:output_path) { Pathname.new(Dir.mktmpdir).join("assets") }
+    let(:rails_app) { double("rails_app", assets: assets) }
+
+    before do
+      allow(cli).to receive(:rails).and_return(rails_app)
+    end
+
+    after { FileUtils.rm_rf(output_path.parent) }
+
+    context "with Propshaft" do
+      let(:load_path) { double("load_path") }
+      let(:compilers) { double("compilers") }
+      let(:processor) { double("processor") }
+      let(:assets) { double("Propshaft::Assembly", load_path: load_path, compilers: compilers) }
+
+      before do
+        stub_const("Propshaft", Module.new)
+        stub_const("Propshaft::Assembly", Class.new)
+        stub_const("Propshaft::Processor", Class.new)
+        allow(assets).to receive(:is_a?).with(Propshaft::Assembly).and_return(true)
+        allow(assets).to receive(:is_a?).with(anything).and_return(false)
+        allow(assets).to receive(:is_a?).with(Propshaft::Assembly).and_return(true)
+        allow(Propshaft::Processor).to receive(:new).and_return(processor)
+        allow(processor).to receive(:process)
+      end
+
+      it "uses Propshaft::Processor" do
+        expect(Propshaft::Processor).to receive(:new).with(
+          load_path: load_path,
+          output_path: output_path,
+          compilers: compilers,
+          manifest_path: output_path.join(".manifest.json")
+        ).and_return(processor)
+        expect(processor).to receive(:process)
+
+        cli.send(:compile_assets, output_path)
+      end
+
+      it "creates output directory" do
+        cli.send(:compile_assets, output_path)
+        expect(Dir.exist?(output_path)).to be true
+      end
+    end
+
+    context "with Sprockets" do
+      let(:precompile_list) { ["manifest.js"] }
+      let(:manifest) { double("manifest") }
+      let(:assets) { double("Sprockets::CachedEnvironment") }
+      let(:assets_config) { double("assets_config", precompile: precompile_list) }
+
+      before do
+        stub_const("Sprockets", Module.new)
+        stub_const("Sprockets::Manifest", Class.new)
+        allow(assets).to receive(:is_a?).with(anything).and_return(false)
+        allow(assets).to receive_message_chain(:class, :name).and_return("Sprockets::CachedEnvironment")
+        allow(rails_app).to receive_message_chain(:config, :assets).and_return(assets_config)
+        allow(Sprockets::Manifest).to receive(:new).and_return(manifest)
+        allow(manifest).to receive(:compile)
+      end
+
+      it "uses Sprockets::Manifest with precompile list" do
+        expect(Sprockets::Manifest).to receive(:new).with(assets, output_path).and_return(manifest)
+        expect(manifest).to receive(:compile).with(precompile_list)
+
+        cli.send(:compile_assets, output_path)
+      end
+
+      it "creates output directory" do
+        cli.send(:compile_assets, output_path)
+        expect(Dir.exist?(output_path)).to be true
+      end
+    end
+
+    context "with unknown asset pipeline" do
+      let(:assets) { double("unknown") }
+      let(:logger) { double("logger") }
+
+      before do
+        allow(assets).to receive(:is_a?).and_return(false)
+        allow(cli).to receive(:logger).and_return(logger)
+        allow(logger).to receive(:warn)
+      end
+
+      it "logs a warning" do
+        expect(logger).to receive(:warn).with("Unknown asset pipeline, skipping asset compilation")
+        cli.send(:compile_assets, output_path)
+      end
+    end
+  end
+
   describe "command descriptions" do
     it "server has description" do
       expect(described_class.commands["server"].description).to eq("Run preview server")
