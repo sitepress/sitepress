@@ -26,6 +26,11 @@
 
 - **Console improvements** - Added command history (persists to ~/.irb_history) and simple prompt
 
+- **Better frontmatter error messages** - `fetch_data` method on Page and Resource includes file path in KeyError:
+  ```ruby
+  page.fetch_data(:title)  # KeyError: key not found: :title in pages/about.html.md
+  ```
+
 - **CLI integration tests** - Added integration tests for `new`, `server`, `console`, `compile`, and `version` commands
 
 ### Improvements

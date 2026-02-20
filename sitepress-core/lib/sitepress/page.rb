@@ -59,6 +59,13 @@ module Sitepress
       @data = Data.manage(data)
     end
 
+    # Fetch data with better error messages that include the file path
+    def fetch_data(key, *args, &block)
+      data.fetch(key, *args, &block)
+    rescue KeyError
+      raise KeyError, "key not found: #{key.inspect} in #{path}"
+    end
+
     def body
       @body ||= exists? ? parse_error { parser.body } : nil
     end

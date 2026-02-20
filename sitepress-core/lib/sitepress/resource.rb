@@ -30,6 +30,13 @@ module Sitepress
       has_data? ? source.data : {}
     end
 
+    # Fetch data with better error messages that include the resource path
+    def fetch_data(key, *args, &block)
+      data.fetch(key, *args, &block)
+    rescue KeyError
+      raise KeyError, "key not found: #{key.inspect} in #{request_path}"
+    end
+
     attr_accessor :format, :mime_type, :handler
 
     # Default scope for querying parent/child/sibling resources.

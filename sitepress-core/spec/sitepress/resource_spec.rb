@@ -13,6 +13,16 @@ context Sitepress::Resource do
   it "has #data" do
     expect(subject.data["title"]).to eql("Name")
   end
+
+  describe "#fetch_data" do
+    it "returns data for existing key" do
+      expect(subject.fetch_data(:title)).to eql("Name")
+    end
+
+    it "raises KeyError with request path for missing key" do
+      expect { subject.fetch_data(:nonexistent) }.to raise_error(KeyError, /nonexistent.*\/test/)
+    end
+  end
   it "has #body" do
     expect(subject.body).to include("This is just some content")
   end

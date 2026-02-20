@@ -7,6 +7,16 @@ context Sitepress::Asset do
   it "has data" do
     expect(subject.data["title"]).to eql("Name")
   end
+
+  describe "#fetch_data" do
+    it "returns data for existing key" do
+      expect(subject.fetch_data(:title)).to eql("Name")
+    end
+
+    it "raises KeyError with file path for missing key" do
+      expect { subject.fetch_data(:nonexistent) }.to raise_error(KeyError, /nonexistent.*#{Regexp.escape(path)}/)
+    end
+  end
   it "is == with same path" do
     expect(subject == Sitepress::Asset.new(path: path)).to be true
   end

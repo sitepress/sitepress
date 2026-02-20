@@ -46,7 +46,7 @@ module Sitepress
       def_delegators :@hash, :keys, :values, :key?
 
       def initialize(hash)
-        @hash = hash
+        @hash = hash || {}
       end
 
       def fetch(key, *args, &block)
