@@ -197,5 +197,13 @@ RSpec.describe Sitepress::Image do
       expect(resource.source.width).to eq(16)
       expect(resource.source.height).to eq(32)
     end
+
+    it "source#inspect shows path" do
+      expect(resource.source.inspect).to include("path=")
+    end
+
+    it "resource#inspect shows nested source inspect" do
+      expect(resource.inspect).to include("source=#<Sitepress::Image:")
+    end
   end
 end

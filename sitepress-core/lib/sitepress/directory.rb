@@ -1,3 +1,5 @@
+require "mime/types"
+
 module Sitepress
   # Maps a directory of files into a tree of nodes that form the navigational
   # structure of a website. You can subclass this to handle different file
@@ -28,8 +30,22 @@ module Sitepress
     end
 
     def process_asset(path, node)
-      asset = Page.new(path: path)
+      asset = source_for(path)
       node.child(asset.node_name).resources.add_asset(asset, format: asset.format)
+    end
+
+    def source_for(path)
+      mime = MIME::Types.type_for(path.to_s).first&.content_type
+
+      case mime
+      when *Image.mime_types
+        Image.new(path: path)
+      when *Page.mime_types, nil
+        # nil handles template files like .erb that have no MIME type
+        Page.new(path: path)
+      else
+        Static.new(path: path)
+      end
     end
   end
 
