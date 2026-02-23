@@ -1,13 +1,9 @@
 module Sitepress
   class Project
-    # I had to order these to make it possible to test local installations;
-    # otherwise if I tried to run `rake build install`, it wouldn't be able
-    # to find the latest version if it was sooner.
+    # Ordered for local installation - dependencies first.
     GEMSPEC_PATHS = %w[
       sitepress-core
       sitepress-rails
-      sitepress-server
-      sitepress-cli
       sitepress
     ]
 

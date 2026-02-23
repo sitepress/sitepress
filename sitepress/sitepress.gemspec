@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Brad Gessler"]
   spec.email         = ["bradgessler@gmail.com"]
   spec.licenses      = ["MIT"]
-  spec.summary       = %q{An embeddable file-backed content management system.}
+  spec.summary       = %q{Sitepress standalone static site generator with CLI and development server.}
   spec.homepage      = "https://sitepress.cc/"
 
   spec.metadata["homepage_uri"]     = spec.homepage
@@ -21,5 +21,12 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency "sitepress-cli", spec.version
+  # From sitepress-cli
+  spec.add_runtime_dependency "thor", ">= 1.0.0"
+  spec.add_runtime_dependency "rackup", ">= 2.0.0"
+
+  # From sitepress-server (which depended on sitepress-rails)
+  spec.add_runtime_dependency "sitepress-rails", spec.version
+
+  spec.add_development_dependency "rack-test"
 end

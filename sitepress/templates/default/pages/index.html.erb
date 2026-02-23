@@ -1,0 +1,18 @@
+---
+title: Welcome to Sitepress
+---
+
+<h3>Website files</h3>
+<p>All the website files are in <code><%= site.root_path.expand_path %></code>. If you've built stuff on <a href="https://rubyonrails.org">Rails</a>, you'll feel right at home because Sitepress is actually running on Rails.</p>
+
+<h3>Assets</h3>
+<p>There's an asset pipeline at <code><%= site.assets_path.expand_path %></code> where you can put all of your images, stylesheets, and scripts, which will be compiled and fingerprinted for your deployment via Sprockets.</p>
+
+<h3>Compile</h3>
+<p>When you're ready to build the website, run <code>sitepress compile</code> and the website files and assets will all be built and compiled into the <code><%= site.root_path.join("build").expand_path %></code> path.</p>
+
+<h3>Deploy</h3>
+<p>An example Rakefile is included at <code><%= site.root_path.join("Rakefile").expand_path %></code> that deploys the build to an AWS S3 bucket. You can customize it to fit your needs or use a completely different deployment pipeline. Whatever floats your boat.</p>
+
+<h3>Documentation</h3>
+<p>Check out the <a href="https://sitepress.cc">Sitepress website</a> for help on getting started and documentation. Since Sitepress is also built on top of Rails, most of the <a href="https://guides.rubyonrails.org/action_view_helpers.html">Rails view helpers</a> work too.</p>
