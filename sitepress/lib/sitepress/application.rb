@@ -6,9 +6,10 @@ require "sitepress-rails"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-# Configure the rails application.
+# Configure the rails application for standalone Sitepress.
+# This handles rendering pages via Rails' view layer.
 module Sitepress
-  class Server < Rails::Application
+  class Application < Rails::Application
     # Control whether or not to display friendly error reporting messages
     # in Sitepress. The development server turns this on an handles exception,
     # while the compile and other environments would likely have this disabled.

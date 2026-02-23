@@ -53,10 +53,10 @@ class SiteController < ApplicationController
   end
 
   def has_error_reporting_enabled?
-    Sitepress::Server.config.enable_site_error_reporting
+    Sitepress::Application.config.enable_site_error_reporting
   end
 
   def reload_site?
-    Sitepress::Server.config.enable_site_reloading
+    Sitepress::Application.config.enable_site_reloading
   end
 end

@@ -1,66 +1,54 @@
 require "thor"
-require "rackup/server"
 require "fileutils"
 
 module Sitepress
-  # Command line interface for compiling Sitepress sites.
+  # Command line interface for Sitepress sites.
   class CLI < Thor
-    # Default port address for server port.
-    SERVER_PORT = 8080
-
-    # Default address is public to all IPs.
-    SERVER_BIND_ADDRESS = "127.0.0.1".freeze
-
     # Default build path for compiler.
     COMPILE_TARGET_PATH = "./build".freeze
 
-    # Display detailed error messages to the developer. Useful for development environments
-    # where the error should be displayed to the developer so they can debug errors.
-    SERVER_SITE_ERROR_REPORTING = true
-
-    # Reload the site between requests, useful for development environments when
-    # the site has to be rebuilt between requests. Disable in production environments
-    # to run the site faster.
-    SERVER_SITE_RELOADING = true
+    # Site configuration file
+    SITE_CONFIG_PATH = "config/site.rb".freeze
 
     include Thor::Actions
 
     source_root File.expand_path("../../../templates/default", __FILE__)
 
-    option :bind_address, default: SERVER_BIND_ADDRESS, aliases: :a
-    option :port, default: SERVER_PORT, aliases: :p, type: :numeric
-    option :site_reloading, default: SERVER_SITE_RELOADING, aliases: :r, type: :boolean
-    option :site_error_reporting, default: SERVER_SITE_ERROR_REPORTING, aliases: :e, type: :boolean
-    desc "server", "Run preview server"
+    option :port, aliases: "-p", type: :numeric, desc: "Port to run server on"
+    option :host, aliases: "-h", type: :string, desc: "Host to bind server to"
+    desc "server", "Run development server"
     def server
-      # Now boot everything for the Rack server to pickup.
-      initialize! do |app|
-        # Enable Sitepress web error reporting so users have more friendly
-        # error messages instead of seeing a Rails exception.
-        app.config.enable_site_error_reporting = options.fetch("site_error_reporting")
+      setup_environment!
+      load_site_config!(validate: false)
 
-        # Enable reloading the site between requests so we can see changes.
-        app.config.enable_site_reloading = options.fetch("site_reloading")
+      unless Sitepress.server
+        say "Error: Server not configured in #{SITE_CONFIG_PATH}", :red
+        say "Add: Sitepress.server = Sitepress::ApplicationServer.new(site)"
+        exit 1
       end
 
-      # This will use whatever server is found in the user's Gemfile.
-      Rackup::Server.start app: app,
-        Port: options.fetch("port"),
-        Host: options.fetch("bind_address")
+      # Override port/host if specified on command line
+      Sitepress.server.port = options[:port] if options[:port]
+      Sitepress.server.host = options[:host] if options[:host]
+
+      Sitepress.server.run
     end
 
     option :output_path, default: COMPILE_TARGET_PATH, type: :string
     option :fail_on_error, default: false, type: :boolean
     desc "compile", "Compile project into static pages"
     def compile
-      initialize!
+      setup_environment!
+      load_site_config!(validate: false)
+      setup_site_from_server!
+      initialize_rails_app!
 
       logger.info "Sitepress compiling assets"
       compile_assets(Pathname.new(options.fetch("output_path")).join("assets"))
 
       logger.info "Sitepress compiling pages"
       compiler = Compiler::Files.new \
-        site: configuration.site,
+        site: Sitepress.site,
         root_path: options.fetch("output_path"),
         fail_on_error: options.fetch("fail_on_error")
 
@@ -78,16 +66,18 @@ module Sitepress
           compiler.failed.each do |resource|
             logger.info "  #{resource.request_path}  #{resource.asset.path}"
           end
-          abort # We want a non-zero exit code so we can fail CI pipelines, etc.
+          abort
         end
       end
     end
 
     desc "console", "Interactive project shell"
     def console
-      initialize!
-      # Start's an interactive console.
-      REPL.new(context: configuration).start
+      setup_environment!
+      load_site_config!(validate: false)
+      setup_site_from_server!
+      initialize_rails_app!
+      REPL.new(site: Sitepress.site).start
     end
 
     desc "new PATH", "Create new project at PATH"
@@ -108,11 +98,54 @@ module Sitepress
     end
 
     private
+
+    def setup_environment!
+      unless File.exist?(SITE_CONFIG_PATH)
+        say "Error: #{SITE_CONFIG_PATH} not found.", :red
+        say "Run 'sitepress new .' to create a new project in the current directory."
+        exit 1
+      end
+
+      # Set up Bundler if Gemfile exists
+      if File.exist?("Gemfile")
+        ENV['BUNDLE_GEMFILE'] ||= File.expand_path("Gemfile")
+        require "bundler/setup"
+      end
+    end
+
+    def load_site_config!(validate: true)
+      config_path = File.expand_path(SITE_CONFIG_PATH)
+      load config_path
+
+      # Ensure site is configured (check the raw instance variable to avoid auto-creating default)
+      if validate && !Sitepress.configuration.instance_variable_get(:@site)
+        say "Error: Site not configured in #{SITE_CONFIG_PATH}", :red
+        say "Add: Sitepress.configuration.site = Sitepress::Site.new(root_path: '.')"
+        exit 1
+      end
+    end
+
+    def setup_site_from_server!
+      # Store the site so RailsConfiguration can use it instead of creating a default.
+      # This must be set BEFORE requiring sitepress-rails.
+      if Sitepress.server.respond_to?(:site)
+        Sitepress.pending_site = Sitepress.server.site
+      end
+    end
+
+    def initialize_rails_app!
+      require_relative "application"
+
+      Application.config.enable_site_error_reporting = false
+      Application.config.enable_site_reloading = false
+
+      Application.initialize!
+    end
+
     def compile_assets(output_path)
-      assets = rails.assets
+      assets = Application.assets
 
       if defined?(Propshaft) && assets.is_a?(Propshaft::Assembly)
-        # Propshaft - create processor with our output path
         FileUtils.mkdir_p(output_path)
         processor = Propshaft::Processor.new(
           load_path: assets.load_path,
@@ -122,36 +155,19 @@ module Sitepress
         )
         processor.process
       elsif defined?(Sprockets) && assets.class.name.start_with?("Sprockets::")
-        # Sprockets - compile assets from precompile list
         FileUtils.mkdir_p(output_path)
         manifest = Sprockets::Manifest.new(assets, output_path)
-        precompile = rails.config.assets.precompile
+        precompile = Application.config.assets.precompile
         manifest.compile(precompile)
       else
         logger.warn "Unknown asset pipeline, skipping asset compilation"
       end
     end
 
-    def configuration
-      Sitepress.configuration
-    end
-
-    def rails
-      configuration.parent_engine
-    end
-
     def logger
-      rails.config.logger
-    end
-
-    def initialize!(&block)
-      require_relative "boot"
-      app.tap(&block) if block_given?
-      app.initialize!
-    end
-
-    def app
-      Sitepress::Server
+      @logger ||= Logger.new(STDOUT).tap do |l|
+        l.formatter = ->(_, _, _, msg) { "#{msg}\n" }
+      end
     end
   end
 end

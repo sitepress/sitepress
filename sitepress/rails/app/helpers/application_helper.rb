@@ -23,4 +23,5 @@ module ApplicationHelper
   def order_pages(pages, order_key: DEFAULT_ORDER_KEY)
     pages.sort_by { |r| r.data.fetch(order_key, Float::INFINITY) }
   end
+
 end

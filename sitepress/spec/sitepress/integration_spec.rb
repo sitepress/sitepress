@@ -3,11 +3,20 @@ require "tmpdir"
 require "fileutils"
 require "net/http"
 require "timeout"
+require "socket"
 
 RSpec.describe "CLI Integration", :integration do
   let(:tmpdir) { Dir.mktmpdir }
   let(:project_path) { File.join(tmpdir, "test_site") }
   let(:sitepress_root) { File.expand_path("../../../..", __FILE__) }
+
+  # Find an available port for testing
+  def find_available_port
+    server = TCPServer.new('127.0.0.1', 0)
+    port = server.addr[1]
+    server.close
+    port
+  end
 
   after do
     FileUtils.rm_rf(tmpdir)
@@ -34,9 +43,10 @@ RSpec.describe "CLI Integration", :integration do
   end
 
   def run_sitepress_bg(*args, dir: project_path)
+    log_file = File.join(tmpdir, "server.log")
     Bundler.with_unbundled_env do
       Dir.chdir(dir) do
-        spawn("bundle exec sitepress #{args.join(" ")}", out: "/dev/null", err: "/dev/null")
+        spawn("bundle exec sitepress #{args.join(" ")} > #{log_file} 2>&1")
       end
     end
   end
@@ -74,15 +84,30 @@ RSpec.describe "CLI Integration", :integration do
     before { create_project_with_local_sitepress! }
 
     it "starts and responds to HTTP requests" do
-      pid = run_sitepress_bg("server", "-p", "9876")
+      port = find_available_port
+      pid = run_sitepress_bg("server", "-p", port.to_s)
+      log_file = File.join(tmpdir, "server.log")
 
       begin
-        # Wait for server to start
-        sleep 3
+        # Wait for server to start with retries
+        uri = URI("http://127.0.0.1:#{port}/")
+        response = nil
 
-        uri = URI("http://127.0.0.1:9876/")
-        response = Net::HTTP.get_response(uri)
+        10.times do |i|
+          sleep 1
+          begin
+            response = Net::HTTP.get_response(uri)
+            break if response.code.to_i < 500
+          rescue Errno::ECONNREFUSED
+            # Server not ready yet, keep trying
+          end
+        end
 
+        if response.nil? || response.code.to_i >= 500
+          puts "\n=== Server log ===\n#{File.read(log_file) rescue 'Could not read log'}\n=== End log ==="
+        end
+
+        expect(response).not_to be_nil
         expect(response.code.to_i).to be_between(200, 399)
       ensure
         Process.kill("TERM", pid) rescue nil

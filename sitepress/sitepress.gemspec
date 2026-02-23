@@ -21,11 +21,13 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  # From sitepress-cli
+  # CLI
   spec.add_runtime_dependency "thor", ">= 1.0.0"
-  spec.add_runtime_dependency "rackup", ">= 1.0.0"
 
-  # From sitepress-server (which depended on sitepress-rails)
+  # Development server (Falcon + process management + live reload)
+  spec.add_runtime_dependency "sitepress-server", spec.version
+
+  # Rails integration for rendering
   spec.add_runtime_dependency "sitepress-rails", spec.version
 
   spec.add_development_dependency "rack-test"
