@@ -23,3 +23,4 @@ sitepress-core/coverage
 .ruby-version
 .claude/
 build/
+coverage/

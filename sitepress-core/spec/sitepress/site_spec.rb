@@ -14,6 +14,66 @@ context Sitepress::Site do
     it "has pages_path" do
       expect(subject.pages_path.to_s).to eql("spec/sites/sample/pages")
     end
+
+    it "has helpers_path" do
+      expect(subject.helpers_path.to_s).to eql("spec/sites/sample/helpers")
+    end
+
+    it "has assets_path" do
+      expect(subject.assets_path.to_s).to eql("spec/sites/sample/assets")
+    end
+
+    it "has models_path" do
+      expect(subject.models_path.to_s).to eql("spec/sites/sample/models")
+    end
+
+    describe "setters" do
+      it "sets pages_path" do
+        subject.pages_path = "/custom/pages"
+        expect(subject.pages_path.to_s).to eql("/custom/pages")
+      end
+
+      it "sets helpers_path" do
+        subject.helpers_path = "/custom/helpers"
+        expect(subject.helpers_path.to_s).to eql("/custom/helpers")
+      end
+
+      it "sets assets_path" do
+        subject.assets_path = "/custom/assets"
+        expect(subject.assets_path.to_s).to eql("/custom/assets")
+      end
+
+      it "sets models_path" do
+        subject.models_path = "/custom/models"
+        expect(subject.models_path.to_s).to eql("/custom/models")
+      end
+    end
+  end
+
+  describe "#reload!" do
+    it "clears cached resources" do
+      original_resources = subject.resources
+      subject.reload!
+      expect(subject.resources).to_not be(original_resources)
+    end
+
+    it "clears cached root" do
+      original_root = subject.root
+      subject.reload!
+      expect(subject.root).to_not be(original_root)
+    end
+
+    it "returns self" do
+      expect(subject.reload!).to be(subject)
+    end
+  end
+
+  describe "#resources_pipeline=" do
+    it "sets custom pipeline" do
+      custom_pipeline = Sitepress::ResourcesPipeline.new
+      subject.resources_pipeline = custom_pipeline
+      expect(subject.resources_pipeline).to be(custom_pipeline)
+    end
   end
   context "#glob" do
     it "globs resources" do

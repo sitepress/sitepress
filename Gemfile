@@ -9,6 +9,7 @@ gem "appraisal", "~> 2.0"
 group :test do
   gem "pry", require: nil
   gem "rack-test", require: nil
+  gem "simplecov", require: nil
 end
 
 gem "base64", "~> 0.2.0"
