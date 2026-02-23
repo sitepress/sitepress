@@ -19,7 +19,7 @@ module Sitepress
     end
 
     def site
-      @site ||= Site.new(root_path: default_root)
+      @site ||= pending_site || Site.new(root_path: default_root)
     end
 
     # Location of Sprockets manifest file
@@ -28,6 +28,12 @@ module Sitepress
     end
 
     private
+
+    def pending_site
+      # Check for site set by standalone CLI before Rails was loaded
+      Sitepress.respond_to?(:pending_site) && Sitepress.pending_site
+    end
+
     def default_root
       Rails.root.join(DEFAULT_SITE_ROOT)
     end
