@@ -32,7 +32,7 @@ module Sitepress
 
     attr_writer :body
 
-    def_delegators :renderer, :render
+    def_delegator :renderer, :render, :serialize
 
     def initialize(path:, parser: DEFAULT_PARSER)
       super(path: path)
@@ -83,7 +83,7 @@ module Sitepress
     end
 
     def save
-      File.write path, render
+      File.write path, serialize
     end
 
     def renderer

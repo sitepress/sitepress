@@ -23,8 +23,8 @@ context Sitepress::Asset do
   it "parses body" do
     expect(subject.body).to include("This is just some content")
   end
-  it "renders file" do
-    expect(subject.render).to eql(File.read subject.path)
+  it "serializes file" do
+    expect(subject.serialize).to eql(File.read subject.path)
   end
   it "saves file" do
     expect(subject.save)
