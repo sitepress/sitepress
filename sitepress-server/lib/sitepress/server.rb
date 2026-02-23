@@ -46,6 +46,8 @@ module Sitepress
         start_reloader(task)
         start_falcon
       end
+    rescue Interrupt
+      puts "\nShutting down..."
     end
 
     private
