@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
 
   # From sitepress-cli
   spec.add_runtime_dependency "thor", ">= 1.0.0"
-  spec.add_runtime_dependency "rackup", ">= 2.0.0"
+  spec.add_runtime_dependency "rackup", ">= 1.0.0"
 
   # From sitepress-server (which depended on sitepress-rails)
   spec.add_runtime_dependency "sitepress-rails", spec.version

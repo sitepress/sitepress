@@ -62,6 +62,6 @@ task :version do
 end
 
 desc "Install gems locally"
-task install_local: %w[build sitepress_core:install:local sitepress_server:install:local sitepress_cli:install:local sitepress:install:local]
+task install_local: %w[build sitepress_core:install:local sitepress_rails:install:local sitepress:install:local]
 
 task :default => :spec

@@ -15,7 +15,5 @@ group :test do
 end
 
 gemspec path: "../sitepress"
-gemspec path: "../sitepress-cli"
 gemspec path: "../sitepress-core"
 gemspec path: "../sitepress-rails"
-gemspec path: "../sitepress-server"
