@@ -1,35 +1,39 @@
-<h2><%= @exception.class %></h2>
-<h3><%= @exception.message %></h3>
+<%
+  file_path = current_page.asset.path.to_s
 
-<p>This error typically occurs when there's invalid YAML in the frontmatter of a page.</p>
+  plain_text_error = <<~ERROR
+#{@exception.class}: #{@exception.message}
+File: #{file_path}
 
-<h3>Common causes</h3>
-<ul>
-  <li>Missing closing <code>---</code> delimiter</li>
-  <li>Invalid YAML syntax (bad indentation, missing quotes around special characters)</li>
-  <li>Tabs instead of spaces for indentation</li>
-  <li>Special characters that need quoting: <code>: { } [ ] , &amp; * # ? | - &lt; &gt; = ! % @ \</code></li>
-</ul>
+Backtrace:
+#{@exception.backtrace.first(15).join("\n")}
+ERROR
+-%>
 
-<h3>Backtrace</h3>
-<code>
-  <pre><%= @exception.backtrace.join("\n") %></pre>
-</code>
+<pre id="error-text" class="visually-hidden"><%= plain_text_error %></pre>
 
-<h3>Resources</h3>
-<table>
-  <thead>
-    <th>Request path</th>
-    <th>Asset path</th>
-    <th>Media type</th>
-  </thead>
-  <tbody>
-    <% site.resources.each do |resource| %>
-      <tr>
-        <td><%= link_to resource.request_path, resource.request_path %></td>
-        <td><%= resource.asset.path %></td>
-        <td><%= resource.asset.mime_type %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<div class="error-header">
+  <div class="error-type">Parse Error</div>
+  <h1 class="error-message"><%= @exception.message %></h1>
+
+  <div class="source-section">
+    <div class="source-section__header">
+      <span class="source-section__title"><%= file_path %></span>
+      <%= render "site/copy_button" %>
+    </div>
+  </div>
+</div>
+
+<div class="error-content">
+  <div class="trace-container">
+    <div class="trace-section">
+      <div class="trace-section__title">Common causes</div>
+      <ul class="error-list">
+        <li>Missing closing <code class="error-code">---</code> delimiter</li>
+        <li>Invalid YAML syntax (bad indentation, missing quotes)</li>
+        <li>Tabs instead of spaces for indentation</li>
+        <li>Special characters that need quoting: <code class="error-code">: { } [ ] , &amp; * # ? | - &lt; &gt; = ! % @ \</code></li>
+      </ul>
+    </div>
+  </div>
+</div>

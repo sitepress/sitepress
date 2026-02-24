@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= @title || "Sitepress" %></title>
+  <link href="/_sitepress/stylesheets/site.css" rel="stylesheet">
+  <script src="/_sitepress/javascripts/error.js" defer></script>
+</head>
+<body>
+  <div class="error-page">
+    <main class="error-main">
+      <div class="error-branding">
+        <img src="/_sitepress/images/logo.svg" alt="Sitepress" class="error-branding__logo">
+        <span class="error-branding__version">v<%= Sitepress::VERSION %></span>
+      </div>
+      <%= yield %>
+    </main>
+  </div>
+</body>
+</html>

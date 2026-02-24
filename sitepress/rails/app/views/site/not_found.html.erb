@@ -1,17 +1,38 @@
-<h2>Available resources</h2>
-<table>
-  <thead>
-    <th>Request path</th>
-    <th>Asset path</th>
-    <th>Mime type</th>
-  </thead>
-  <tbody>
-    <% site.resources.each do |resource| %>
-      <tr>
-        <td><%= link_to resource.request_path, resource.request_path %></td>
-        <td><%= resource.asset.path %></td>
-        <td><%= resource.asset.mime_type %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<%
+  plain_text_error = <<~ERROR
+404 Not Found
+Path: #{request.path}
+ERROR
+-%>
+
+<pre id="error-text" class="visually-hidden"><%= plain_text_error %></pre>
+
+<div class="error-header">
+  <div class="error-type">404</div>
+  <h1 class="error-message">Page not found</h1>
+
+  <div class="source-section">
+    <div class="source-section__header">
+      <span class="source-section__title"><%= request.path %></span>
+      <%= render "site/copy_button" %>
+    </div>
+  </div>
+</div>
+
+<div class="error-content">
+  <div class="trace-container">
+    <div class="trace-section">
+      <div class="trace-section__title">Available Routes</div>
+      <div class="trace-lines">
+        <table class="resources-table">
+          <thead><tr><th>Path</th><th>Source</th></tr></thead>
+          <tbody>
+          <% site.resources.each do |r| %>
+            <tr><td><a href="<%= r.request_path %>"><%= r.request_path %></a></td><td><%= r.asset.path %></td></tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

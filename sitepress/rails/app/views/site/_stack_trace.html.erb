@@ -1,0 +1,48 @@
+<%
+  backtrace = local_assigns[:backtrace] || []
+  clickable = local_assigns.fetch(:clickable, true)
+
+  clean_trace = ->(line) {
+    line =~ /\.erb:\d+:in '___/ ? line.sub(/:in '___.*'$/, '') : line
+  }
+
+  app_root = defined?(Rails) ? Rails.root.to_s : Dir.pwd
+
+  parse_trace = ->(line, relative: false) {
+    cleaned = clean_trace.call(line)
+    if cleaned =~ /^(.+):(\d+)(?::in '(.+)')?$/
+      f, l, m = $1, $2, $3
+      f = f.sub(app_root + '/', '') if relative && f.start_with?(app_root)
+      { file: f, line: l, method: m }
+    else
+      { file: cleaned }
+    end
+  }
+
+  app_trace = backtrace.reject { |l| l.include?('/gems/') || l.include?('/ruby/') }
+  framework_trace = backtrace.select { |l| l.include?('/gems/') || l.include?('/ruby/') }
+-%>
+<div class="trace-container">
+  <% if app_trace.any? %>
+  <div class="trace-section">
+    <div class="trace-section__title">Application</div>
+    <div class="trace-lines">
+      <% app_trace.first(10).each_with_index do |line, i| %>
+      <% p = parse_trace.call(line, relative: true); full = parse_trace.call(line) -%>
+      <div class="trace-line<%= ' trace-line--selected' if i == 0 %>"<% if clickable %> data-file="<%= full[:file] %>" data-line="<%= p[:line] %>" onclick="loadSource(this)"<% end %>><span class="trace-file"><%= p[:file] %>:<%= p[:line] %></span><% if p[:method] %><span class="trace-method"><%= p[:method] %></span><% end %></div>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+  <% if framework_trace.any? %>
+  <div class="trace-section">
+    <div class="trace-section__title">Framework</div>
+    <div class="trace-lines">
+      <% framework_trace.first(15).each do |line| %>
+      <% p = parse_trace.call(line) -%>
+      <div class="trace-line trace-line--framework"<% if clickable %> data-file="<%= p[:file] %>" data-line="<%= p[:line] %>" onclick="loadSource(this)"<% end %>><span class="trace-file"><%= p[:file] %>:<%= p[:line] %></span><% if p[:method] %><span class="trace-method"><%= p[:method] %></span><% end %></div>
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+</div>

@@ -1,29 +1,29 @@
-<h2><%= @exception.class %>: <%= @exception.message %> in <%= current_page.asset.path %></h2>
-<h3>Source</h3>
+<%
+  file_path = current_page.asset.path.to_s
 
-<code>
-  <pre><%= current_page.asset.path %></pre>
-</code>
+  plain_text_error = <<~ERROR
+#{@exception.class}: #{@exception.message}
+File: #{file_path}
 
-<h3>Backtrace</h3>
-<code>
-  <pre><%= @exception.backtrace.join("\n") %></pre>
-</code>
+Backtrace:
+#{@exception.backtrace.first(15).join("\n")}
+ERROR
+-%>
 
-<h3>Resources</h3>
-<table>
-  <thead>
-    <th>Request path</th>
-    <th>Asset path</th>
-    <th>Media type</th>
-  </thead>
-  <tbody>
-    <% site.resources.each do |resource| %>
-      <tr>
-        <td><%= link_to resource.request_path, resource.request_path %></td>
-        <td><%= resource.asset.path %></td>
-        <td><%= resource.asset.mime_type %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<pre id="error-text" class="visually-hidden"><%= plain_text_error %></pre>
+
+<div class="error-header">
+  <div class="error-type"><%= @exception.class.name.split('::').last %></div>
+  <h1 class="error-message"><%= @exception.message %></h1>
+
+  <div class="source-section">
+    <div class="source-section__header">
+      <span class="source-section__title"><%= file_path %></span>
+      <%= render "site/copy_button" %>
+    </div>
+  </div>
+</div>
+
+<div class="error-content">
+  <%= render "site/stack_trace", backtrace: @exception.backtrace, clickable: false %>
+</div>

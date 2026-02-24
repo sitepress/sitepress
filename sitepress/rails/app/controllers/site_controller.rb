@@ -31,7 +31,7 @@ class SiteController < ApplicationController
 
     @title = "Parse error"
     @exception = exception
-    render "parse_error", layout: "sitepress", status: :internal_server_error, formats: :html
+    render "parse_error", layout: "sitepress_error", status: :internal_server_error, formats: :html
   end
 
   def render_exception(template:, exception:)
@@ -39,7 +39,7 @@ class SiteController < ApplicationController
 
     @title = "Error in resource #{current_page.asset.path}"
     @exception = exception
-    render template, layout: "sitepress", status: :internal_server_error, formats: :html
+    render template, layout: "sitepress_error", status: :internal_server_error, formats: :html
   end
 
   def page_not_found(exception)
@@ -49,7 +49,7 @@ class SiteController < ApplicationController
 
   def not_found
     @title = "Could not find resource at #{request.path}"
-    render "not_found", layout: "sitepress", status: :not_found
+    render "not_found", layout: "sitepress_error", status: :not_found
   end
 
   def has_error_reporting_enabled?

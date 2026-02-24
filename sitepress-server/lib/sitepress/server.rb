@@ -54,7 +54,7 @@ module Sitepress
 
     def print_banner
       # Suppress noisy EPIPE warnings when SSE clients disconnect during navigation
-      Console.logger.level = :error if reloader
+      ::Console.logger.level = :error if reloader
 
       puts "Sitepress server starting..."
       puts "  URL:  http://#{host}:#{port}/"
@@ -98,6 +98,10 @@ module Sitepress
           map "/_sitepress/changes" do
             run ->(env) { r.connect }
           end
+        end
+
+        map "/_sitepress/source" do
+          run SourceViewer.new
         end
 
         run main_app
