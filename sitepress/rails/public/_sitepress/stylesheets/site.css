@@ -19,6 +19,7 @@
   /* Accent colors */
   --accent-blue: oklch(0.55 0.12 230);
   --accent-blue-light: oklch(0.70 0.10 230);
+  --accent-blue-dark: oklch(0.78 0.08 220);
   --accent-green: oklch(0.55 0.12 155);
   --accent-green-light: oklch(0.75 0.12 155);
 
@@ -62,14 +63,14 @@
     /* Content area - dark mode */
     --content-bg: var(--color-brown-900);
     --content-text: var(--color-brown-50);
-    --content-text-medium: var(--color-brown-400);
-    --content-text-light: var(--color-brown-500);
+    --content-text-medium: var(--color-brown-300);
+    --content-text-light: var(--color-brown-400);
     --content-border: var(--color-brown-800);
     --content-highlight: var(--color-brown-800);
     --content-btn-bg: var(--color-brown-800);
     --content-btn-border: var(--color-brown-700);
     --content-btn-hover-bg: var(--color-brown-700);
-    --content-link: var(--accent-blue-light);
+    --content-link: var(--accent-blue-dark);
     --content-success-bg: oklch(0.25 0.05 155);
     --content-success-border: var(--accent-green-light);
     --content-success-text: var(--accent-green-light);
@@ -395,6 +396,24 @@ body {
 
 .resources-table a:hover {
   text-decoration: underline;
+}
+
+/* ===== ERROR FOOTER ===== */
+
+.error-footer {
+  margin-top: 40px;
+  padding: 16px 0;
+  text-align: center;
+  font-size: var(--text-sm);
+}
+
+.error-footer a {
+  color: var(--content-text-light);
+  text-decoration: none;
+}
+
+.error-footer a:hover {
+  color: var(--content-link);
 }
 
 /* ===== UTILITIES ===== */

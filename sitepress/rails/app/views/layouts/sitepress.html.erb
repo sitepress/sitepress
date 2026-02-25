@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <title><%= @title || "Sitepress" %></title>
-    <link href='/_sitepress/stylesheets/site.css' rel='stylesheet' type='text/css'>
-  </head>
-  <body>
-    <header>
-      <img src='/_sitepress/images/logo.svg' id='logo'>
-      <h1 id="title"><%= @title || "Sitepress" %></h1>
-    </header>
-    <main>
-      <%= yield %>
-    </main>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= @title || "Sitepress" %></title>
+  <link href="/_sitepress/stylesheets/site.css" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <img src="/_sitepress/images/logo.svg" alt="Sitepress" id="logo">
+    <h1 id="title"><%= @title || "Sitepress" %></h1>
+  </header>
+  <main>
+    <%= yield %>
+  </main>
   <footer>
-    Running version Sitepress <%= Sitepress::VERSION %>. Visit <a href="https://sitepress.cc/">sitepress.cc</a> for documentation, help, and updates.
+    Sitepress <%= Sitepress::VERSION %> &middot; <a href="https://sitepress.cc/">sitepress.cc</a>
   </footer>
+</body>
 </html>
