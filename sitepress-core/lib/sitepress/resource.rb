@@ -1,4 +1,5 @@
 require "forwardable"
+require "mime/types"
 
 module Sitepress
   # Represents the web-facing view of a source file. A Resource wraps a source
