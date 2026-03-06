@@ -3,6 +3,7 @@ module Sitepress
     # Ordered for local installation - dependencies first.
     GEMSPEC_PATHS = %w[
       sitepress-core
+      sitepress-server
       sitepress-rails
       sitepress
     ]
