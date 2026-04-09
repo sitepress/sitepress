@@ -18,7 +18,7 @@ describe Sitepress::Sites do
     end
 
     it "raises ArgumentError when something other than a Site is pushed" do
-      expect { sites << "app/sitepress/admin_docs" }.to raise_error(ArgumentError, /expects a Sitepress::Site/)
+      expect { sites << "app/content/admin_docs" }.to raise_error(ArgumentError, /expects a Sitepress::Site/)
       expect { sites << :admin_docs }.to raise_error(ArgumentError, /expects a Sitepress::Site/)
       expect { sites << nil }.to raise_error(ArgumentError, /expects a Sitepress::Site/)
     end

@@ -3,7 +3,7 @@ require "rails/generators/base"
 module Sitepress
   # Scaffolds a new Sitepress site for multi-site Rails apps. Usage:
   #
-  #   bin/rails generate sitepress:site app/sitepress/admin_docs
+  #   bin/rails generate sitepress:site app/content/admin_docs
   #
   # See the USAGE file for the full description.
   class SiteGenerator < Rails::Generators::Base
@@ -11,7 +11,7 @@ module Sitepress
 
     argument :root_path,
       type: :string,
-      desc: "Path the site lives at on disk, relative to Rails root (e.g. app/sitepress/admin_docs)"
+      desc: "Path the site lives at on disk, relative to Rails root (e.g. app/content/admin_docs)"
 
     class_option :mount_at,
       type: :string,

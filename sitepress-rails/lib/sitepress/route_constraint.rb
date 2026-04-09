@@ -10,7 +10,7 @@ module Sitepress
   #     via `class_attribute :site` and have routing pick it up:
   #
   #       class Admin::DocsController < Sitepress::SiteController
-  #         self.site = Sitepress.sites.fetch("app/sitepress/admin_docs")
+  #         self.site = Sitepress.sites.fetch("app/content/admin_docs")
   #       end
   #
   # `path_prefix` is the URL prefix the route is mounted under (e.g.

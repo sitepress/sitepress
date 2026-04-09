@@ -31,13 +31,13 @@ You can serve any number of Sitepress sites from one Rails app — a marketing s
 
 ```ruby
 # 1. config/initializers/sitepress.rb — register the site at boot
-Sitepress.sites << Sitepress::Site.new(root_path: "app/sitepress/admin_docs")
+Sitepress.sites << Sitepress::Site.new(root_path: "app/content/admin_docs")
 ```
 
 ```ruby
 # 2. app/controllers/admin/docs_controller.rb — bind it to a controller
 class Admin::DocsController < Sitepress::SiteController
-  self.site = Sitepress.sites.fetch("app/sitepress/admin_docs")
+  self.site = Sitepress.sites.fetch("app/content/admin_docs")
 
   # Normal Rails things work here.
   layout "admin"
@@ -72,20 +72,20 @@ A typo in the path string fails loudly at controller class load with the registe
 
 ```
 NotFoundError: No Sitepress site registered at "app/contnet".
-Registered: ["app/sitepress/admin_docs", "app/sitepress/marketing"]
+Registered: ["app/content/admin_docs", "app/content/marketing"]
 ```
 
 The key invariant — `Sitepress.sites.fetch(x).root_path.to_s == x` — holds by construction because `Sitepress::Site#root_path` is immutable after construction (no writer) and the registry stores Site instances directly with no derived key alongside.
 
-**Multiple controllers, same site.** A site can be referenced by more than one controller. A public docs reader and an admin docs editor can both call `Sitepress.sites.fetch("app/sitepress/docs")` and bind to the same Site — same content tree, different request behavior. The Site is registered once in the initializer regardless.
+**Multiple controllers, same site.** A site can be referenced by more than one controller. A public docs reader and an admin docs editor can both call `Sitepress.sites.fetch("app/content/docs")` and bind to the same Site — same content tree, different request behavior. The Site is registered once in the initializer regardless.
 
-**Generator.** `bin/rails generate sitepress:site app/sitepress/admin_docs` scaffolds the directory tree, a stub `pages/index.html.erb`, the controller subclass with `self.site = Sitepress.sites.fetch(...)` already filled in, and either creates or appends to `config/initializers/sitepress.rb` with the registration line. Pass `--mount-at=/admin/docs` to also inject a `scope` block into `config/routes.rb` automatically; without the flag the generator just prints the routes line for you to paste.
+**Generator.** `bin/rails generate sitepress:site app/content/admin_docs` scaffolds the directory tree, a stub `pages/index.html.erb`, the controller subclass with `self.site = Sitepress.sites.fetch(...)` already filled in, and either creates or appends to `config/initializers/sitepress.rb` with the registration line. Pass `--mount-at=/admin/docs` to also inject a `scope` block into `config/routes.rb` automatically; without the flag the generator just prints the routes line for you to paste.
 
 **Static compilation.** Three rake tasks, namespaced to keep single-site and multi-site flows separate:
 
 - `rake sitepress:compile` — compiles the configured default site only. Single-site apps use this; the bare form never iterates `Sitepress.sites` so adding a registered site doesn't change what this task builds.
 - `rake sitepress:sites:compile` — compiles every registered site (default + everything in `Sitepress.sites`). Each site is written to `tmp/sitepress/<basename of root_path>` so two sites never collide on output.
-- `rake "sitepress:sites:compile[app/sitepress/admin_docs]"` — compiles a single registered site by `root_path`. Raises `Sitepress::NotFoundError` listing registered paths if no match.
+- `rake "sitepress:sites:compile[app/content/admin_docs]"` — compiles a single registered site by `root_path`. Raises `Sitepress::NotFoundError` listing registered paths if no match.
 - `rake sitepress:sites` — lists the configured default site and everything in `Sitepress.sites`. Useful for "is my site actually loaded?" debugging.
 
 Two env vars adjust the compile tasks:
@@ -99,8 +99,8 @@ These tasks only handle content compilation. Run your asset bundler (Propshaft, 
 
 **Adding multi-site to an existing single-site app.** Your existing setup keeps working unchanged — `sitepress_pages` at the root continues to serve `Sitepress.site` (the configured default). To add a second site:
 
-1. Add `Sitepress.sites << Sitepress::Site.new(root_path: "app/sitepress/admin_docs")` to an initializer.
-2. Generate the controller with `bin/rails generate sitepress:site app/sitepress/admin_docs` (or write it by hand as a `Sitepress::SiteController` subclass with `self.site = Sitepress.sites.fetch("...")`).
+1. Add `Sitepress.sites << Sitepress::Site.new(root_path: "app/content/admin_docs")` to an initializer.
+2. Generate the controller with `bin/rails generate sitepress:site app/content/admin_docs` (or write it by hand as a `Sitepress::SiteController` subclass with `self.site = Sitepress.sites.fetch("...")`).
 3. Mount it under a `scope` in `routes.rb` (the generator can do this for you with `--mount-at=/admin/docs`).
 
 The default site is unaffected by any of this. Multi-site is purely additive.

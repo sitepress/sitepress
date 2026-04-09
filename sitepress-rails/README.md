@@ -31,13 +31,13 @@ You can serve any number of Sitepress sites from one Rails app — for example a
 
 ```ruby
 # 1. config/initializers/sitepress.rb — register the site at boot
-Sitepress.sites << Sitepress::Site.new(root_path: "app/sitepress/admin_docs")
+Sitepress.sites << Sitepress::Site.new(root_path: "app/content/admin_docs")
 ```
 
 ```ruby
 # 2. app/controllers/admin/docs_controller.rb — bind it to a controller
 class Admin::DocsController < Sitepress::SiteController
-  self.site = Sitepress.sites.fetch("app/sitepress/admin_docs")
+  self.site = Sitepress.sites.fetch("app/content/admin_docs")
 
   layout "admin"
   before_action :require_admin
@@ -63,7 +63,7 @@ A typo in the path string fails loud at controller class load:
 
 ```
 NotFoundError: No Sitepress site registered at "app/contnet".
-Registered: ["app/sitepress/admin_docs"]
+Registered: ["app/content/admin_docs"]
 ```
 
 **Why three pieces and not one?** Boot ordering forces it. Zeitwerk needs helper / model paths registered before its eager-load pass, which happens before the first request — that's what `Sitepress.sites <<` does and it's the only piece that *has* to live in an initializer. The controller binding (`self.site = ...`) is just `class_attribute` plus a writer that `prepend_view_path`s the site's view directories onto *this controller's* lookup chain (so multi-site view lookups stay local — no global ActionView pollution). Routes own the URL → controller binding, with the mount path read from the surrounding `scope`/`namespace`.
@@ -73,7 +73,7 @@ The same site can be referenced by more than one controller — a public reader 
 ### Generator
 
 ```bash
-bin/rails generate sitepress:site app/sitepress/admin_docs
+bin/rails generate sitepress:site app/content/admin_docs
 ```
 
 Scaffolds the content directory tree (`pages/`, `helpers/`, `models/`, `assets/`), a stub index template, a controller subclass with `self.site = Sitepress.sites.fetch(...)` already filled in, and either creates or appends to `config/initializers/sitepress.rb` with the registration line. Pass `--mount-at=/admin/docs` to also inject a `scope` block into `config/routes.rb`; without the flag, the generator just prints the routes line for you to paste.
@@ -84,7 +84,7 @@ Compilation is split into single-site and multi-site forms so single-site users 
 
 - `rake sitepress:compile` — compiles the configured default site only.
 - `rake sitepress:sites:compile` — compiles every registered site (default + `Sitepress.sites`) to `tmp/sitepress/<basename>`. Each site lives in its own subdirectory so two sites never collide on output.
-- `rake "sitepress:sites:compile[app/sitepress/admin_docs]"` — compiles a single registered site by `root_path`. Raises `Sitepress::NotFoundError` listing registered paths if no match.
+- `rake "sitepress:sites:compile[app/content/admin_docs]"` — compiles a single registered site by `root_path`. Raises `Sitepress::NotFoundError` listing registered paths if no match.
 - `rake sitepress:sites` — lists the configured default site and everything in `Sitepress.sites`.
 
 Two env vars adjust the compile tasks:

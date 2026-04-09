@@ -42,10 +42,10 @@ module Sitepress
   # apps. See `Sitepress::Sites` for the full API; the common usage is:
   #
   #   # config/initializers/sitepress.rb
-  #   Sitepress.sites << Sitepress::Site.new(root_path: "app/sitepress/admin_docs")
+  #   Sitepress.sites << Sitepress::Site.new(root_path: "app/content/admin_docs")
   #
   #   # somewhere later (e.g. a controller class body)
-  #   Sitepress.sites.fetch("app/sitepress/admin_docs")
+  #   Sitepress.sites.fetch("app/content/admin_docs")
   def self.sites
     configuration.sites
   end

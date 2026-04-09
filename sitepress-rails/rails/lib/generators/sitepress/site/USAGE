@@ -10,17 +10,17 @@ Description:
     from the path's basename.
 
 Example:
-    bin/rails generate sitepress:site app/sitepress/admin_docs
+    bin/rails generate sitepress:site app/content/admin_docs
 
     This will create:
-        app/sitepress/admin_docs/pages/index.html.erb
-        app/sitepress/admin_docs/helpers/.keep
-        app/sitepress/admin_docs/models/.keep
-        app/sitepress/admin_docs/assets/.keep
+        app/content/admin_docs/pages/index.html.erb
+        app/content/admin_docs/helpers/.keep
+        app/content/admin_docs/models/.keep
+        app/content/admin_docs/assets/.keep
         app/controllers/admin_docs_controller.rb
 
     And add to config/initializers/sitepress.rb:
-        Sitepress.sites << Sitepress::Site.new(root_path: "app/sitepress/admin_docs")
+        Sitepress.sites << Sitepress::Site.new(root_path: "app/content/admin_docs")
 
     You'll need to mount the controller in config/routes.rb manually —
     the generator prints the line to copy.

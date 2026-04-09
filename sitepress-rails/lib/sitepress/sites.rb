@@ -9,10 +9,10 @@ module Sitepress
   # forms or between `<<` and a non-chaining `add`.
   #
   #   # config/initializers/sitepress.rb
-  #   Sitepress.sites << Sitepress::Site.new(root_path: "app/sitepress/admin_docs")
+  #   Sitepress.sites << Sitepress::Site.new(root_path: "app/content/admin_docs")
   #
   #   # somewhere later
-  #   Sitepress.sites.fetch("app/sitepress/admin_docs")    # => Sitepress::Site
+  #   Sitepress.sites.fetch("app/content/admin_docs")    # => Sitepress::Site
   #   Sitepress.sites.fetch("nope")                        # => raises NotFoundError
   #   Sitepress.sites.each { |site| ... }
   #

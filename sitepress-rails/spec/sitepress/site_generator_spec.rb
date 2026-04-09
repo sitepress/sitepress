@@ -4,7 +4,7 @@ require "generators/sitepress/site/site_generator"
 
 describe Sitepress::SiteGenerator do
   let(:destination_root) { File.expand_path("../../tmp/generators", __dir__) }
-  let(:root_path) { "app/sitepress/admin_docs" }
+  let(:root_path) { "app/content/admin_docs" }
 
   def run_generator(args)
     silence_stream($stdout) do
@@ -43,18 +43,18 @@ describe Sitepress::SiteGenerator do
     expect(File).to exist(controller_path)
     contents = File.read(controller_path)
     expect(contents).to include("class AdminDocsController < Sitepress::SiteController")
-    expect(contents).to include(%(self.site = Sitepress.sites.fetch("app/sitepress/admin_docs")))
+    expect(contents).to include(%(self.site = Sitepress.sites.fetch("app/content/admin_docs")))
   end
 
   it "registers the site in config/initializers/sitepress.rb" do
     initializer = File.join(destination_root, "config/initializers/sitepress.rb")
     expect(File).to exist(initializer)
     contents = File.read(initializer)
-    expect(contents).to include(%(Sitepress.sites << Sitepress::Site.new(root_path: "app/sitepress/admin_docs")))
+    expect(contents).to include(%(Sitepress.sites << Sitepress::Site.new(root_path: "app/content/admin_docs")))
   end
 
   context "when run a second time for a different site" do
-    before { run_generator ["app/sitepress/marketing"] }
+    before { run_generator ["app/content/marketing"] }
 
     it "appends to the existing initializer instead of overwriting it" do
       contents = File.read(File.join(destination_root, "config/initializers/sitepress.rb"))
@@ -76,7 +76,7 @@ describe Sitepress::SiteGenerator do
           # existing routes
         end
       ROUTES
-      run_generator ["app/sitepress/marketing", "--mount-at=/marketing"]
+      run_generator ["app/content/marketing", "--mount-at=/marketing"]
     end
 
     it "injects a scope block into config/routes.rb" do

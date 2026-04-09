@@ -1,6 +1,6 @@
 # Changelog
 
-## 5.0.0.beta3
+## 5.0.0.beta4
 
 ### New Features
 
@@ -8,11 +8,11 @@
 
   ```ruby
   # config/initializers/sitepress.rb
-  Sitepress.sites << Sitepress::Site.new(root_path: "app/sitepress/admin_docs")
+  Sitepress.sites << Sitepress::Site.new(root_path: "app/content/admin_docs")
 
   # app/controllers/admin/docs_controller.rb
   class Admin::DocsController < Sitepress::SiteController
-    self.site = Sitepress.sites.fetch("app/sitepress/admin_docs")
+    self.site = Sitepress.sites.fetch("app/content/admin_docs")
   end
 
   # config/routes.rb
@@ -54,7 +54,7 @@
 
   - `rake sitepress:compile` — compiles the configured default site only.
   - `rake sitepress:sites:compile` — compiles every registered site (default + `Sitepress.sites`) to `tmp/sitepress/<basename of root_path>`.
-  - `rake "sitepress:sites:compile[app/sitepress/admin_docs]"` — compiles a single registered site by `root_path`. Raises `Sitepress::NotFoundError` listing registered paths on miss.
+  - `rake "sitepress:sites:compile[app/content/admin_docs]"` — compiles a single registered site by `root_path`. Raises `Sitepress::NotFoundError` listing registered paths on miss.
   - `rake sitepress:sites` — lists the configured default site and every site registered in `Sitepress.sites`. Useful for "is my site actually loaded?" debugging without dropping into a Rails console.
 
   Set `OUTPUT_PATH=build` to override the default `tmp/sitepress` build root for either compile task — useful in CI and deploy flows. Set `FAIL_ON_ERROR=true` to raise on the first resource that fails to render and abort rake with a non-zero exit (default `false` collects all failures and prints a summary at the end).

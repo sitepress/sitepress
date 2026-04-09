@@ -57,7 +57,7 @@ module Sitepress
       # the standard Rails way:
       #
       #   class Admin::DocsController < Sitepress::SiteController
-      #     self.site = Sitepress.sites.fetch("app/sitepress/admin_docs")
+      #     self.site = Sitepress.sites.fetch("app/content/admin_docs")
       #   end
       #
       # `class_attribute` gives us a normal class-level reader/writer

@@ -18,7 +18,7 @@ require "spec_helper"
 # `params[:resource_path]`-based resource lookup. If any of those break,
 # this spec catches it.
 describe "multi-site end-to-end", type: :request do
-  let(:secondary_path) { Rails.root.join("app/sitepress/secondary").to_s }
+  let(:secondary_path) { Rails.root.join("app/content/secondary").to_s }
 
   before do
     # spec_helper.rb resets Sitepress.configuration after every example,
