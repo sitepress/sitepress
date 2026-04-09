@@ -24,22 +24,27 @@ module Sitepress
       "app/markdown"                      # When Sitepress is launched embedded in Rails project.
     ], autoload: true
 
-    # Load paths from `Sitepress#site` into Rails.
+    # Load paths from Sitepress sites into Rails.
     #
-    # We configure two separate systems:
+    # The work is split across two initializers because of Rails' boot
+    # ordering: the *default* site is set up before `:set_autoload_paths`
+    # (so its paths land in `config.autoload_paths` the normal way),
+    # but *registered* sites have to wait until after
+    # `:load_config_initializers` runs — that's where the user's
+    # `config/initializers/sitepress.rb` (with `Sitepress.sites << ...`)
+    # populates the registry. By the time we iterate the registry,
+    # `:set_autoload_paths` has already frozen `config.autoload_paths`,
+    # so we push paths directly to `Rails.autoloaders.main` (which
+    # accepts additions any time before eager loading).
     #
-    # 1. app.paths["app/*"] - Rails component path registry
-    #    Tells ActionView where to find templates, ActionController where to find helpers, etc.
-    #
-    # 2. config.autoload_paths - Zeitwerk autoloader configuration
-    #    Tells Zeitwerk what to autoload. Rails automatically includes these in
-    #    config.eager_load_paths for production environments.
-    #
-    initializer "sitepress.set_paths", before: :set_autoload_paths do |app|
+    # The default site gets views added to `app/views` globally; the
+    # default `Sitepress::SiteController` reads from there. Registered
+    # sites' views live on the controller via `prepend_view_path` so
+    # multi-site view lookups stay local to the controller.
+
+    initializer "sitepress.set_default_site_paths", before: :set_autoload_paths do |app|
       site = Sitepress.configuration.site
 
-      # Helpers: autoloadable and available to controllers
-      # Collapsed so app/content/helpers/sample_helper.rb defines SampleHelper (not Helpers::SampleHelper)
       site.helpers_path.expand_path.tap do |path|
         if path.exist?
           app.paths["app/helpers"].push path
@@ -50,8 +55,6 @@ module Sitepress
         end
       end
 
-      # Models: autoloadable
-      # Collapsed so models don't require namespace prefixes
       site.models_path.expand_path.tap do |path|
         if path.exist?
           app.paths["app/models"].push path
@@ -62,21 +65,43 @@ module Sitepress
         end
       end
 
-      # Assets: available to Sprockets (no autoloading needed)
       app.paths["app/assets"].push site.assets_path.expand_path
-
-      # Views: available to ActionView (no autoloading needed - these are templates)
-      app.paths["app/views"].push site.root_path.expand_path
-      app.paths["app/views"].push site.pages_path.expand_path
-
-      # Components: autoloadable for view_components
-      app.config.autoload_paths << File.expand_path("./components")
+      app.paths["app/views"].push  site.root_path.expand_path
+      app.paths["app/views"].push  site.pages_path.expand_path
     end
 
-    # Configure sprockets paths for the site.
-    initializer "sitepress.set_manifest_file_path", before: :append_assets_path do |app|
-      manifest_file = Sitepress.configuration.manifest_file_path.expand_path
-      app.config.assets.precompile << manifest_file.to_s if manifest_file.exist?
+    initializer "sitepress.set_registered_site_paths", after: :load_config_initializers do |app|
+      # `config.autoload_paths` and `config.eager_load_paths` are frozen
+      # by the time `:load_config_initializers` finishes, but
+      # `Rails.autoloaders.main.push_dir` accepts new directories any
+      # time before eager loading. Registered sites' helpers/models
+      # become lazy-autoloadable through that path. They're not added
+      # to `eager_load_paths`, so in production they're loaded on first
+      # access rather than at boot — fine for the multi-site case
+      # where the secondary site's helpers are scoped to one controller.
+      register_helpers_late = ->(path) {
+        if path.exist?
+          Rails.autoloaders.main.push_dir(path)
+          Rails.autoloaders.main.collapse(path)
+        end
+      }
+
+      register_assets_late = ->(path) {
+        # Propshaft reads config.assets.paths lazily, so adding here
+        # works for both dev and production precompile.
+        app.config.assets.paths << path.to_s if app.config.respond_to?(:assets)
+      }
+
+      Sitepress.configuration.sites.each do |site|
+        register_helpers_late.call site.helpers_path.expand_path
+        register_helpers_late.call site.models_path.expand_path
+        register_assets_late.call  site.assets_path.expand_path
+      end
+
+      # Mark that boot-time path registration has finished. Sites#<<
+      # checks this and warns if a site is registered after this point,
+      # since its helpers/models/assets won't be picked up by Zeitwerk.
+      Sitepress.configuration.instance_variable_set(:@boot_paths_registered, true)
     end
 
     # Configure Sitepress with Rails settings.

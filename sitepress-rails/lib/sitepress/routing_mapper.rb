@@ -7,8 +7,32 @@ module ActionDispatch::Routing
     DEFAULT_ACTION = "show".freeze
     ROUTE_GLOB_KEY = "/*resource_path".freeze
 
-    # Hook up all the Sitepress pages
-    def sitepress_pages(controller: DEFAULT_CONTROLLER, action: DEFAULT_ACTION, root: false, constraints: Sitepress::RouteConstraint.new, as: :page)
+    # Hook up all the Sitepress pages.
+    #
+    # The mount path is read from the surrounding Rails `scope`/`namespace`,
+    # so it never has to be repeated. The site is read from the controller
+    # class's `.site` method, so a multi-site app declares the site once on
+    # the controller and the routes file just mounts it.
+    #
+    # @example Default site at the root
+    #   sitepress_pages
+    #
+    # @example A controller-owned site mounted under /admin/docs
+    #   # app/controllers/admin/docs_controller.rb
+    #   class Admin::DocsController < Sitepress::SiteController
+    #     def self.site = Sitepress.site(:admin_docs)
+    #   end
+    #
+    #   # config/routes.rb
+    #   namespace :admin do
+    #     scope :docs do
+    #       sitepress_pages controller: "admin/docs"
+    #     end
+    #   end
+    def sitepress_pages(controller: DEFAULT_CONTROLLER, action: DEFAULT_ACTION, root: false, constraints: nil, as: :page)
+      path_prefix = @scope[:path].presence
+      constraints ||= Sitepress::RouteConstraint.new(controller: controller, path_prefix: path_prefix)
+
       get ROUTE_GLOB_KEY,
         controller: controller,
         action: action,

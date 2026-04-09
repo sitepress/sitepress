@@ -14,17 +14,20 @@ module Sitepress
       self.cache_resources = true
     end
 
+    # Registry of additional `Sitepress::Site` instances for multi-site
+    # apps. Lives on the configuration object so its lifecycle is tied
+    # to the Rails app and tests can reset it via
+    # `Sitepress.reset_configuration`.
+    def sites
+      @sites ||= Sites.new
+    end
+
     def parent_engine
       @parent_engine ||= Rails.application
     end
 
     def site
       @site ||= pending_site || Site.new(root_path: default_root)
-    end
-
-    # Location of Sprockets manifest file
-    def manifest_file_path
-      site.assets_path.join("config/manifest.js")
     end
 
     private

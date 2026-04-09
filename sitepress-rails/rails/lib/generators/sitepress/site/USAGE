@@ -1,0 +1,26 @@
+Description:
+    Scaffolds a new Sitepress site for multi-site Rails apps.
+
+    Creates the content directory tree, registers the site in
+    config/initializers/sitepress.rb, and generates a controller stub
+    bound to the site via `self.site = Sitepress.sites.fetch("...")`.
+
+    The argument is the path the site lives at on disk, relative to
+    the Rails root. The controller name and route helper are derived
+    from the path's basename.
+
+Example:
+    bin/rails generate sitepress:site app/sitepress/admin_docs
+
+    This will create:
+        app/sitepress/admin_docs/pages/index.html.erb
+        app/sitepress/admin_docs/helpers/.keep
+        app/sitepress/admin_docs/models/.keep
+        app/sitepress/admin_docs/assets/.keep
+        app/controllers/admin_docs_controller.rb
+
+    And add to config/initializers/sitepress.rb:
+        Sitepress.sites << Sitepress::Site.new(root_path: "app/sitepress/admin_docs")
+
+    You'll need to mount the controller in config/routes.rb manually —
+    the generator prints the line to copy.
