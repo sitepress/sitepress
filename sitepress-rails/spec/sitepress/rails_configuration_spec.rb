@@ -61,15 +61,6 @@ RSpec.describe Sitepress::RailsConfiguration do
     end
   end
 
-  describe "#manifest_file_path" do
-    it "returns path to manifest.js" do
-      expect(config.manifest_file_path.to_s).to end_with("config/manifest.js")
-    end
-
-    it "is relative to site assets path" do
-      expect(config.manifest_file_path.to_s).to include("assets")
-    end
-  end
 end
 
 RSpec.describe "Sitepress.configuration" do

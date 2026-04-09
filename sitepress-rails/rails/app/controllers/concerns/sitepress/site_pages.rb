@@ -14,10 +14,58 @@ module Sitepress
 
     extend ActiveSupport::Concern
 
+    # Lazy default + view-path injection for the controller's bound site.
+    # Prepended onto the including class's singleton so we can call
+    # `super` to reach `class_attribute`'s reader/writer instead of
+    # replacing them.
+    module SiteBinding
+      # Falls back to `Sitepress.site` (evaluated lazily — important
+      # for test environments that reset configuration between examples)
+      # when no controller subclass has explicitly assigned a site.
+      def site
+        super || Sitepress.site
+      end
+
+      # Assigning a site also prepends its view paths to this controller's
+      # lookup chain. Multi-site view lookups stay local to the controller
+      # that owns them. Idempotent — if the controller class is reloaded
+      # in development and `self.site =` runs again, we don't grow the
+      # view path list with duplicates.
+      def site=(new_site)
+        super
+        prepend_site_view_path new_site.pages_path
+        prepend_site_view_path new_site.root_path
+      end
+
+      private
+
+      def prepend_site_view_path(path)
+        return unless path.exist?
+        expanded = path.expand_path.to_s
+        return if view_paths.any? { |vp| vp.to_s == expanded }
+        prepend_view_path expanded
+      end
+    end
+
     included do
       rescue_from Sitepress::ResourceNotFound, with: :resource_not_found
       helper_method :current_page, :site
       around_action :ensure_site_reload
+
+      # Each controller is bound to one site. The default falls back to
+      # `Sitepress.site`; subclasses serving a different site override it
+      # the standard Rails way:
+      #
+      #   class Admin::DocsController < Sitepress::SiteController
+      #     self.site = Sitepress.sites.fetch("app/sitepress/admin_docs")
+      #   end
+      #
+      # `class_attribute` gives us a normal class-level reader/writer
+      # that's inherited by subclasses, and `Sitepress::RouteConstraint`
+      # reads it via `controller_class.site` so routing resolves the
+      # right site without instantiating the controller.
+      class_attribute :site
+      singleton_class.prepend(SiteBinding)
     end
 
     # Public method that is primarily called by Rails to display the page. This should
@@ -57,14 +105,6 @@ module Sitepress
     # there and from the controller.
     alias :current_page :current_resource
 
-    # References the singleton Site from the Sitepress::Configuration object. If you try to make this a class
-    # variable and let Rails have multiple Sitepress sites, you might run into issues with respect to the asset
-    # pipeline and various path configurations. To make this possible, a new object should be introduced to
-    # Sitepress that manages a many-sites to one-rails instance so there's no path issues.
-    def site
-      Sitepress.site
-    end
-
     # Raises a routing error for Rails to deal with in a more "standard" way if the user doesn't
     # override this method.
     def resource_not_found(e)
@@ -102,9 +142,13 @@ module Sitepress
       get resource_request_path
     end
 
-    # Returns the path of the resource in a way thats properly escape.
+    # Returns the path of the resource. Reads `params[:resource_path]` (set by
+    # the `*resource_path` glob in `sitepress_pages`), which is already
+    # scope-relative — Rails excludes the surrounding `scope`/`namespace`
+    # path from glob captures, so a mount at `/admin/docs` serving the
+    # request `/admin/docs/getting-started` arrives here as `getting-started`.
     def resource_request_path
-      CGI.unescape request.path
+      "/" + CGI.unescape(params[:resource_path].to_s)
     end
 
     # Returns the current layout for the inline Sitepress renderer. This is

@@ -1,0 +1,3 @@
+class <%= class_name %>Controller < Sitepress::SiteController
+  self.site = Sitepress.sites.fetch(<%= root_path.inspect %>)
+end
